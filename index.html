@@ -43,7 +43,7 @@ body{margin:0;background:var(--ink);color:var(--parch);font-family:var(--body);f
 #view{position:relative;flex:1;min-height:0;overflow:hidden;background:#0d0b09}
 #cv{display:block}
 .overlay{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:rgba(10,8,6,.74);overflow-y:auto;z-index:5}
-#summon,#codex,#quests{z-index:6}#forge{z-index:7}#dialog{z-index:8}
+#summon,#codex,#quests,#god{z-index:6}#forge{z-index:7}#dialog{z-index:8}
 .frame{background:var(--panel);border:3px solid var(--line);box-shadow:inset 0 0 0 3px var(--panel),inset 0 0 0 5px #6b5438,0 20px 60px rgba(0,0,0,.6);padding:22px;width:100%;max-width:620px;margin:auto;box-sizing:border-box}
 h2{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.1;color:var(--gold);margin:0 0 10px;text-wrap:balance}
 p{line-height:1.5;margin:0 0 10px;max-width:65ch}
@@ -126,6 +126,15 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
 .banner{position:absolute;left:0;right:0;top:20%;text-align:center;font-family:var(--display);font-weight:700;font-size:clamp(28px,6vw,48px);color:var(--parch);text-shadow:3px 3px 0 #000;pointer-events:none;opacity:0;z-index:2}
 .banner.show{animation:banner 2.6s steps(20,end)}
 @keyframes banner{0%{opacity:0}15%,70%{opacity:1}100%{opacity:0}}
+.god{max-width:820px}
+.god h3{font-family:var(--display);font-weight:500;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:16px 0 8px}
+.godrow{display:flex;flex-wrap:wrap;gap:6px}
+.godrow .btn{font-size:13px;padding:6px 10px}
+.btn.on{background:#3a5a2a;border-color:#7dbb5f;color:#d8f0c8}
+.godbadge{background:#5a1a2a;border-color:#c2412f;color:#ffd0d8}
+.codein{font:inherit;font-size:16px;padding:8px 10px;width:100%;box-sizing:border-box;background:var(--ink);color:var(--parch);border:2px solid var(--line);margin:6px 0 4px}
+.codein:focus{outline:2px solid var(--gold);outline-offset:1px}
+.err{color:#f0a48c;font-size:14px;min-height:20px}
 .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:20px;color:var(--dim);z-index:4;background:#0d0b09}
 .pad{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;display:none;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:4px;z-index:2}
 @media (pointer:coarse){.pad{display:grid}}
@@ -148,6 +157,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <div class="hud-btns">
       <button class="btn" id="bCodex">Codex · <span id="hCodex">0</span></button>
       <button class="btn" id="bQuests">Quests</button>
+      <button class="btn godbadge" id="bGod" hidden>God mode</button>
       <button class="btn" id="bHelp">Rules</button>
     </div>
   </div>
@@ -210,6 +220,13 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
       <div class="frame" style="max-width:640px">
         <div class="row-head"><h2>Quest log</h2><button class="btn" id="qClose">Close</button></div>
         <div class="qlist" id="qList"></div>
+      </div>
+    </div>
+    <div id="god" class="overlay" hidden>
+      <div class="frame god">
+        <div class="row-head"><h2>God mode</h2><div class="godrow"><button class="btn" id="gClose">Close panel</button><button class="btn danger" id="gExit">Exit God mode</button></div></div>
+        <p class="sub">Everything you do in God mode is temporary. When you exit, the game goes back to exactly how it was when you typed the code.</p>
+        <div id="gBody"></div>
       </div>
     </div>
     <div id="forge" class="overlay" hidden>
@@ -499,7 +516,7 @@ function newGame(){
  genWorld();const P0=AREAS.world.PATHC[3];
  S={area:'world',x:3,y:P0,dx:3,dy:P0,dir:'right',walk:0,rank:0,hp:40,seen:[],seenSet:new Set(),used:new Set(),wins:0,zone:0,forged:[],
     potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0};
- B=null;busy=false;['battle','summon','codex','quests','forge','dialog'].forEach(hide);
+ B=null;busy=false;GOD=null;GODF.inv=false;GODF.ohk=false;if($('bGod'))$('bGod').hidden=true;['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);
  useArea('world');look();updHud();showIntro();
 }
 
@@ -836,7 +853,7 @@ function showIntro(){mode='menu';
  <li>Villagers with <b>!</b> have quests; <b>?</b> means one is ready to hand in. Walk through a building’s door to go inside. Treasure chests hide all over the realm.</li></ul>
  <p class="sub">Move with arrows or WASD (or the pad on touch screens). Bump into people, signs and chests. C opens the Codex, Q the quest log. Start with Elder Maren outside the blue-roofed hall.</p>`,
  [{label:S.flags.started?'Back to the game':'Begin the journey',primary:true,fn:()=>{S.flags.started=true;hide('dialog');mode=B?'battle':'map';if(!B&&A.kind==='out')banner(ZNAMES[zoneOf(S.x)])}},
-  ...(S.flags.started?[{label:'Start a new game',danger:true,fn:()=>dialog('Start over?','<p>This wipes your Codex, quests and progress and starts Chapter I from the beginning.</p>',[{label:'Keep playing',primary:true,fn:toMap},{label:'Yes, start over',danger:true,fn:()=>newGame()}])}]:[])])}
+  ...(S.flags.started?[{label:'Enter code',fn:()=>{mode='map';openCode()}},{label:'Start a new game',danger:true,fn:()=>dialog('Start over?','<p>This wipes your Codex, quests and progress and starts Chapter I from the beginning.</p>',[{label:'Keep playing',primary:true,fn:toMap},{label:'Yes, start over',danger:true,fn:()=>newGame()}])}]:[])])}
 
 /* ================= TALKING ================= */
 const LINES={
@@ -958,7 +975,7 @@ function press(k){const d=DIRS[k];if(!d)return;if(!held.includes(k)){held.push(k
 function release(k){held=held.filter(h=>h!==k)}
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
  if(k==='escape'){if(!$('summon').hidden)hide('summon');else if(!$('codex').hidden){hide('codex');mode='map'}else if(!$('quests').hidden){hide('quests');mode='map'}return}
- if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='q'){openQuests();return}}
+ if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='q'){openQuests();return}if(k==='`'){openCode();return}}
  if(mode==='battle'&&B&&!busy&&$('summon').hidden&&$('forge').hidden&&$('dialog').hidden){if(['1','2','3','4'].includes(k))strike(+k-1);else if(k==='s')openSummon();else if(k==='g')guard();else if(k==='f')fists();else if(k==='p')potion()}});
 window.addEventListener('keyup',e=>release(e.key.toLowerCase()));window.addEventListener('blur',()=>{held=[]});
 $('pad').querySelectorAll('button').forEach(b=>{const d=b.dataset.d;b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}press(d)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>release(d)))});
@@ -981,11 +998,11 @@ function renderBattle(){if(!B)return;const M=MONS[B.key],r=RANKS[S.rank];
  $('bHint').textContent=busy?`${M.name} is acting…`:(B.swords.length>=S.slots?`Your hands are full: ${S.slots} swords is the limit. `:'')+(!ready?'Nothing left in your Codex to summon. ':'')+`Keys: 1–${S.slots} strike · S summon · G guard · P potion · F fists`}
 $('swords').addEventListener('click',e=>{const b=e.target.closest('.sw');if(b)strike(+b.dataset.i)});
 $('aSummon').onclick=()=>openSummon();$('aGuard').onclick=()=>guard();$('aFists').onclick=()=>fists();$('aPotion').onclick=()=>potion();
-function dealFoe(d,msg,cls){B.hp-=d;B.flash=performance.now();log(msg,cls||'you')}
+function dealFoe(d,msg,cls){if(GODF.ohk&&cls!=='good')d=Math.max(d,B.hp);B.hp-=d;B.flash=performance.now();log(msg,cls||'you')}
 function heal(n,why){const before=S.hp;S.hp=Math.min(maxHp(),S.hp+n);const got=S.hp-before;if(got>0)log(`${why}: you heal ${got}.`,'good');updHud()}
 function dodged(what){const dg=MONS[B.key].dodge||0;if(dg&&rnd()<dg){log(`The goblin ducks under your ${what}!`,'foe-l');return true}return false}
 function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw)return;
- sw.usedThis=true;if(sw.relic&&sw.curse>0){const c=2*sw.curse;S.hp-=c;log(`The curse on your ${sw.name} bites back: you lose ${c} HP.`,'foe-l');if(S.hp<=0){renderBattle();return lose()}}
+ sw.usedThis=true;if(sw.relic&&sw.curse>0&&!GODF.inv){const c=2*sw.curse;S.hp-=c;log(`The curse on your ${sw.name} bites back: you lose ${c} HP.`,'foe-l');if(S.hp<=0){renderBattle();return lose()}}
  if(dodged(sw.name))return afterYou(false);
  const ab=sw.ab.id;let d=sw.dmg*(0.9+rnd()*.2);const notes=[];
  if(ab==='keen'&&rnd()<.25){d*=2;notes.push('critical!')}if(ab==='exec'&&B.hp<B.max*.35){d*=2;notes.push('Executioner doubles it')}
@@ -1002,7 +1019,7 @@ function guard(){if(busy||!B)return;B.guard=true;log(S.shield?'You raise Aldric�
 function potion(){if(busy||!B||S.potions<=0||S.hp>=maxHp())return;S.potions--;B.potUsed++;heal(25,'You drink a potion');afterYou(false)}
 function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;foeTurn()}
 function hitYou(d,what){let dmg=d;const parts=[];if(B.guard){dmg*=S.shield?.25:.4;parts.push('guarded')}if(B.swords.some(s=>s.ab.id==='bulwark')){dmg*=.75;parts.push('Bulwark')}
- dmg=Math.max(1,Math.round(dmg));S.hp-=dmg;log(`${what}: you take ${dmg}${parts.length?' ('+parts.join(', ')+')':''}.`,'foe-l');
+ dmg=Math.max(1,Math.round(dmg));if(GODF.inv){dmg=0;parts.push('God mode')}S.hp-=dmg;log(`${what}: you take ${dmg}${parts.length?' ('+parts.join(', ')+')':''}.`,'foe-l');
  const f=$('bframe');f.classList.remove('hurt');void f.offsetWidth;f.classList.add('hurt');
  if(B.swords.some(s=>s.ab.id==='thorn')){const rr=Math.max(1,Math.round(dmg*.4));dealFoe(rr,`Thornguard lashes back for ${rr}.`,'good')}}
 function foeAtk(label){const M=MONS[B.key];hitYou(Math.max(1,ri(M.atk[0],M.atk[1])-B.weak),label||M.verb)}
@@ -1035,6 +1052,48 @@ function lose(){busy=true;setTimeout(()=>{const mon=B.mon;S.relics=B.relicSnap;B
  hide('battle');B=null;busy=false;mode='menu';S.hp=maxHp();updHud();
  dialog('You have fallen',`<p>${MONS[mon.key].name} stands over you… and time rewinds.</p><p>The blades and potions you used in that fight return to you. Explore more, gather stronger things, or try a different plan.</p>`,
   [{label:'Try again now',primary:true,fn:()=>{hide('dialog');startBattle(mon)}},{label:'Step back and explore',fn:()=>{const p=AREAS.world.PATHC;S.x=S.dx=mon.x-3;S.y=S.dy=p[mon.x-3];toMap()}}])},700)}
+
+/* ================= GOD MODE (code-locked) ================= */
+const GOD_HASH=4199230700;
+function strHash(v){let h=7;for(const ch of v.toLowerCase().trim())h=hh(h,ch.charCodeAt(0));return h}
+let GOD=null;const GODF={inv:false,ohk:false};
+function openCode(){if(mode!=='map')return;if(GOD){openGod();return}mode='menu';
+ dialog('Enter code','<p class="sub">This is for the game’s project manager only.</p><label for="godCode" class="lbl">Code</label><input id="godCode" class="codein" type="password" autocomplete="off"><div class="err" id="godErr"></div>',
+  [{label:'Unlock',primary:true,fn:tryCode},{label:'Cancel',fn:toMap}]);
+ setTimeout(()=>{const i=$('godCode');if(i){i.focus();i.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')tryCode()})}},40)}
+function tryCode(){const v=($('godCode')||{}).value||'';if(strHash(v)!==GOD_HASH){$('godErr').textContent='That code is not right.';const f=$('dialog').querySelector('.frame');f.classList.remove('hurt');void f.offsetWidth;f.classList.add('hurt');return}
+ GOD={snap:snapshot()};hide('dialog');$('bGod').hidden=false;toast('<b>God mode on.</b> Everything resets when you exit.');openGod()}
+function snapshot(){const areas={};for(const[id,a]of Object.entries(AREAS))areas[id]={o:a.map.map(r=>r.map(t=>t.o)),npcs:a.npcs.map(n=>({x:n.x,y:n.y,caged:n.caged})),mons:a.monsters.map(m=>m.alive)};return {S:structuredClone(S),areas}}
+function restoreSnap(sn){for(const[id,a]of Object.entries(AREAS)){const z=sn.areas[id];if(!z)continue;a.map.forEach((r,y)=>r.forEach((t,x)=>t.o=z.o[y][x]));a.npcs.forEach((n,i)=>Object.assign(n,z.npcs[i]));a.monsters.forEach((m,i)=>m.alive=z.mons[i])}
+ S=structuredClone(sn.S);useArea(S.area);updHud();look()}
+function exitGod(){if(!GOD)return;restoreSnap(GOD.snap);GOD=null;GODF.inv=false;GODF.ohk=false;$('bGod').hidden=true;hide('god');mode='map';toast('<b>God mode off.</b> Everything is back how it was.');banner(A.kind==='in'?A.name:ZNAMES[zoneOf(S.x)])}
+function tp(x,y){if(S.area!=='world'){S.area='world';useArea('world')}
+ for(let r=0;r<8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const X=x+dx,Y=y+dy;if(!solidAt(X,Y)&&!MONSTERS.some(m=>m.alive&&Math.abs(m.x-X)<=1&&Math.abs(m.y-Y)<=1)){S.x=S.dx=X;S.y=S.dy=Y;hide('god');mode='map';S.zone=zoneOf(X);banner(ZNAMES[S.zone]);look();return}}}
+function setStage(n){const ms=AREAS.world.monsters;ms.forEach((m,i)=>{m.alive=i>=n;if(i<n)addCodex(m.key)});S.wins=n;S.rank=Math.min(4,n);S.flags.metElder=true;S.flags.started=true;S.hp=maxHp();updHud();
+ if(n<5){const m=ms[n];tp(m.x-3,AREAS.world.PATHC[m.x-3])}else{const e=AREAS.world.npcs.find(x=>x.id==='elder');tp(e.x,e.y+1)}}
+function openGod(){mode='menu';const W0=AREAS.world,btn=(label,act,on)=>`<button class="btn${on?' on':''}" data-g="${act}">${label}</button>`;
+ const zones=[[3,'Brightmeadow'],[56,'Whisperwood'],[116,'Stonebrow Hills'],[176,'Quiet Graves'],[231,'Ember Lair']];
+ let h='<h3>Skip to a step in the journey</h3><div class="godrow">'+['Goblin Scout','Kobold Trapper','Owlbear','Gelatinous Cube','Young Red Dragon'].map((n,i)=>btn(`Battle ${i+1}: ${n}`,'stage:'+i)).join('')+btn('After the dragon (see Elder)','stage:5')+'</div>';
+ h+='<h3>Go to a place</h3><div class="godrow">'+zones.map(([x,n])=>btn(n,'zone:'+x)).join('')+'</div>';
+ h+='<h3>Go to a person</h3><div class="godrow">'+W0.npcs.map(n=>btn(n.name,'npc:'+n.id)).join('')+'</div>';
+ h+='<h3>Go inside a building</h3><div class="godrow">'+Object.values(AREAS).filter(a=>a.kind==='in').map(a=>btn(a.name,'in:'+a.id)).join('')+'</div>';
+ h+='<h3>Cheats</h3><div class="godrow">'+btn('Invincible','inv',GODF.inv)+btn('One-hit kills','ohk',GODF.ohk)+btn('Full heal','heal')+btn('+5 potions','pot')+btn('Unlock whole Codex','codex')+btn('Refresh all summons','fresh')+btn('Rank up','rankup')+btn('Rank down','rankdown')+'</div>';
+ h+=`<h3>Quests and Soulgems (${S.corrupt}/8)</h3><div class="godrow">`+btn('Start all side quests','qstart')+btn('Finish all side quests','qdone')+btn('+1 Soulgem','gem')+btn('Clear Soulgems','nogem')+btn('Reset purification','unpure')+'</div>';
+ $('gBody').innerHTML=h;show('god')}
+$('gBody').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const[a,v]=b.dataset.g.split(':');
+ if(a==='stage')return setStage(+v);
+ if(a==='zone'){const x=+v;return tp(x,AREAS.world.PATHC[x])}
+ if(a==='npc'){const n=AREAS.world.npcs.find(x=>x.id===v);return tp(n.x,n.y+1)}
+ if(a==='in'){const ar=AREAS[v];hide('god');mode='map';enterArea(ar.id,ar.exit[0],ar.exit[1]);return}
+ if(a==='inv')GODF.inv=!GODF.inv;if(a==='ohk')GODF.ohk=!GODF.ohk;if(a==='heal')S.hp=maxHp();if(a==='pot')S.potions+=5;
+ if(a==='codex')Object.keys(THINGS).forEach(k=>{if(!S.seenSet.has(k)){S.seenSet.add(k);S.seen.push(k)}});
+ if(a==='fresh')S.used=new Set(S.relics.map(r=>r.key));
+ if(a==='rankup')S.rank=Math.min(4,S.rank+1);if(a==='rankdown')S.rank=Math.max(0,S.rank-1);
+ if(a==='qstart')Object.keys(QUESTS).forEach(id=>{if(!S.q[id])S.q[id]='active'});
+ if(a==='qdone')Object.entries(QUESTS).forEach(([id,q])=>{if(S.q[id]!=='done'){S.q[id]='done';q.reward()}});
+ if(a==='gem')S.corrupt=Math.min(8,S.corrupt+1);if(a==='nogem')S.corrupt=0;if(a==='unpure')S.flags.purified=false;
+ S.hp=Math.min(S.hp,maxHp());updHud();toast('Done.');openGod()});
+$('gClose').onclick=()=>{hide('god');mode='map'};$('gExit').onclick=exitGod;$('bGod').onclick=()=>{if(mode==='map')openGod()};
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
