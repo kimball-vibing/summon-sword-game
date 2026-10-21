@@ -1499,6 +1499,24 @@ function startCut(type){['battle','summon','codex','quests','forge','dialog','go
  if(type==='banish'){const ids=['elder','hilda','bram','pip','rowan','odo','greta','mott','aldric','elsabet','whiskers'];
   CUT.crowd=AREAS.world.npcs.filter(n=>ids.includes(n.id)&&!n.gone).map((n,i,arr)=>{const a=i/arr.length*Math.PI*2,near=Math.abs(n.x-S.x)<14&&Math.abs(n.y-S.y)<10;
    const sx=near?n.x:S.x+Math.cos(a)*14,sy=near?n.y:S.y+Math.sin(a)*9;return {n,sx,sy,tx:S.x+Math.cos(a)*2.3,ty:S.y+Math.sin(a)*2.3}});CUT.hideNPC=true}}
+// Top-down dragon, facing east, centered on (px,py). shadow=true draws a flat ground shadow.
+function drawDragonTop(px,py,sc,t,shadow){
+ pen(ctx,Math.round(px-24*sc),Math.round(py-20*sc),sc);const C=c=>shadow?'rgba(0,0,0,.28)':c;
+ const flap=0.35+0.65*Math.abs(Math.sin(t*4.5)),L=Math.max(4,Math.round(19*flap));
+ for(const dir of [-1,1]){for(let r=1;r<=L;r++){const y=20+dir*(4+r),w=Math.max(2,Math.round(15*(1-r/(L+3)))),xl=Math.round(31-r*0.45);
+   R(xl-w,y,w,1,C(r%5===0?'#5e1612':'#7d1f1a'));R(xl,y,1,1,C('#5e1612'));if(r>3&&r%4===0)R(xl-w-1,y,2,1,C('#7d1f1a'))}
+  for(let r=1;r<L;r+=1){const y=20+dir*(4+r);R(Math.round(31-r*0.45)-Math.round(r*0.55),y,1,1,C('#5e1612'))}}
+ for(let i=0;i<28;i++){const x=13-i,y=20+Math.round(Math.sin(t*4-i*0.3)*i*0.13),th=Math.max(1,Math.round(4-i*0.12));R(x,y-Math.floor(th/2),1,th,C(i%4===0?'#a32b22':'#c0392b'));if(i===27){R(x-2,y-2,3,5,C('#7d1f1a'));R(x-3,y-1,1,3,C('#7d1f1a'))}}
+ for(let dy=-5;dy<=5;dy++){const w=Math.round(11*Math.sqrt(Math.max(0,1-(dy/5.6)**2)));R(24-w,20+dy,2*w,1,C(Math.abs(dy)>=4?'#a32b22':'#c0392b'))}
+ R(18,14,3,2,C('#a32b22'));R(18,24,3,2,C('#a32b22'));R(29,14,2,2,C('#a32b22'));R(29,24,2,2,C('#a32b22'));
+ R(34,18,6,4,C('#c0392b'));R(39,16,7,8,C('#c0392b'));R(46,17,3,6,C('#c0392b'));R(49,18,2,4,C('#a32b22'));
+ if(shadow)return;
+ for(let x=13;x<36;x++)R(x,20,1,1,x%3===0?'#e8a050':'#7d1f1a');
+ R(38,14,3,2,'#efe3c8');R(36,13,2,1,'#efe3c8');R(38,24,3,2,'#efe3c8');R(36,26,2,1,'#efe3c8');
+ R(43,16,2,1,'#f4d27a');R(43,23,2,1,'#f4d27a');R(50,18,1,1,DK);R(50,21,1,1,DK);R(40,19,5,2,'#a32b22');
+}
+function breathTop(nx,ny,t,len){for(let i=0;i<34;i++){const d=i*len/34,fr=Math.floor(t*24),sp=((hh(i,fr)%100)/100-0.5)*d*0.75,sz=2+Math.floor(i/7);
+  ctx.fillStyle=i<7?'#fff6c0':i<15?'#f4d27a':i<25?'#e8823a':'#c2412f';ctx.fillRect(Math.round(nx+d),Math.round(ny+sp-sz/2),sz,sz)}}
 function flameAt(px,py,t,seed){const f=Math.floor(t*10+seed)%3;pen(ctx,px,py,1);R(3,9-f,10,7+f,'rgba(194,65,47,.85)');R(5,6+f,6,8-f,'#e8823a');R(6,4+(f%2)*2,4,6,'#f4d27a');R(7,2+f,2,3,'#f4d27a');if(f===1)R(10,1,1,2,'#f4d27a')}
 function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,${Math.max(0,Math.min(1,a))})`;ctx.fillRect(0,0,LW,LH)};
  if(CUT.type==='dragon'){
@@ -1507,18 +1525,17 @@ function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,$
    if(ct>0.6){pen(ctx,sx-16*sc,sy-20*sc-(ct-0.6)*12,sc);drawMonster('dragon',t,false)}
    ctx.fillStyle=`rgba(200,40,30,${0.18+0.15*Math.sin(ct*14)})`;ctx.fillRect(0,0,LW,LH);
    cap(ct<1.4?'The eighth gem melts into your chest…':'Wings tear free. Scales pour over your armor.');if(ct>2.4)fade((ct-2.4)/0.8);return}
-  if(ct<13.5){const k=ct-3.2,dxw=-80+k*95,dyw=VILY-80+Math.sin(k*2.2)*8;
-   CUT.hidePlayer=true;CUT.cam={x:Math.max(0,Math.min(50*16-LW,dxw-LW*0.35)),y:Math.max(0,Math.min(AREAS.world.H*16-LH,VILY-LH/2))};
-   for(let y=Math.floor(CUT.cam.y/16);y<=Math.ceil((CUT.cam.y+LH)/16);y++)for(let x=Math.max(0,Math.floor((dxw+10)/16));x<=Math.min(49,Math.floor((dxw+56)/16));x++){const tl=AREAS.world.map[y]&&AREAS.world.map[y][x];if(!tl)continue;const key=x+','+y;if(!CUT.burn.has(key)&&(tl.o||hh(x,y)%3===0))CUT.burn.set(key,ct)}
+  if(ct<13.5){const k=ct-3.2,SC=1.5,dcx=-60+k*95,dcy=VILY+8+Math.sin(k*1.3)*42;
+   CUT.hidePlayer=true;CUT.cam={x:Math.max(0,Math.min(70*16-LW,dcx-LW*0.35)),y:Math.max(0,Math.min(AREAS.world.H*16-LH,VILY-LH/2))};
+   for(let y=Math.floor((dcy-56)/16);y<=Math.ceil((dcy+56)/16);y++)for(let x=Math.max(0,Math.floor((dcx+34)/16));x<=Math.min(49,Math.floor((dcx+96)/16));x++){const tl=AREAS.world.map[y]&&AREAS.world.map[y][x];if(!tl)continue;const key=x+','+y;if(!CUT.burn.has(key)&&(tl.o||hh(x,y)%3===0))CUT.burn.set(key,ct)}
    drawMap(t);
    for(const[key,st]of CUT.burn){const[x,y]=key.split(',').map(Number);const px=x*16-CAM.x,py=y*16-CAM.y;if(px<-16||py<-16||px>LW||py>LH)continue;ctx.fillStyle='rgba(30,10,4,.45)';ctx.fillRect(px,py,16,16);flameAt(px,py-2,t,x*7+y)}
    ctx.fillStyle=`rgba(255,90,20,${Math.min(.22,CUT.burn.size/900)})`;ctx.fillRect(0,0,LW,LH);
-   const sx=dxw-CAM.x,sy=dyw-CAM.y;pen(ctx,sx,sy,2);drawMonster('dragon',t,true);
-   const mx=sx+62,my=sy+12;for(let i=0;i<26;i++){const f=(Math.floor(t*20)+i)%4,fy=my+i*3.4,fx=mx-4+i*0.6+((i*7+f)%5)-2;ctx.fillStyle=i<6?'#f4d27a':i<16?'#e8823a':'#c2412f';ctx.fillRect(fx,fy,3+(i>>3),3)}
-   cap(k<0.8?'':k<4?'You fly west, to the only home you ever knew.':k<7.5?'Brightmeadow burns.':'The villagers you saved scatter into the smoke.');if(k<0.6)fade(1-k/0.6);return}
-  if(ct<16.5){const k=ct-13.5,base=-80+10.3*95,dxw=base+k*120,dyw=VILY-80-k*k*28,sc=Math.max(0.5,2-k*0.5);
+   const sx=dcx-CAM.x,sy=dcy-CAM.y;drawDragonTop(sx+14,sy+24,SC,t,true);if(k>0.8)breathTop(sx+27*SC,sy,t,62);drawDragonTop(sx,sy,SC,t,false);
+   cap(k<0.8?'':k<4?'You fly back to the only home you ever knew.':k<7.5?'Brightmeadow burns.':'The villagers you saved scatter into the smoke.');if(k<0.6)fade(1-k/0.6);return}
+  if(ct<16.5){const k=ct-13.5,dcx=-60+10.3*95+k*130,dcy=VILY+8+Math.sin(10.3*1.3)*42-k*24,sc=1.5+k*0.8;
    drawMap(t);for(const[key]of CUT.burn){const[x,y]=key.split(',').map(Number);const px=x*16-CAM.x,py=y*16-CAM.y;if(px<-16||py<-16||px>LW||py>LH)continue;ctx.fillStyle='rgba(30,10,4,.45)';ctx.fillRect(px,py,16,16);flameAt(px,py-2,t,x*7+y)}
-   ctx.fillStyle='rgba(255,90,20,.22)';ctx.fillRect(0,0,LW,LH);pen(ctx,dxw-CAM.x,dyw-CAM.y,sc);drawMonster('dragon',t,false);
+   ctx.fillStyle='rgba(255,90,20,.22)';ctx.fillRect(0,0,LW,LH);const sx=dcx-CAM.x,sy=dcy-CAM.y;if(k<1.6){ctx.globalAlpha=1-k/1.6;drawDragonTop(sx+14+k*30,sy+24+k*40,Math.max(.6,1.5-k*.5),t,true);ctx.globalAlpha=1}drawDragonTop(sx,sy,sc,t,false);
    cap('Then you turn east, toward the Ember Lair, and you do not look back.');if(k>2)fade((k-2)/1);return}
   fade(1);
   if(ct<18.5)cap('');else cap('THE END<span class="small">Years later, travellers spoke of a young red dragon nesting in the Ember Lair. Nobody remembered that it had once been a knight.</span>',true);
