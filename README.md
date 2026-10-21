@@ -21,7 +21,7 @@ Open `index.html` in a web browser. No install needed.
 - 9 side quests, 12 villagers, 10 enterable buildings, 7+ treasure chests
 - Every Codex entry has its own sword design
 - Monster blades stay with you but gather curses
-- Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending). Elder Maren can purify you, but only once. Come back too close to a dragon after that and the village banishes you: the Exile's run
+- Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending). Elder Maren can purify you, but only once. Come back too close to a dragon after that and the village banishes you: the Exile's run. Beat the dragon while exiled to kill the dragon inside you, lift the banishment, and face every monster again at double strength
 
 ## Chapter II: The Saltmarsh Coast
 
