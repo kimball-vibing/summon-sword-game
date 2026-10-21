@@ -161,6 +161,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <div class="spacer"></div>
     <div class="hud-btns">
       <button class="btn" id="bCodex">Codex · <span id="hCodex">0</span></button>
+      <button class="btn" id="bArmory">Blades · <span id="hBlades">0</span></button>
       <button class="btn" id="bQuests">Quests</button>
       <button class="btn godbadge" id="bGod" hidden>God mode</button>
       <button class="btn" id="bHelp">Rules</button>
@@ -202,6 +203,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
             <button class="btn" id="aGuard">Guard</button>
             <button class="btn" id="aPotion">Potion</button>
             <button class="btn" id="aFists">Fists (3 dmg)</button>
+            <button class="btn danger" id="aBreak">Break a blade</button>
           </div>
           <div class="hint" id="bHint"></div>
         </div>
@@ -1177,7 +1179,7 @@ function dialog(title,html,btns){$('dTitle').textContent=title;$('dBody').innerH
 const toMap=()=>{hide('dialog');mode='map';updHud()};
 function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).find(key=>THINGS[key].name===who);const face=k?`<img class="pix" src="${iconImg(k)}" alt="">`:'';
  const render=()=>{const last=i===pages.length-1;dialog(who,`<div class="speaker">${face}<div>${pages[i]}</div></div>`,last?(endBtns||[{label:'Goodbye',primary:true,fn:toMap}]):[{label:'Next',primary:true,fn:()=>{i++;render()}}])};render()}
-function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('hPot').textContent=S.potions;
+function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('hBlades').textContent=S.relics?S.relics.length:0;$('hPot').textContent=S.potions;
  $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter===2||S.coins);$('hCoin').textContent=S.coins||0;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
 function showIntro(){mode='menu';
  dialog('The Sumunbléd Chronicles · Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
@@ -1187,7 +1189,7 @@ function showIntro(){mode='menu';
  <li>Each thing can be summoned <b>only once, ever</b>. Swords crumble after battle, except <b>monster blades</b>: those stay with you but gain a <b>curse</b> each battle you strike with them.</li>
  <li>Your first summon each battle is free. You can hold up to 3 swords.</li>
  <li>Villagers with <b>!</b> have quests; <b>?</b> means one is ready to hand in. Walk through a building’s door to go inside. Treasure chests hide all over the realm.</li></ul>
- <p class="sub">Move with arrows or WASD (or the pad on touch screens). Bump into people, signs and chests. C opens the Codex, Q the quest log. Start with Elder Maren outside the blue-roofed hall.</p>`,
+ <p class="sub">Move with arrows or WASD (or the pad on touch screens). Bump into people, signs and chests. C opens the Codex, B your kept blades (where you can destroy them), Q the quest log. Start with Elder Maren outside the blue-roofed hall.</p>`,
  [{label:S.flags.started?'Back to the game':'Begin the journey',primary:true,fn:()=>{S.flags.started=true;hide('dialog');mode=B?'battle':'map';if(!B&&A.kind==='out')banner(zname(S.x))}},
   ...(S.flags.started?[{label:'Enter code',fn:()=>{mode='map';openCode()}},{label:'Start a new game',danger:true,fn:()=>dialog('Start over?','<p>This wipes your Codex, quests and progress and starts Chapter I from the beginning.</p>',[{label:'Keep playing',primary:true,fn:toMap},{label:'Yes, start over',danger:true,fn:()=>newGame()}])}]:[])])}
 
@@ -1354,7 +1356,7 @@ function press(k){const d=DIRS[k];if(!d)return;if(!held.includes(k)){held.push(k
 function release(k){held=held.filter(h=>h!==k)}
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
  if(k==='escape'){if(!$('summon').hidden)hide('summon');else if(!$('codex').hidden){hide('codex');mode='map'}else if(!$('quests').hidden){hide('quests');mode='map'}return}
- if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='q'){openQuests();return}if(k==='`'){openCode();return}}
+ if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='b'){openArmory();return}if(k==='q'){openQuests();return}if(k==='`'){openCode();return}}
  if(mode==='battle'&&B&&!busy&&$('summon').hidden&&$('forge').hidden&&$('dialog').hidden){if(['1','2','3','4'].includes(k))strike(+k-1);else if(k==='s')openSummon();else if(k==='g')guard();else if(k==='f')fists();else if(k==='p')potion()}});
 window.addEventListener('keyup',e=>release(e.key.toLowerCase()));window.addEventListener('blur',()=>{held=[]});
 $('pad').querySelectorAll('button').forEach(b=>{const d=b.dataset.d;b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}press(d)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>release(d)))});
@@ -1373,8 +1375,8 @@ function renderBattle(){if(!B)return;const M=MONS[B.key],r=RANKS[S.rank];
  let h='';for(let i=0;i<S.slots;i++){const sw=B.swords[i];
   h+=sw?`<button class="sw" data-i="${i}"${busy||sw.grabbed?' disabled':''}><img class="pix" src="${swordImg(sw)}" alt=""><span class="sw-txt"><b>${sw.name}</b><span class="sw-dmg">Strike · ${sw.dmg} dmg${sw.relic||sw.curse?` · <span style="color:#c99ae0">${sw.curse?`Curse ×${sw.curse}: costs ${2*sw.curse} HP per strike`:(sw.gem?'Soulgem blade: kept after battle':'Monster blade: kept after battle')}</span>`:''}</span><span class="sw-ab"><b>${sw.ab.name}:</b> ${sw.ab.desc}${sw.hexed?' <b style="color:#9acd32">Hexed: −30% damage.</b>':''}${sw.grabbed?` <b style="color:#e0a0d0">Grabbed by a tentacle (${sw.grabbed}).</b>`:''}</span></span><kbd>${i+1}</kbd></button>`:`<div class="slot-empty">Empty sword slot</div>`}
  $('swords').innerHTML=h;const ready=S.seen.some(k=>!S.used.has(k));const sb=$('aSummon');sb.textContent=B.freeLeft>0?'Summon (free)':'Summon (uses turn)';sb.disabled=busy||B.swords.length>=S.slots||!ready;
- $('aGuard').disabled=busy;$('aFists').disabled=busy;const pb=$('aPotion');pb.textContent=`Potion (${S.potions})`;pb.disabled=busy||S.potions<=0||S.hp>=maxHp();
- $('bHint').textContent=busy?`${M.name} is acting…`:(B.swords.length>=S.slots?`Your hands are full: ${S.slots} swords is the limit. `:'')+(!ready?'Nothing left in your Codex to summon. ':'')+`Keys: 1–${S.slots} strike · S summon · G guard · P potion · F fists`}
+ $('aGuard').disabled=busy;$('aFists').disabled=busy;$('aBreak').disabled=busy||!B.swords.length;const pb=$('aPotion');pb.textContent=`Potion (${S.potions})`;pb.disabled=busy||S.potions<=0||S.hp>=maxHp();
+ $('bHint').textContent=busy?`${M.name} is acting…`:(B.swords.length>=S.slots?`Your hands are full: ${S.slots} swords is the limit. `:'')+(!ready?'Nothing left in your Codex to summon. ':'')+`Keys: 1–${S.slots} strike · S summon · G guard · P potion · F fists · Break a blade frees a slot`}
 $('swords').addEventListener('click',e=>{const b=e.target.closest('.sw');if(b)strike(+b.dataset.i)});
 $('aSummon').onclick=()=>openSummon();$('aGuard').onclick=()=>guard();$('aFists').onclick=()=>fists();$('aPotion').onclick=()=>potion();
 function dealFoe(d,msg,cls){if(GODF.ohk&&cls!=='good')d=Math.max(d,B.hp);B.hp-=d;B.flash=performance.now();log(msg,cls||'you')}
@@ -1558,6 +1560,18 @@ function exileEnding(){
  dialog('The Exile’s Ending','<p>The young red dragon falls. Its hoard spills across the cave floor, and nobody is there to see it.</p><p>No bells ring in Brightmeadow. No one knows it was you. You walk out of the Ember Lair alone, your cursed blades heavy at your side, and keep walking.</p><p class="corrupt"><b>Ending reached: the Exile’s Ending.</b></p>',
   [{label:'Start a new game',primary:true,fn:()=>newGame()},...(GOD?[{label:'Exit God mode',danger:true,fn:exitGod}]:[])]);
 }
+
+/* ================= DESTROYING BLADES ================= */
+function bladeRow(sw){const kind=sw.gem?'Soulgem blade':sw.relic?'Monster blade':'Summoned this battle';return `<img class="pix" src="${swordImg(sw)}" alt=""><span><b>${sw.name}</b><br><span class="sub">${sw.dmg} dmg · ${sw.ab.name} · ${kind}${sw.curse?` · curse ×${sw.curse} (${2*sw.curse} HP per strike)`:''}</span></span>`}
+function destroyBlade(sw){S.relics=S.relics.filter(r=>r!==sw);if(B)B.swords=B.swords.filter(r=>r!==sw);updHud()}
+function confirmBreak(sw,back){dialog('Destroy this blade?',`<div class="speaker"><img class="pix" src="${swordImg(sw)}" alt=""><div><p>The <b>${sw.name}</b> will shatter for good. It will not come back, and you cannot summon ${THINGS[sw.key].name} again.</p>${sw.curse?`<p class="sub">Its curse (×${sw.curse}) goes with it.</p>`:''}${sw.gem?'<p class="sub">Breaking it does not remove the Soulgem’s mark on you.</p>':''}</div></div>`,
+ [{label:'Keep it',primary:true,fn:back},{label:'Destroy it',danger:true,fn:()=>{destroyBlade(sw);toast(`The <b>${sw.name}</b> shatters into dust.`);if(B){B.log.push({text:`You break the ${sw.name}. It shatters into dust.`,cls:'info'});hide('dialog');renderBattle()}else{mode='map';openArmory()}}}])}
+function openArmory(){if(mode!=='map')return;mode='menu';const list=S.relics;
+ dialog('Your kept blades',list.length?'<p>Monster blades and Soulgem blades stay with you between battles and fill your sword slots. Break one to free its slot and get rid of its curse.</p>':'<p>You have no kept blades right now. Monster blades and Soulgem blades show up here.</p>',
+  [...list.map(sw=>({cls:'gemopt',html:bladeRow(sw)+'<span class="sub" style="margin-left:auto;color:#f0a48c">Destroy</span>',fn:()=>confirmBreak(sw,()=>{mode='map';openArmory()})})),{label:'Close',primary:!list.length,fn:toMap}])}
+function battleBreak(){if(busy||!B||!B.swords.length)return;
+ dialog('Break a blade',`<p>Shatter one of your swords to free its slot. This does not use your turn.</p>`,[...B.swords.map(sw=>({cls:'gemopt',html:bladeRow(sw),fn:()=>confirmBreak(sw,battleBreak)})),{label:'Never mind',primary:true,fn:()=>hide('dialog')}])}
+$('bArmory').onclick=()=>openArmory();$('aBreak').onclick=()=>battleBreak();
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
