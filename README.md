@@ -22,3 +22,13 @@ Open `index.html` in a web browser. No install needed.
 - Every Codex entry has its own sword design
 - Monster blades stay with you but gather curses
 - Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending). Elder Maren can purify you, but only once. Come back too close to a dragon after that and the village banishes you: the Exile's run
+
+## Chapter II: The Saltmarsh Coast
+
+Reached by finishing Chapter I with the hero's ending and setting sail from Elder Maren.
+
+- 5 new lands: Saltmarsh Harbor, Fogmire, the Drowned Halls, Grimtooth Warren, Galecrest Keep
+- 5 new battles: Bog Hag, Drowned Knight, Goblin War-Chief, Kraken, Storm Wyvern
+- 10 new characters, 7 side quests, 6 enterable buildings, coins and Marigold's Shop
+- Granny Gristle's Hexbrews: a big boost for your next battle, and a permanent hex. Drink 6 and you become a goblin (the Goblin's Ending). Old Tobias's lighthouse can burn the hexes away, once
+- Every chest now opens a treasure window with potions, coins and a unique Codex treasure
