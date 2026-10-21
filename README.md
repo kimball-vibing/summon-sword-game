@@ -32,3 +32,12 @@ Reached by finishing Chapter I with the hero's ending and setting sail from Elde
 - 10 new characters, 7 side quests, 6 enterable buildings, coins and Marigold's Shop
 - Granny Gristle's Hexbrews: a big boost for your next battle, and a permanent hex. Drink 6 and you become a goblin (the Goblin's Ending). Old Tobias's lighthouse can burn the hexes away, once
 - Every chest now opens a treasure window with potions, coins and a unique Codex treasure
+
+## Chapter III: The Frostspire Peaks
+
+Reached by finishing Chapter II and sailing north with Captain Brine.
+
+- 5 new lands: Hearthhold, Frostpine Wood, Glimmerdeep Caverns, Emberforge Ruins, Skyspire Citadel
+- 5 new battles: Winter Wolf, Yeti, Stone Golem, Beholder, and the Frost Lich (who rises again unless you smash its phylactery)
+- 9 new characters, 6 side quests, 8 enterable buildings, Brunhild's forge shop
+- Vesper's Mirror Shards: summon something a second time, at a cost. Take 5 and your reflection walks away with your life (the Mirror's Ending). Sister Ysolde's Dawn Bell can ring the glass out of you, once

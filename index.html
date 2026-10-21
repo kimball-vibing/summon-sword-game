@@ -157,6 +157,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <div class="stat"><span class="lbl">Battles</span><span class="val" id="hWins">0 / 5</span></div>
     <div class="stat" id="hCoinWrap" hidden><span class="lbl">Coins</span><span class="val" id="hCoin" style="color:#e6bf4a">0</span></div>
     <div class="stat" id="hHexWrap" hidden><span class="lbl">Hexbrews</span><span class="val" id="hHex" style="color:#9acd32">0</span></div>
+    <div class="stat" id="hGlassWrap" hidden><span class="lbl">Mirror shards</span><span class="val" id="hGlass" style="color:#bfd8f0">0</span></div>
     <div class="stat" id="hCorWrap" hidden><span class="lbl">Soulgems</span><span class="val" id="hCor" style="color:#f0a0b0">0</span></div>
     <div class="spacer"></div>
     <div class="hud-btns">
@@ -372,6 +373,34 @@ Object.assign(THINGS,{
  warchief:T('Goblin War-Chief','War-Chief',26,'fire','#6b8a3a',{monster:1}),kraken:T('Kraken','Kraken',28,'water','#7a3a6a',{monster:1}),
  wyvern:T('Storm Wyvern','Wyvern',32,'arcane','#5a6a8a',{monster:1})
 });
+// ---- Chapter III: the Frostspire Peaks ----
+Object.assign(THINGS,{
+ snowpine:T('Snowy Pine','Frostpine',22,'frost','#2f6148',{solid:1}),icerock:T('Ice Boulder','Glacier',24,'frost','#a9dcee',{solid:1}),
+ snowman:T('Snowman','Snowman',23,'frost','#f2f6fa',{solid:1}),yak:T('Mountain Yak','Yak',25,'nature','#6b4a2e',{solid:1}),
+ beacon:T('Signal Beacon','Beacon',27,'fire','#e8823a',{solid:1}),snowbloom:T('Snowbloom','Snowbloom',23,'holy','#bfe8fa'),
+ icecrystal:T('Ice Crystal','Icecrystal',30,'frost','#8fd0f0',{solid:1}),frozenstatue:T('Frozen Warrior','Frozen',32,'frost','#9ab8d0',{solid:1}),
+ gear:T('Brass Gear','Cog',26,'metal','#c9a14a',{item:1}),minecart:T('Mine Cart','Minecart',28,'metal','#5a6065',{solid:1}),
+ brazier:T('Dwarven Brazier','Brazier',28,'fire','#e8823a',{solid:1}),icewall:T('Citadel Wall','Rampart',34,'frost','#b8d0e0',{solid:1}),
+ runepillar:T('Rune Pillar','Runepillar',33,'arcane','#6fd0e0',{solid:1}),
+ stonehouse:T('Stone House','Hearthstone',26,'earth','#8a8a7a',{solid:1,big:[4,3]}),longhall:T("Jarl's Longhall",'Longhall',30,'holy','#7a5636',{solid:1,big:[6,4]}),
+ forge3:T("Brunhild's Forge",'Dwarfforge',32,'fire','#55514c',{solid:1,big:[5,3]}),monastery:T('Monastery of the Dawn','Dawnbell',30,'holy','#e6e2d6',{solid:1,big:[5,4]}),
+ mirrortent:T('Hall of Mirrors','Mirrorhall',31,'arcane','#5a3a6a',{solid:1,big:[4,3]}),grotto:T('Crystal Grotto','Grotto',33,'arcane','#3a3646',{solid:1,big:[4,3]}),
+ vault3:T('Forge Vault','Forgevault',34,'metal','#4a3a36',{solid:1,big:[4,3]}),
+ mirror:T('Enchanted Mirror','Mirror',36,'arcane','#bfd8f0',{solid:1}),bell:T('The Dawn Bell','Bell',33,'holy','#dcb75e',{solid:1}),
+ durinhammer:T("Durin's Hammer",'Thane',40,'metal','#c9a14a',{item:1}),
+ frostgem:T('Frost Opal','Opal',30,'frost','#bfe8fa',{item:1}),runeaxe:T('Rune Axe','Rune-axe',33,'metal','#9aa0a5',{item:1}),
+ dwarfmug:T('Dwarven Tankard','Tankard',28,'earth','#c9a14a',{item:1}),yakhorn:T('Yak Horn','Yakhorn',29,'nature','#efe3c8',{item:1}),
+ starmap:T('Star Map','Starmap',31,'arcane','#3e5a8a',{item:1}),silverkey:T('Silver Key','Silverkey',30,'holy','#c4c9cd',{item:1}),
+ hrolf:T('Jarl Hrolf',"Hrolf's",30,'metal','#6b4a2e',{npc:1}),brunhild:T('Brunhild the Dwarf',"Brunhild's",31,'fire','#5a6065',{npc:1}),
+ ysolde:T('Sister Ysolde',"Ysolde's",29,'holy','#e6e2d6',{npc:1}),haldor:T('Haldor the Yak Herder',"Haldor's",26,'nature','#8a7a5a',{npc:1}),
+ kael:T('Kael the Ranger',"Kael's",28,'nature','#3f6e2e',{npc:1}),tink:T('Tink the Gnome',"Tink's",27,'metal','#a87a3a',{npc:1}),
+ durin:T('Ghost of Thane Durin',"Durin's",34,'shadow','#e6c88c',{npc:1}),moth:T('Moth the Apprentice',"Moth's",32,'shadow','#2a2a3a',{npc:1}),
+ vesper:T('Vesper the Mirror Merchant',"Vesper's",36,'arcane','#5a3a6a',{npc:1}),
+ wolf:T('Winter Wolf','Winterfang',30,'frost','#d8e4ee',{monster:1}),yeti:T('Yeti','Yeti',33,'frost','#f2f6fa',{monster:1}),
+ golem:T('Stone Golem','Golem',36,'earth','#8d8a82',{monster:1}),beholder:T('Beholder','Beholder',40,'arcane','#8a4a7a',{monster:1}),
+ lich:T('The Frost Lich','Lich',45,'shadow','#a9dcee',{monster:1})
+});
+const TREASURE3=['frostgem','runeaxe','dwarfmug','yakhorn','starmap','silverkey'];
 const TREASURE1=['goldring','oldhelm','goblet','ruby','hornh','scroll','brokensw'];
 const TREASURE2=['pearlb','compass','seaglass','ghostcoin','sharktooth','idol'];
 const ABILITIES=[
@@ -392,7 +421,7 @@ const ABILITIES=[
  {id:'tide',name:'Mending Tide',el:['water','holy'],desc:'Heals you 12 HP the moment it is summoned.'},
  {id:'surge',name:'Wild Surge',el:['arcane'],desc:'Damage swings anywhere from half to double.'}
 ];
-const RANKS=[{name:'Squire',mult:1.0},{name:'Footman',mult:1.3},{name:'Knight',mult:1.7},{name:'Paladin',mult:2.1},{name:'Champion',mult:2.6},{name:'Warden',mult:3.0},{name:'Marshal',mult:3.4},{name:'Lord',mult:3.8},{name:'Paragon',mult:4.3},{name:'Legend',mult:4.8}];
+const RANKS=[{name:'Squire',mult:1.0},{name:'Footman',mult:1.3},{name:'Knight',mult:1.7},{name:'Paladin',mult:2.1},{name:'Champion',mult:2.6},{name:'Warden',mult:3.0},{name:'Marshal',mult:3.4},{name:'Lord',mult:3.8},{name:'Paragon',mult:4.3},{name:'Legend',mult:4.8},{name:'Mythic',mult:5.4},{name:'Ascendant',mult:6.0},{name:'Eternal',mult:6.7},{name:'Demigod',mult:7.4},{name:'Starborn',mult:8.2}];
 const NOUNS=['Blade','Fang','Edge','Brand','Saber','Longsword','Cleaver','Claymore','Talon','Reaver'];
 const FLAVOR={nature:['It smells of rain and green things.','Tiny leaves sprout along the edge.'],earth:['Heavy and patient, like the ground it came from.','Grit still clings to it.'],water:['It is always slightly damp.','Ripples run along it when it moves.'],fire:['Warm to the touch, hot in a fight.','Sparks drift from it when it swings.'],holy:['It hums a hymn nobody remembers.','A soft light lives in the crossguard.'],frost:['Frost creeps across the hilt.','Your breath fogs when you hold it.'],poison:['Do not lick it.','A green sheen beads on the edge.'],arcane:['It flickers, as if not sure it exists.','Runes swim across the blade.'],shadow:['It drinks the light around it.','Whispers follow every swing.'],metal:['Ringing and true.','Cold, clean, and very sharp.']};
 const MONS={
@@ -410,6 +439,13 @@ Object.assign(MONS,{
  kraken:{name:'Kraken',hp:440,atk:[14,18],coins:110,verb:'A tentacle slams down on you',trait:'Grabs one of your swords for 2 turns. Sprays ink that can make your next strike miss.',intro:'The causeway shudders. Eight huge arms rise out of the sea around you.',story:'The Kraken sinks back into the deep. The road to the top of Galecrest Keep is open.'},
  wyvern:{name:'Storm Wyvern',hp:540,atk:[16,20],dodge:.2,coins:0,verb:'The wyvern rakes you with its talons',trait:'Flies: dodges 20%. Every few turns it calls down lightning. Guard!',intro:'Thunder cracks. The Storm Wyvern drops onto the battlements, crackling with lightning.',story:'The Storm Wyvern plunges into the sea, and the clouds over Galecrest break for the first time in years. Captain Brine will want to hear this.'}
 });
+Object.assign(MONS,{
+ wolf:{name:'Winter Wolf',hp:900,atk:[20,26],dodge:.15,coins:120,verb:'The Winter Wolf bites',trait:'Quick: dodges 15%. Its frost breath can freeze one of your swords for a turn.',intro:'A howl rolls across the snow. A huge white wolf steps out of the pines, breath steaming.',story:'The wolf wore a collar of black ice. Something in the citadel is binding the beasts of the mountain.'},
+ yeti:{name:'Yeti',hp:1100,atk:[22,28],coins:150,verb:'The Yeti pounds you',trait:'Rage: the more you hurt it, the harder it hits (up to double).',intro:'The frozen bridge groans. A Yeti climbs onto it, roaring loud enough to shake snow from the trees.',story:'When the Yeti falls, the ice on the river cracks and you hear something laugh, far away to the east.'},
+ golem:{name:'Stone Golem',hp:1250,atk:[26,32],coins:170,verb:'The Golem slams a stone fist down',trait:'Stone skin: any hit under 120 damage does only half. Hit hard to crack it.',intro:'The cavern wall moves. It was never a wall. A Stone Golem lumbers into the light, runes glowing.',story:'The golem’s runes flicker out. Carved inside its chest: “Made for the Lich, by dwarven hands that knew no better.”'},
+ beholder:{name:'Beholder',hp:1300,atk:[28,34],coins:200,verb:'The Beholder bites with its jagged mouth',trait:'Eye rays: fire, sleep, disintegration, or an anti-magic glare that switches off your sword abilities.',intro:'A huge floating eye drifts out of the forge smoke. Ten smaller eyes on stalks swivel toward you.',story:'The Beholder bursts like a soap bubble full of eyes. The gates of Skyspire Citadel swing open on their own.'},
+ lich:{name:'The Frost Lich',hp:1500,atk:[28,34],coins:0,verb:'The Lich lashes you with grave-cold',trait:'Finger of Death every few turns: Guard! Rises again once unless its phylactery is destroyed.',intro:'The throne room is colder than the mountain. The Frost Lich lifts its crown of icicles and turns to face you.',story:'The Lich crumbles into frost and blows away on the wind. For the first time in a century, the sun touches Skyspire. Jarl Hrolf must hear this.'}
+});
 /* ================= AREAS ================= */
 let AREAS={},A=null,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS;
 function useArea(id){A=AREAS[id];MAP=A.map;W=A.W;H=A.H;NPCS=A.npcs;MONSTERS=A.monsters;SIGNS=A.signs;DOORS=A.doors;if(!A.ground)buildGround(A);buildLabels()}
@@ -418,7 +454,7 @@ function zoneIn(a,x){const zb=(a&&a.zb)||ZB;let z=0;while(z<zb.length&&x>=zb[z])
 function OUT(){if(!A)return AREAS.world;return A.kind==='out'?A:(AREAS[A.retArea]||AREAS.world)}
 function zoneOf(x){return zoneIn(OUT(),x)}
 function zname(x){return ((OUT()&&OUT().znames)||ZNAMES)[zoneOf(x)]}
-const CWID=()=>S&&S.chapter===2?'coast':'world';
+const CWID=()=>S&&S.chapter===3?'peaks':S&&S.chapter===2?'coast':'world';
 const CW=()=>AREAS[CWID()];
 const ZNAMES=['Brightmeadow Village','Whisperwood','Stonebrow Hills','The Quiet Graves','Ember Lair'];
 const LOOKS={
@@ -442,6 +478,17 @@ Object.assign(LOOKS,{
  wren:{hair:'#e0c070',skin:'#f0c8a0',shirt:'#c94a4a',pants:'#4a5a7a',small:1},
  vane:{hair:'#2a1e16',skin:'#e0b48a',shirt:'#7a2a2a',pants:'#2a2a3a',belt:'#dcb75e',hat:'#2a2a3a',long:1,acc:'sword'},
  quill:{ghost:1,tint:'rgba(200,184,232,.62)'},fen:{frog:1},gristle:{gobwitch:1},snik:{gobnpc:1}
+});
+Object.assign(LOOKS,{
+ hrolf:{hair:'#c4703a',beard:'#c4703a',longBeard:1,skin:'#e0b48a',shirt:'#6b4a2e',pants:'#3a3028',belt:'#dcb75e',hat:'#9a8a7a',acc:'axe'},
+ brunhild:{small:1,hair:'#a8342c',long:1,skin:'#e0b48a',shirt:'#5a6065',pants:'#3a3028',apron:'#4a3a2c',acc:'hammer'},
+ ysolde:{robe:1,shirt:'#e6e2d6',shirt2:'#c8c4b8',hat:'#3e5a8a',hair:'#3e5a8a',long:1,skin:'#f0c8a0',belt:'#dcb75e',acc:'staff'},
+ haldor:{hair:'#7a6a5a',beard:'#9a8a7a',skin:'#d8a070',shirt:'#8a7a5a',pants:'#4a3a2a',hat:'#6b5a44',acc:'stick'},
+ kael:{hair:'#3a2418',skin:'#d8a070',shirt:'#3f6e2e',pants:'#3a3028',hat:'#2f5129',acc:'bow'},
+ tink:{small:1,hair:'#e0dbd0',skin:'#f0c8a0',shirt:'#a87a3a',pants:'#5a4a3a',hat:'#c9a14a',acc:'wrench'},
+ durin:{ghost:1,tint:'rgba(230,200,140,.62)'},
+ moth:{robe:1,shirt:'#2a2a3a',shirt2:'#1a1a2a',hair:'#e0dbd0',long:1,skin:'#e0d8d0',hat:'#2a2a3a',acc:'stick'},
+ vesper:{robe:1,shirt:'#5a3a6a',shirt2:'#3e2a4a',hair:'#c4c9cd',long:1,skin:'#e0d0e8',belt:'#c4c9cd',acc:'handmirror'}
 });
 let CANDLE_TOTAL=0;
 
@@ -650,6 +697,108 @@ function genCoast(){
  if(hut)makeInterior('hutin','Granny Gristle’s Hut','wood',9,7,[['cauldron',4,2],['jars',1,2],['jars',2,2],['bones',7,5],['bookshelf',7,2],['rug',4,5]],hut,'coast',[{id:'gristle',x:4,y:4}]);
  if(vault)makeInterior('vaultin','The Drowned Vault','stone',9,7,[['coffin',2,2],['coffin',6,2],['coral',1,5],['statue',7,5],['crown',4,3],['chest',4,2]],vault,'coast');
 }
+const ZB3=[55,115,170,225],ZN3=['Hearthhold','Frostpine Wood','Glimmerdeep Caverns','Emberforge Ruins','Skyspire Citadel'];
+const ZP3=[['#e6edf2','#d6e0e8','#a89a88','#988a78','#887a68'],['#cfdce6','#bccbd8','#9a8c7a','#8c7e6c','#7c6e5e'],['#3a3646','#454054','#5a5468','#4e485c','#423e50'],['#4a3a36','#56443e','#6b5448','#5e4a3e','#503e34'],['#aebfd0','#9fb2c4','#dde8f0','#cddae6','#bccbd8']].map(a=>a.map(HX));
+const WAT3=['#4a8ab0','#5a9ac0','#cfe8f4'].map(HX);
+function genPeaks(){
+ const W0=270,H0=64,R=seeded(31337),zz=x=>zoneIn({zb:ZB3},x);
+ const map=[];for(let y=0;y<H0;y++){const row=[];for(let x=0;x<W0;x++)row.push({ter:'g',o:null});map.push(row)}
+ const BAR=new Uint8Array(W0*H0),ND=new Uint8Array(W0*H0);
+ const nearB=x=>Math.abs(x-55)<=4||Math.abs(x-115)<=8||Math.abs(x-170)<=4||Math.abs(x-225)<=4;
+ const cy=x=>Math.max(12,Math.min(H0-13,32+(x<50?4:13)*n1(x*0.021+71)+4*n1(x*0.07+5)));
+ const hw=x=>nearB(x)?1.5:1+2*(0.5+0.5*n1(x*0.045+91));
+ const PATHC=[];let pa=null,pb=null;
+ for(let x=0;x<W0;x++){const c=cy(x),w=hw(x);let a=Math.ceil(c-w-0.5),b=Math.floor(c+w-0.5);if(b<a)a=b=Math.round(c-0.5);const oa=a,ob=b;
+  if(pa!=null&&!nearB(x)){if(a>pb)a=pb;if(b<pa)b=pa}for(let y=a;y<=b;y++)map[y][x].ter='p';pa=oa;pb=ob;PATHC[x]=Math.round(c-0.5)}
+ const rv=y=>115+3*n1(y*0.12+25);
+ for(let y=0;y<H0;y++)for(let x=0;x<W0;x++){const t=map[y][x],i=y*W0+x;
+  const tb=55+1.5*n1(y*0.2+31);if(Math.abs(x+0.5-tb)<2.4){BAR[i]=1;if(t.ter!=='p')t.o='snowpine'}
+  if(Math.abs(x+0.5-rv(y))<1.7){BAR[i]=1;t.ter=t.ter==='p'?'b':'w'}
+  const cl=170+1.1*n1(y*0.18+49);if(Math.abs(x+0.5-cl)<2.1){BAR[i]=1;if(t.ter!=='p')t.o='icerock'}
+  if(x===225){BAR[i]=1;if(t.ter!=='p')t.o='icewall'}}
+ const BORDER=['snowpine','snowpine','icerock','boulder','icewall'];
+ for(let x=0;x<W0;x++){const a=1+Math.floor((n1(x*0.15+170)+1)*1.2),b=1+Math.floor((n1(x*0.15+190)+1)*1.2);
+  for(let y=0;y<a;y++){map[y][x].o=BORDER[zz(x)];map[y][x].ter='g';BAR[y*W0+x]=1}
+  for(let y=H0-b;y<H0;y++){map[y][x].o=BORDER[zz(x)];map[y][x].ter='g';BAR[y*W0+x]=1}}
+ for(let y=0;y<H0;y++){map[y][0].o='snowpine';BAR[y*W0]=1;map[y][W0-1].o='icewall';BAR[y*W0+W0-1]=1}
+ // hot spring, frozen ponds, cave pools, forge lava
+ for(let y=3;y<H0-3;y++)for(let x=2;x<W0-2;x++){const t=map[y][x],i=y*W0+x;if(BAR[i]||t.ter!=='g')continue;let np=false;for(let d=-2;d<=2;d++)if(map[y+d]&&map[y+d][x].ter==='p')np=true;if(np)continue;
+  const z=zz(x),v=n2(x*.12+15,y*.12+7);
+  if(z===0&&Math.hypot(x-34,y-(PATHC[34]+9))<2.6)t.ter='w';
+  else if(z===1&&v>0.72)t.ter='w';else if(z===2&&v>0.76)t.ter='w';else if(z===3&&v>0.68)t.ter='l'}
+ const free=(x,y)=>x>1&&y>1&&x<W0-2&&y<H0-2&&!BAR[y*W0+x]&&map[y][x].ter==='g'&&!map[y][x].o;
+ const put=(k,x,y)=>{for(let r=0;r<9;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if((Math.abs(dx)===r||Math.abs(dy)===r)&&free(x+dx,y+dy)){map[y+dy][x+dx].o=k;ND[(y+dy)*W0+x+dx]=1;return[x+dx,y+dy]}}return null};
+ const pathTB=xs=>{let top=99,bot=0;for(let y=0;y<H0;y++)if(map[y][xs].ter==='p'){top=Math.min(top,y);bot=Math.max(bot,y)}return[top,bot]};
+ const rectFree=(x,y,w,h)=>{for(let j=-1;j<=h;j++)for(let i=-1;i<=w;i++){const X=x+i,Y=y+j;if(X<2||Y<2||X>=W0-2||Y>=H0-2)return false;const t=map[Y][X];if(t.ter!=='g'||BAR[Y*W0+X]||t.o)return false}return true};
+ const buildings=[];
+ const bldAt=(k,x,y,w,h)=>{for(let j=0;j<h;j++)for(let i=0;i<w;i++)map[y+j][x+i].o=(i||j)?'_'+k:k;for(let j=-2;j<=h+1;j++)for(let i=-2;i<=w+1;i++){const X=x+i,Y=y+j;if(X>=0&&Y>=0&&X<W0&&Y<H0)ND[Y*W0+X]=1}
+  const b={k,x,y,w,h};const dx=x+Math.floor(w/2),dy=y+h-1;map[dy][dx].o='door';b.door=[dx,dy];buildings.push(b);return b};
+ const bld=(k,w,h,x,side)=>{for(let d=0;d<16;d++){const xs=x+(d%2?-1:1)*Math.ceil(d/2);let top=99,bot=0;for(let i=0;i<w;i++){const[t,b]=pathTB(xs+i);top=Math.min(top,t);bot=Math.max(bot,b)}const y=side<0?top-2-h:bot+3;if(rectFree(xs,y,w,h))return bldAt(k,xs,y,w,h)}return null};
+ const bldNear=(k,w,h,x,y)=>{for(let r=0;r<12;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(rectFree(x+dx,y+dy,w,h))return bldAt(k,x+dx,y+dy,w,h)}return null};
+ const TB=x=>pathTB(x);
+ const longhall=bld('longhall',6,4,22,-1),h1=bld('stonehouse',4,3,8,-1),forge=bld('forge3',5,3,40,-1),mon=bld('monastery',5,4,14,1),h2=bld('stonehouse',4,3,30,1);
+ const mt=bldNear('mirrortent',4,3,144,7),gr=bldNear('grotto',4,3,158,52),vt=bldNear('vault3',4,3,214,7);
+ const special=[];const sp=(k,x,y)=>{const p=put(k,x,y);if(p)special.push(p);return p};
+ put('brazier',20,TB(20)[0]-2);put('brazier',27,TB(27)[0]-2);put('snowman',36,TB(36)[0]-3);put('anvil',forge?forge.x+forge.w+1:46,forge?forge.y+forge.h-1:20);put('minecart',48,TB(48)[1]+3);
+ [[8,8],[40,57],[72,5],[98,58]].forEach(([x,y])=>sp('yak',x,y));
+ [[74,12],[100,42],[128,8],[150,54]].forEach(([x,y])=>sp('beacon',x,y));
+ [[4,6],[50,52],[86,4],[64,58],[106,30]].forEach(([x,y])=>sp('snowbloom',x,y));
+ [[176,8],[186,54],[198,20],[208,58],[220,40]].forEach(([x,y])=>sp('gear',x,y));
+ [[30,58],[66,40],[92,8],[124,30],[160,10],[196,40],[246,56]].forEach(([x,y])=>sp('chest',x,y));
+ [[132,20],[156,36],[122,50],[164,26]].forEach(([x,y])=>sp('icecrystal',x,y));
+ [[232,12],[244,50],[258,20],[236,36]].forEach(([x,y])=>put('frozenstatue',x,y));
+ [[240,8],[256,44],[250,28]].forEach(([x,y])=>put('runepillar',x,y));
+ [[182,30],[204,46],[192,10]].forEach(([x,y])=>put('brazier',x,y));
+ const signs={},sign=(x,y,text)=>{const p=put('sign',x,y);if(p)signs[p[0]+','+p[1]]=text};
+ sign(50,TB(50)[1]+2,'East: Frostpine Wood. Wolves. Big ones.');
+ sign(108,TB(108)[0]-2,'The ice bridge. Do not wake the Yeti. (Someone has crossed out “do not”.)');
+ sign(174,TB(174)[1]+2,'Emberforge. Once the greatest forge of the dwarves. Now mostly smoke.');
+ sign(228,TB(228)[0]-2,'Skyspire Citadel. All who enter belong to the Lich.');
+ const npcs=[],NS=new Set();
+ const npc=(id,x,y,extra={})=>{let p=[x,y];if(!free(x,y)){outer:for(let r=1;r<8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++)if(free(x+dx,y+dy)){p=[x+dx,y+dy];break outer}}
+  npcs.push({id,x:p[0],y:p[1],name:THINGS[id].name,look:LOOKS[id],...extra});NS.add(p[0]+','+p[1]);for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)ND[(p[1]+j)*W0+p[0]+i]=1};
+ if(longhall)npc('hrolf',longhall.x+1,longhall.y+longhall.h);npc('haldor',12,TB(12)[1]+3);npc('kael',62,TB(62)[0]-3);npc('moth',136,TB(136)[1]+3);
+ npc('tink',182,TB(182)[0]-3);npc('durin',200,TB(200)[1]+4);
+ for(let y=2;y<H0-2;y++)for(let x=1;x<W0-1;x++){const t=map[y][x],i=y*W0+x;if(BAR[i]||ND[i]||t.ter!=='g'||t.o)continue;const z=zz(x),r=R(),dn=n2(x*0.11+80,y*0.11);let k=null;
+  if(z===0){if(dn>0.72&&r<.4)k='snowpine';else if(r<.03)k='icerock';else if(r<.035)k='snowman'}
+  else if(z===1){if(dn>0.42&&r<.5)k='snowpine';else if(dn>0.3&&r<.1)k='snowpine';else if(r<.13)k='icerock';else if(r<.15)k='log'}
+  else if(z===2){if(dn>0.55&&r<.35)k='boulder';else if(r<.04)k='icecrystal';else if(r<.08)k='crystal';else if(r<.1)k='glowshroom'}
+  else if(z===3){if(dn>0.58&&r<.3)k='boulder';else if(r<.03)k='minecart';else if(r<.05)k='anvil';else if(r<.08)k='bones'}
+  else{if(r<.03)k='icecrystal';else if(r<.05)k='icerock';else if(r<.06)k='runepillar'}
+  if(k)t.o=k}
+ const solid=(x,y)=>{const t=map[y][x];if(t.ter==='w'||t.ter==='l')return true;if(NS.has(x+','+y))return true;const o=t.o;if(!o||o==='door')return false;const k=o[0]==='_'?o.slice(1):o;return !!(THINGS[k]&&THINGS[k].solid)};
+ const start=[3,PATHC[3]];
+ const bfs=()=>{const seen=new Uint8Array(W0*H0),q=[start[0]+start[1]*W0];seen[q[0]]=1;while(q.length){const i=q.pop(),x=i%W0,y=(i/W0)|0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const X=x+a,Y=y+b;if(X<0||Y<0||X>=W0||Y>=H0)continue;const j=Y*W0+X;if(seen[j]||solid(X,Y))continue;seen[j]=1;q.push(j)}}return seen};
+ const protect=o=>!!o&&(o[0]==='_'||['door','chest','yak','beacon','snowbloom','gear','sign','icecrystal','frozenstatue','runepillar','brazier','icewall','anvil','minecart','snowman'].includes(o));
+ const carve=(x,y,seen)=>{const CR=seeded(x*41+y);for(let s=0;s<500;s++){const i=y*W0+x;if(seen[i])return;const t=map[y][x];
+   if(!BAR[i]&&!NS.has(x+','+y)){if(!protect(t.o))t.o=null;if(t.ter!=='p'&&t.ter!=='b')t.ter='p'}
+   const ty=PATHC[x];let nx=x,ny=y;if(CR()<0.3||ty===y)nx=x+(CR()<.5?-1:1);else ny=y+Math.sign(ty-y);if(nx<2||nx>=W0-2||BAR[ny*W0+nx])continue;x=nx;y=ny}};
+ const targets=[...special,...npcs.map(n=>[n.x,n.y]),...buildings.map(b=>[b.door[0],b.door[1]+1])];
+ for(const[tx,ty]of targets){const seen=bfs();const opts=[[tx,ty],[tx,ty+1],[tx,ty-1],[tx+1,ty],[tx-1,ty]];if(opts.some(([x,y])=>seen[y*W0+x]))continue;
+  const st=opts.slice(1).find(([x,y])=>x>1&&y>1&&x<W0-2&&y<H0-2&&!BAR[y*W0+x]&&!NS.has(x+','+y)&&!protect(map[y][x].o))||opts[1];carve(st[0],st[1],seen)}
+ const mx=[55,Math.floor(rv(PATHC[115])),170,225,252];
+ const monsters=['wolf','yeti','golem','beholder','lich'].map((k,i)=>({key:k,x:mx[i],y:PATHC[mx[i]],alive:true}));
+ AREAS.peaks={id:'peaks',kind:'out',W:W0,H:H0,map,npcs,monsters,signs,doors:{},PATHC,zb:ZB3,znames:ZN3,pal:ZP3,wat:WAT3,start};
+ if(longhall)makeInterior('longin','Jarl Hrolf’s Longhall','wood',12,8,[['throne',6,2],['fireplace',1,2],['fireplace',10,2],['table',4,4],['table',8,4],['rug',6,4],['rug',6,5],['weaponrack',2,6],['chest',10,6]],longhall,'peaks');
+ if(h1)makeInterior('sh1','Stone House','stone',9,7,[['bed',1,2],['fireplace',4,2],['barrel',7,2],['table',4,4],['chest',7,5]],h1,'peaks');
+ if(h2)makeInterior('sh2','Haldor’s House','stone',9,7,[['bed',1,2],['barrel',7,2],['table',3,4],['yakhornrack',6,2],['chest',1,5]],h2,'peaks');
+ if(forge)makeInterior('forgein','Brunhild’s Forge','stone',10,7,[['fireplace',4,2],['anvil',5,4],['weaponrack',1,2],['weaponrack',2,2],['barrel',8,2],['chest',8,5]],forge,'peaks',[{id:'brunhild',x:3,y:4}]);
+ if(mon)makeInterior('monin','Monastery of the Dawn','stone',11,8,[['bell',5,2],['bookshelf',1,2],['bookshelf',9,2],['bed',1,5],['bed',9,5],['rug',5,4],['brazier',3,2],['brazier',7,2],['chest',9,6]],mon,'peaks',[{id:'ysolde',x:5,y:4}]);
+ if(mt)makeInterior('mirrorin','Vesper’s Hall of Mirrors','wood',9,7,[['mirror',1,2],['mirror',3,2],['mirror',5,2],['mirror',7,2],['rug',4,4],['chest',7,5]],mt,'peaks',[{id:'vesper',x:4,y:3}]);
+ if(gr)makeInterior('grottoin','The Crystal Grotto','stone',9,7,[['icecrystal',1,2],['icecrystal',7,2],['icecrystal',1,5],['phylactery',4,2],['chest',7,5]],gr,'peaks');
+ if(vt)makeInterior('vault3in','The Forge Vault','stone',9,7,[['anvil',1,2],['weaponrack',7,2],['minecart',1,5],['hammer',4,2],['chest',7,5]],vt,'peaks');
+}
+function startChapter3(dev){
+ if(!AREAS.peaks)genPeaks();
+ S.chapter=3;S.ch2wins=S.wins;S.wins=0;if(S.rank<10)S.rank=10;S.flags.ch2done=true;S.flags.metBrine=true;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
+ S.area='peaks';useArea('peaks');const st=AREAS.peaks.start;S.x=S.dx=st[0];S.y=S.dy=st[1];S.zone=0;S.dir='right';
+ ['battle','summon','codex','quests','forge','god'].forEach(hide);mode='menu';updHud();look();
+ dialog('Chapter III: The Frostspire Peaks',`<p>Captain Brine’s ship carries you north until the sea turns to ice. You climb the last miles on foot, into a land of snow and wind.</p>
+ <ul class="rules"><li>Your rank, kept blades, coins, potions and Codex come with you. Up here everything is stronger again.</li>
+ <li><b>Brunhild the dwarf</b> runs a forge shop in Hearthhold.</li>
+ <li>Somewhere in the caverns, <b>Vesper the Mirror Merchant</b> sells Mirror Shards. They let you summon something <b>a second time</b>. Everyone says that is impossible. Everyone is right to worry.</li></ul>
+ <p class="sub">Start with Jarl Hrolf outside the Longhall.</p>`,[{label:'Step into the snow',primary:true,fn:()=>{hide('dialog');mode='map';banner(zname(S.x))}}]);
+}
 function startChapter2(dev){
  if(!AREAS.coast)genCoast();
  S.chapter=2;S.ch1wins=S.wins;S.wins=0;if(S.rank<5)S.rank=5;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
@@ -705,19 +854,29 @@ const BREWS=[
 ];
 const hasHex=h=>!!(S&&S.hexes&&S.hexes.includes(h));
 const B_FREE=()=>S.buffNow==='quick'?99:(S.flags.insight?2:1);
+Object.assign(QUESTS,{
+ yaks:{ch:3,title:'The Wandering Yaks',giver:'haldor',desc:'Four of Haldor’s yaks wandered off into the far corners of Hearthhold and Frostpine Wood. Walk right up to each one to send it home.',prog:()=>`${S.yaks}/4 yaks`,check:()=>S.yaks>=4,reward:()=>{S.coins+=80;S.potions+=2},rewardText:'80 coins and 2 potions'},
+ beacons:{ch:3,title:'Light the Beacons',giver:'kael',desc:'Relight the 4 signal beacons in Frostpine Wood and Glimmerdeep Caverns by walking right up to each one.',prog:()=>`${S.beacons.size}/4 beacons`,check:()=>S.beacons.size>=4,reward:()=>{S.hpBonus+=15;S.hp+=15},rewardText:'Ranger’s Cloak: +15 max HP'},
+ gears:{ch:3,title:'Tink’s Lost Gears',giver:'tink',desc:'Collect 5 brass gears scattered around the Emberforge Ruins.',prog:()=>`${S.gears}/5 gears`,check:()=>S.gears>=5,reward:()=>{S.flags.gearguard=true},rewardText:'Clockwork Bracer: every time you Guard, you also heal 20'},
+ hammer:{ch:3,title:'The Thane’s Hammer',giver:'durin',desc:'Thane Durin’s hammer is locked in the Forge Vault in the far north-east of the Emberforge Ruins.',prog:()=>S.flags.hammer?'You have the hammer':'Not found yet',check:()=>!!S.flags.hammer,reward:()=>addCodex('durinhammer'),rewardText:"Durin's Hammer (power 40, a new Codex entry)"},
+ phyl:{ch:3,title:'The Lich’s Secret',giver:'moth',desc:'The Lich hid its phylactery in the Crystal Grotto, south of Glimmerdeep Caverns. Smash it so the Lich cannot rise again.',prog:()=>S.flags.phyl?'Phylactery smashed':'Not found yet',check:()=>!!S.flags.phyl,reward:()=>{S.potions+=2},rewardText:'2 potions, and the Lich will stay dead the first time'},
+ blooms:{ch:3,title:'Snowblooms for the Sick',giver:'ysolde',desc:'Pick 5 snowblooms. They only grow in the far corners of Hearthhold and Frostpine Wood.',prog:()=>`${S.blooms}/5 snowblooms`,check:()=>S.blooms>=5,reward:()=>{S.flags.blessedPot=true},rewardText:'Dawn Blessing: potions heal 30 more'}
+});
+const MAIN3=['Speak with Jarl Hrolf outside the Longhall.','Enter Frostpine Wood: a Winter Wolf guards the treeline.','Cross the frozen river: a Yeti holds the ice bridge.','Leave Glimmerdeep Caverns: the cave wall moves.','Pass the Emberforge Ruins: something watches from the smoke at the citadel gate.','Climb Skyspire Citadel and destroy the Frost Lich.','Return to Jarl Hrolf in Hearthhold.','Chapter III complete. Chapter IV is coming.'];
 const GIVES={};Object.entries(QUESTS).forEach(([id,q])=>GIVES[q.giver]=id);
 const MAIN=['Speak with Elder Maren outside the blue-roofed hall.','Clear the road east: defeat the Goblin Scout at the edge of Whisperwood.','Cross the river: the Kobold Trapper holds the bridge.','Climb Stonebrow Hills: an Owlbear blocks the pass.','Pass the Quiet Graves: something wobbles at the iron gate.','Enter the Ember Lair and face the Young Red Dragon.','Return to Elder Maren in Brightmeadow with the news.','Chapter I complete. Chapter II is coming.'];
 const mainStage=()=>!S.flags.metElder?0:S.wins<5?1+S.wins:S.flags.chapterDone?7:6;
 const MAIN2=['Speak with Captain Brine on the harbor docks.','Cross Fogmire: the Bog Hag guards the bridge to the Drowned Halls.','Climb out of the Drowned Halls: the Drowned Knight holds the old gate.','Break through Grimtooth Warren: the Goblin War-Chief holds the palisade.','Cross the causeway to Galecrest Keep: something huge waits in the water.','Reach the top of Galecrest Keep and defeat the Storm Wyvern.','Return to Captain Brine at the harbor.','Chapter II complete. Chapter III is coming.'];
 const mainStage2=()=>!S.flags.metBrine?0:S.wins<5?1+S.wins:S.flags.ch2done?7:6;
+const mainStage3=()=>!S.flags.metHrolf?0:S.wins<5?1+S.wins:S.flags.ch3done?7:6;
 
 /* ================= STATE ================= */
 let S,B=null,busy=false,mode='menu';
-const maxHp=()=>40+S.rank*12+S.hpBonus-(hasHex('frail')?12:0);
+const maxHp=()=>40+S.rank*12+S.hpBonus-(hasHex('frail')?12:0)-(S.glass||0)*10;
 function newGame(){
- genWorld();const P0=AREAS.world.PATHC[3];if(AREAS.coast)delete AREAS.coast;
+ genWorld();const P0=AREAS.world.PATHC[3];if(AREAS.coast)delete AREAS.coast;if(AREAS.peaks)delete AREAS.peaks;
  S={area:'world',x:3,y:P0,dx:3,dy:P0,dir:'right',walk:0,rank:0,hp:40,seen:[],seenSet:new Set(),used:new Set(),wins:0,zone:0,forged:[],
-    potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0,chapter:1,coins:0,hexes:[],brew:null,buffNow:null,fish:0,oil:0,pages:0,banners:new Set(),bought:{}};
+    potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0,chapter:1,coins:0,hexes:[],glass:0,yaks:0,beacons:new Set(),gears:0,blooms:0,brew:null,buffNow:null,fish:0,oil:0,pages:0,banners:new Set(),bought:{}};
  CUT=null;if($('cap'))$('cap').hidden=true;B=null;busy=false;GOD=null;GODF.inv=false;GODF.ohk=false;if($('bGod'))$('bGod').hidden=true;['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);
  useArea('world');look();updHud();showIntro();
 }
@@ -735,7 +894,9 @@ function look(){
   if(o==='greatoak'&&!S.flags.oakFound){S.flags.oakFound=true;toast('The Great Oak shudders. <b>Golden acorns</b> rain down across Whisperwood!')}
   if(o==='acorn'&&!S.flags.oakFound)continue;
   if(o==='gflag'&&S.q.banners==='active'&&!S.banners.has(x+','+y)){S.banners.add(x+','+y);toast(`You tear down a War-Chief banner (${S.banners.size}/4).`)}
-  if(['fishspot','oil','kite','page','crown','spyglass'].includes(o))continue;
+  if(['fishspot','oil','kite','page','crown','spyglass','gear','hammer','snowbloom','phylactery'].includes(o))continue;
+  if(o==='beacon'&&S.q.beacons==='active'&&!S.beacons.has(x+','+y)){S.beacons.add(x+','+y);toast(`The beacon roars back to life (${S.beacons.size}/4).`)}
+  if(o==='yak'&&S.q.yaks==='active'){add('yak');MAP[y][x].o=null;S.yaks++;toast(`The yak grunts and trots home (${S.yaks}/4).`);continue}
   add(o)}
  NPCS.forEach(n=>{if(!n.gone&&Math.abs(n.x-S.x)<=1&&Math.abs(n.y-S.y)<=1)add(n.id)});
  if(fresh.length){toast(`New in your Codex: <b>${fresh.map(k=>THINGS[k].name).join(', ')}</b>`);updHud()}
@@ -751,6 +912,10 @@ function pickup(x,y){const t=MAP[y][x],o=t.o;
  else if(o==='kite'){t.o=null;S.flags.kite=true;toast('You untangle <b>Wren’s kite</b> from the branches.')}
  else if(o==='page'){t.o=null;S.pages++;toast(`You found a <b>torn page</b> (${S.pages}/5).`)}
  else if(o==='crown'){t.o=null;S.flags.crown=true;toast('You found a <b>tiny golden crown</b>. It is slimy.')}
+ else if(o==='gear'){t.o=null;S.gears++;addCodex('gear');toast(`You found a <b>brass gear</b> (${S.gears}/5).`)}
+ else if(o==='snowbloom'){t.o=null;S.blooms++;addCodex('snowbloom');toast(`You pick a <b>snowbloom</b> (${S.blooms}/5).`)}
+ else if(o==='hammer'){t.o=null;S.flags.hammer=true;toast('You lift <b>Thane Durin’s hammer</b>. It hums.')}
+ else if(o==='phylactery'){t.o=null;S.flags.phyl=true;toast('You smash the <b>phylactery</b>. A scream echoes from far away.')}
  else if(o==='spyglass'){t.o=null;S.flags.spyglass=true;toast('You found <b>Admiral Vane’s spyglass</b>.')}
 }
 function addCodex(k){if(!S.seenSet.has(k)){S.seenSet.add(k);S.seen.push(k);toast(`New in your Codex: <b>${THINGS[k].name}</b>`);updHud()}}
@@ -767,9 +932,9 @@ function drawHouse(w,h,kind,t){
   for(let y=16;y<h-2;y++){const ins=Math.round((y-16)*-0.08+8);R(ins,y,w-2*ins,1,Math.floor((y-16)/10)%2?'#c2412f':'#e6e2d6')}
   R(10,6,28,10,'#3a3d40');R(13,8,22,7,lit?(f?'#fff6c0':'#f4e27a'):'#4a5560');R(8,4,32,2,'#2a2d30');R(14,0,20,4,'#2a2d30');R(22,-2,4,2,'#2a2d30');
   if(lit){ctxGlow(24,11)}R(20,h-16,8,14,'#5a3a22');R(20,h-16,8,1,'#3e2716');return}
- const roof1={cottage:'#9b4a2c',hall:'#4a6a9b',smithy:'#4a4440',crypt:'#5d5a55',vault:'#3e5a5a',fhouse:'#4a6a7a',shop:'#7a3a5a',hut:'#4a5a3a'}[kind],roof2={cottage:'#82391f',hall:'#3a5580',smithy:'#3a3632',crypt:'#4d4a45',vault:'#2e4a4a',fhouse:'#3a5868',shop:'#5a2a44',hut:'#3e4a30'}[kind];
+ const roof1={stonehouse:'#eef3f7',longhall:'#eef3f7',forge3:'#4a4440',monastery:'#5a6a8a',mirrortent:'#5a3a6a',grotto:'#3a3646',vault3:'#4a3a36',cottage:'#9b4a2c',hall:'#4a6a9b',smithy:'#4a4440',crypt:'#5d5a55',vault:'#3e5a5a',fhouse:'#4a6a7a',shop:'#7a3a5a',hut:'#4a5a3a'}[kind],roof2={cottage:'#82391f',hall:'#3a5580',smithy:'#3a3632',crypt:'#4d4a45',vault:'#2e4a4a',fhouse:'#3a5868',shop:'#5a2a44',hut:'#3e4a30',stonehouse:'#d2dde6',longhall:'#d2dde6',forge3:'#3a3632',monastery:'#4a5a7a',mirrortent:'#3e2a4a',grotto:'#2e2a3a',vault3:'#3a2a26'}[kind];
  const rh=Math.floor(h*0.5),dcx=Math.floor(w/32)*16+8;R(3,h-2,w-6,2,'rgba(0,0,0,.28)');
- if(kind==='crypt'||kind==='vault'){for(let j=0;j<rh;j++){const ins=Math.max(0,Math.round((rh-1-j)*1.1));R(ins+2,2+j,w-4-2*ins,1,j%2?roof2:roof1)}
+ if(kind==='crypt'||kind==='vault'||kind==='grotto'||kind==='vault3'){for(let j=0;j<rh;j++){const ins=Math.max(0,Math.round((rh-1-j)*1.1));R(ins+2,2+j,w-4-2*ins,1,j%2?roof2:roof1)}
   R(w/2-1,0,2,6,'#8d8a82');R(w/2-3,2,6,2,'#8d8a82');
   const wy=rh+2;R(4,wy,w-8,h-wy-2,'#7d7a72');for(let x=6;x<w-6;x+=10){R(x,wy,4,h-wy-2,'#8d8a82');R(x+3,wy,1,h-wy-2,'#6d6a63')}
   R(dcx-6,h-18,12,16,'#2a2622');R(dcx-4,h-16,8,14,'#120e0c');R(dcx-6,h-19,12,1,'#5d5a55');if(kind==='vault'){R(6,h-12,3,10,'#3a7a4a');R(w-9,h-10,3,8,'#3a7a4a');R(10,rh,4,2,'#5f8a7a')}return}
@@ -778,11 +943,12 @@ function drawHouse(w,h,kind,t){
  for(let j=0;j<rh;j++){const ins=Math.max(0,Math.round((rh-1-j)*0.45));R(ins,2+j,w-2*ins,1,j%2?roof2:roof1)}
  R(0,rh+1,w,1,roof2);
  const wy=rh+2,wh=h-wy-2,dw=kind==='hall'?14:8,dx=dcx-dw/2,dh=Math.min(wh-1,14);
- if(kind==='smithy'){R(3,wy,w-6,wh,'#7d786f');for(let y=wy+1;y<wy+wh;y+=3)for(let x=4+((y/3|0)%2)*2;x<w-5;x+=6)R(x,y,4,1,'#68635b');
+ if(kind==='smithy'||kind==='forge3'){R(3,wy,w-6,wh,'#7d786f');for(let y=wy+1;y<wy+wh;y+=3)for(let x=4+((y/3|0)%2)*2;x<w-5;x+=6)R(x,y,4,1,'#68635b');
   R(dx-4,h-2-dh,dw+8,dh,'#1e1a16');R(dx-3,h-10,dw+6,8,Math.floor(t*6)%2?'#e8823a':'#c2412f');R(dx-1,h-7,dw+2,4,'#f4d27a');return}
- R(3,wy,w-6,wh,kind==='hall'?'#e0cfa8':kind==='fhouse'?'#c8b898':kind==='hut'?'#5a4632':kind==='shop'?'#e0cfa8':'#d9b98a');
+ R(3,wy,w-6,wh,kind==='hall'?'#e0cfa8':kind==='fhouse'?'#c8b898':kind==='hut'?'#5a4632':kind==='shop'?'#e0cfa8':kind==='stonehouse'?'#9a9a8a':kind==='longhall'?'#8a6744':kind==='monastery'?'#e6e2d6':kind==='mirrortent'?'#7a5a8a':'#d9b98a');
  const tr='#8a6744';R(3,wy,w-6,1,tr);R(3,wy,1,wh,tr);R(w-4,wy,1,wh,tr);for(let x=19;x<w-8;x+=16){if(x>dx-2&&x<dx+dw+2)continue;R(x,wy,1,wh,tr)}
  for(let x=7;x<w-12;x+=16){if(x+8>dx-2&&x<dx+dw+2)continue;R(x,wy+3,7,6,kind==='hut'?'#9ad86f':'#f4d27a');R(x+3,wy+3,1,6,tr);R(x,wy+5,7,1,tr)}
+ if(kind==='stonehouse'||kind==='longhall'){for(let x=0;x<w;x+=5)R(x+2,rh+2,2,3,'#cfe8f4')}if(kind==='monastery'){R(Math.floor(w/2)-1,0,2,6,'#dcb75e');R(Math.floor(w/2)-3,2,6,2,'#dcb75e')}if(kind==='mirrortent'){R(Math.floor(w/2)-4,wy+2,8,5,'#bfd8f0');R(Math.floor(w/2)-3,wy+3,2,2,'#fff')}
  if(kind==='shop'){for(let i=0;i<w-8;i+=4)R(4+i,wy-1,4,3,(i/4)%2?'#efe3c8':'#c2412f')}
  if(kind==='hut'){R(6,wy+wh-4,4,4,'#3a7a4a');R(w-10,wy+2,3,6,'#3a7a4a')}
  R(dx,h-2-dh,dw,dh,'#5a3a22');R(dx,h-2-dh,dw,1,'#3e2716');if(kind==='hall')R(dx+dw/2,h-2-dh,1,dh,'#3e2716');R(dx+dw-3,h-2-Math.floor(dh/2),1,1,'#dcb75e');
@@ -792,7 +958,7 @@ function ctxGlow(x,y){const g=PC.createRadialGradient(POX+x*PSX,POY+y*PSY,1,POX+
 function drawThing(k,t,wx,wy){
  const fl=Math.floor(t*6+wx*3)%2;
  switch(k){
- case 'cottage':case 'hall':case 'smithy':case 'crypt':case 'vault':case 'fhouse':case 'shop':case 'hut':case 'lighthouse':{const b=THINGS[k].big;drawHouse(b[0]*16,b[1]*16,k,t);break}
+ case 'cottage':case 'hall':case 'smithy':case 'crypt':case 'vault':case 'fhouse':case 'shop':case 'hut':case 'lighthouse':case 'stonehouse':case 'longhall':case 'forge3':case 'monastery':case 'mirrortent':case 'grotto':case 'vault3':{const b=THINGS[k].big;drawHouse(b[0]*16,b[1]*16,k,t);break}
  case 'greatoak':R(4,46,40,2,'rgba(0,0,0,.25)');R(19,22,10,24,'#5a3d26');R(20,22,3,24,'#7a5636');R(13,43,6,3,'#5a3d26');R(29,43,6,3,'#5a3d26');D(24,15,15,'#3f6e2e');D(15,13,9,'#4f8a39');D(33,12,9,'#4f8a39');D(23,6,7,'#64a447');
   [[9,10],[16,4],[28,6],[36,15],[12,20],[31,22],[24,13],[40,10]].forEach(([x,y],i)=>R(x,y,2,2,(Math.floor(t*2)+i)%3?'#d9c45a':'#f4e27a'));break;
  case 'grass':[[2,11,3,'#5f9a45'],[4,9,5,'#8fca67'],[6,10,4,'#79b45a'],[9,8,6,'#8fca67'],[11,11,3,'#5f9a45'],[13,9,5,'#79b45a']].forEach(([x,y,h,c])=>R(x,y,1,h,c));break;
@@ -838,6 +1004,32 @@ function drawThing(k,t,wx,wy){
  case 'throne':R(4,0,8,10,'#dcb75e');R(5,2,6,7,'#8a2a2a');R(3,9,10,3,'#dcb75e');R(4,12,2,4,'#b8902e');R(10,12,2,4,'#b8902e');R(7,0,2,1,'#f7dc80');break;
  case 'coffin':R(5,1,6,1,'#4a3628');R(4,2,8,4,'#4a3628');R(3,6,10,4,'#4a3628');R(4,10,8,4,'#4a3628');R(5,14,6,1,'#4a3628');R(7,3,2,9,'#8a6a44');R(5,6,6,2,'#8a6a44');break;
  case 'urn':D(8,10,5,'#9a7a5a');R(6,2,4,4,'#9a7a5a');R(5,2,6,1,'#b89a7a');R(3,9,10,2,'#6b4a3a');R(6,14,4,1,'#6b4a3a');break;
+ case 'snowpine':R(4,15,8,1,'rgba(0,0,0,.2)');R(7,13,2,2,'#5a3d26');for(let j=0;j<12;j++){const w=2*(1+(j%4)+Math.floor(j/4));R(8-w/2,1+j,w,1,'#244d3a');R(8-w/2,1+j,Math.max(1,w/2-1),1,'#2f6148');if(j%4===0)R(8-w/2,1+j,w,1,'#f2f6fa')}break;
+ case 'icerock':R(2,14,12,1,'rgba(0,0,0,.18)');R(4,5,8,1,'#cfe8f4');R(3,6,10,7,'#a9dcee');R(4,13,8,1,'#8fc0d8');R(9,8,4,5,'#7fb0cc');R(5,6,3,2,'#f2f8fc');R(8,7,1,2,'#6a9ab8');break;
+ case 'snowman':R(4,15,8,1,'rgba(0,0,0,.18)');D(8,11,4,'#f2f6fa');D(8,5,3,'#f2f6fa');R(7,4,1,1,DK);R(9,4,1,1,DK);R(8,5,2,1,'#e8823a');R(5,0,6,2,'#2a2a2a');R(6,-2,4,2,'#2a2a2a');R(5,7,6,1,'#c2412f');R(8,10,1,1,DK);R(8,12,1,1,DK);R(2,8,3,1,'#6b4a2e');R(11,8,3,1,'#6b4a2e');break;
+ case 'yak':{const b=Math.floor(t*2+wx)%2;R(2,15,12,1,'rgba(0,0,0,.2)');R(2,6,11,7,'#6b4a2e');R(2,11,11,2,'#5a3d26');R(11,4,4,5,'#5a3d26');R(10,3,1,2,'#efe3c8');R(15,3,1,2,'#efe3c8');R(13,6,1,1,DK);R(3,13,2,2,'#4a3220');R(10,13,2,2,'#4a3220');R(1,7,1,3+b,'#5a3d26');break}
+ case 'beacon':{const lit=S&&S.beacons&&(S.beacons.has(wx+','+wy)||S.q.beacons==='done'),f=Math.floor(t*6+wx)%2;R(5,14,6,2,'#55514c');R(6,8,1,6,'#5a3d26');R(9,8,1,6,'#5a3d26');R(3,6,10,3,'#6d6a63');R(4,5,8,1,'#8d8a82');
+  if(lit){D(8,3,6,'rgba(232,130,58,.18)');R(5,2-f,6,4+f,'#e8823a');R(6,0+f,4,3,'#f4d27a');R(7,-1,2,2,'#f4d27a')}else{R(5,4,6,2,'#3a3028');R(6,3,2,1,'#5a5852')}break}
+ case 'snowbloom':R(7,9,1,6,'#4c8a3a');R(8,11,2,1,'#4c8a3a');D(7,7,2,'#bfe8fa');R(7,7,1,1,'#ffffff');D(11,9,1,'#bfe8fa');R(4,12,2,1,'#f2f6fa');break;
+ case 'icecrystal':D(8,9,6,'rgba(143,208,240,.15)');R(3,7,3,8,'#8fd0f0');R(7,2,3,13,'#bfe8fa');R(11,5,3,10,'#8fd0f0');R(8,1,1,1,'#fff');R(8,4,1,3,'#fff');break;
+ case 'frozenstatue':R(3,13,10,3,'#8fb0c8');R(6,4,4,9,'#9ab8d0');R(6,1,4,3,'#9ab8d0');R(4,5,2,6,'#9ab8d0');R(10,5,2,6,'#9ab8d0');R(12,1,1,10,'#c4d8e8');R(6,2,4,1,'#6a8aa0');R(7,5,1,6,'#cfe8f4');break;
+ case 'gear':{const a=Math.floor(t*3)%2;D(8,8,4,'#c9a14a');D(8,8,2,'#120e0a');for(const[dx,dy]of a?[[0,-5],[0,5],[-5,0],[5,0]]:[[-4,-4],[4,-4],[-4,4],[4,4]])R(8+dx-1,8+dy-1,2,2,'#c9a14a');R(7,6,1,1,'#f7dc80');break}
+ case 'minecart':R(2,14,12,1,'rgba(0,0,0,.25)');R(2,6,12,6,'#5a6065');R(2,6,12,1,'#7a8085');R(3,4,10,2,'#6d6a63');R(4,3,3,2,'#55514c');R(8,2,3,3,'#8d8a82');R(3,12,3,3,'#3a3d40');R(10,12,3,3,'#3a3d40');break;
+ case 'brazier':{const f=Math.floor(t*6+wx)%2;D(8,6,6,'rgba(232,130,58,.14)');R(4,8,8,3,'#55514c');R(5,11,2,4,'#3a3d40');R(9,11,2,4,'#3a3d40');R(5,5-f,6,4,'#e8823a');R(6,3+f,4,3,'#f4d27a');break}
+ case 'icewall':R(0,0,16,16,'#b8d0e0');R(0,0,16,2,'#e6f0f6');for(let y=4;y<16;y+=5)R(0,y,16,1,'#9ab8cc');R(4,2,1,2,'#9ab8cc');R(11,7,1,3,'#9ab8cc');R(6,12,1,3,'#9ab8cc');break;
+ case 'runepillar':{const g=Math.floor(t*2+wx)%2;R(4,14,8,2,'#55514c');R(5,1,6,13,'#6d6a63');R(9,1,2,13,'#55514c');[[7,3],[7,6],[8,9],[7,12]].forEach(([x,y])=>R(x,y,1,2,g?'#6fd0e0':'#4ab0c8'));break}
+ case 'mirror':{const s2=Math.floor(t*2+wx)%3;R(3,0,10,16,'#c4c9cd');R(4,1,8,13,'#3a5a7a');R(5,2,3,6,'#8fb8d8');R(9,9,2,3,'#6a9ab8');R(2,14,12,2,'#8a9196');if(s2===0)R(10,3,1,1,'#fff');break}
+ case 'bell':{const sw=Math.round(Math.sin(t*2))*1;R(7,0,2,2,'#5a3d26');R(5+sw,2,6,2,'#dcb75e');R(4+sw,4,8,6,'#dcb75e');R(3+sw,10,10,2,'#c9a14a');R(7+sw,12,2,2,'#8a6a1a');R(5+sw,4,1,5,'#f7dc80');R(1,14,14,2,'#5a3d26');break}
+ case 'hammer':{const s2=Math.floor(t*3)%2;R(7,6,2,9,'#7a5636');R(3,2,10,5,'#c9a14a');R(3,2,10,1,'#f7dc80');R(5,4,6,1,'#8a6a1a');if(s2)R(13,1,1,1,'#fff');break}
+ case 'durinhammer':R(7,6,2,9,'#7a5636');R(3,2,10,5,'#c9a14a');R(3,2,10,1,'#f7dc80');R(5,4,6,1,'#8a6a1a');break;
+ case 'phylactery':{const g=Math.floor(t*3)%2;D(8,9,6,'rgba(169,220,238,.18)');R(5,4,6,9,'#3a3646');R(6,2,4,2,'#6d6a63');R(6,5,4,6,g?'#a9dcee':'#6fb0d0');R(7,7,2,2,'#fff');R(4,13,8,2,'#55514c');break}
+ case 'yakhornrack':R(1,4,14,2,'#6b4a2e');R(2,6,3,4,'#efe3c8');R(11,6,3,4,'#efe3c8');R(1,9,2,1,'#efe3c8');R(13,9,2,1,'#efe3c8');break;
+ case 'frostgem':R(6,4,4,1,'#e6f6fc');R(5,5,6,3,'#bfe8fa');R(6,8,4,2,'#8fd0f0');R(7,10,2,1,'#6fb0d0');R(6,5,1,1,'#fff');break;
+ case 'runeaxe':R(7,4,2,11,'#7a5636');R(3,2,6,6,'#9aa0a5');R(3,2,1,6,'#c4c9cd');R(5,4,1,2,'#6fd0e0');break;
+ case 'dwarfmug':R(4,5,7,9,'#c9a14a');R(4,4,7,2,'#f2f0e6');R(11,7,2,5,'#c9a14a');R(5,7,5,1,'#8a6a1a');R(5,11,5,1,'#8a6a1a');break;
+ case 'yakhorn':R(3,10,3,3,'#efe3c8');R(5,8,3,3,'#efe3c8');R(7,6,3,3,'#e0d4b8');R(9,4,3,3,'#c8b898');R(11,3,2,2,'#6b4a2e');break;
+ case 'starmap':R(3,4,10,8,'#3e5a8a');R(2,3,1,10,'#c8b27a');R(13,3,1,10,'#c8b27a');[[5,6],[9,5],[7,9],[11,9]].forEach(([x,y])=>R(x,y,1,1,'#f4e27a'));R(6,7,3,1,'#8fb0d0');break;
+ case 'silverkey':R(4,5,4,4,'#c4c9cd');R(5,6,2,2,'#120e0a');R(8,6,6,2,'#c4c9cd');R(12,8,1,2,'#c4c9cd');R(10,8,1,2,'#c4c9cd');break;
  case 'goldring':R(4,6,8,1,'#e6bf4a');R(3,7,2,4,'#e6bf4a');R(11,7,2,4,'#e6bf4a');R(4,11,8,1,'#e6bf4a');R(6,4,4,2,'#c2412f');R(7,4,1,1,'#f0a0a0');break;
  case 'oldhelm':R(4,4,8,8,'#9aa0a5');R(3,7,10,5,'#9aa0a5');R(5,8,6,1,'#2a2d30');R(7,9,2,3,'#2a2d30');R(10,5,1,2,'#6a7075');R(4,4,4,1,'#c4c9cd');break;
  case 'goblet':R(5,3,6,1,'#eef2f4');R(5,4,6,4,'#c4c9cd');R(6,8,4,1,'#c4c9cd');R(7,9,2,3,'#c4c9cd');R(5,12,6,2,'#c4c9cd');R(6,4,1,3,'#fff');break;
@@ -911,15 +1103,25 @@ function drawPerson(L,t,wx){
   case 'axe':R(13,3,1,11,'#7a5636');R(14,3,2,3,'#9aa0a5');break;case 'stick':R(13,4,1,11,'#6b5a3a');break;case 'shovel':R(13,1,1,10,'#7a5636');R(12,11,3,4,'#7d858a');break;
   case 'sword':R(13,4,1,8,'#d8e2ea');R(12,10,3,1,'#dcb75e');break;case 'lantern':R(13,6,1,3,'#4a4440');R(12,9,3,4,'#4a4440');R(13,10,1,2,Math.floor(t*4)%2?'#f4d27a':'#e8c060');break;
   case 'fish':R(12,9,3,2,'#8fb0c0');R(15,9,1,2,'#6a8a9a');break;
+  case 'bow':R(13,3,1,10,'#7a5636');R(14,4,1,1,'#7a5636');R(14,11,1,1,'#7a5636');R(12,4,1,8,'#efe3c8');break;
+  case 'wrench':R(13,7,1,6,'#9aa0a5');R(12,5,3,2,'#9aa0a5');R(13,5,1,1,'rgba(0,0,0,0)');break;
+  case 'handmirror':R(13,9,1,4,'#c4c9cd');D(13,7,2,'#c4c9cd');R(13,7,1,1,'#bfd8f0');break;
   case 'darkstaff':{const g=Math.floor(t*3)%2;R(13,0,1,15,'#2a1e16');R(12,0,3,2,g?'#e8423a':'#a8241c');if(g)R(11,-1,1,1,'#f0a0a0');break}}
 }
+let PCTX=null;const OC=document.createElement('canvas');OC.width=40;OC.height=40;const OCX=OC.getContext('2d');
+const GLASS_TINT=[0,.22,.38,.52,.66,.75],GLASS_A=[1,1,.86,.74,.62,.55];
+function drawPlayerFx(px,py,dir,fr,g){PCTX=ctx;if(!g){drawPlayer(px,py,dir,fr);return}
+ OCX.clearRect(0,0,40,40);PCTX=OCX;drawPlayer(12,12,dir,fr);PCTX=ctx;
+ OCX.globalCompositeOperation='source-atop';OCX.fillStyle=`rgba(150,205,245,${GLASS_TINT[Math.min(5,g)]})`;OCX.fillRect(0,0,40,40);
+ if(g>=3){const f=Math.floor(performance.now()/180)%6;OCX.fillStyle='#fff';OCX.fillRect(14+f*2,13+((f*5)%10),1,1)}OCX.globalCompositeOperation='source-over';
+ ctx.globalAlpha=GLASS_A[Math.min(5,g)];ctx.drawImage(OC,px-12,py-12);ctx.globalAlpha=1}
 function drawPlayer(px,py,dir,fr){
  const gx=S.hexes?S.hexes.length:0;
- if(gx>=6){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(ctx,px+16,py-f,-1,1);else pen(ctx,px,py-f,1,1);drawMonster('goblin',performance.now()/1000,false);R(5,0,6,2,'#e6bf4a');R(5,-1,1,1,'#e6bf4a');R(10,-1,1,1,'#e6bf4a');return}
+ if(gx>=6){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(PCTX,px+16,py-f,-1,1);else pen(PCTX,px,py-f,1,1);drawMonster('goblin',performance.now()/1000,false);R(5,0,6,2,'#e6bf4a');R(5,-1,1,1,'#e6bf4a');R(10,-1,1,1,'#e6bf4a');return}
  if(gx>=4)py+=1;
  const c=S.corrupt||0;
- if(c>=8){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(ctx,px+20,py-4-f,-0.625,0.625);else pen(ctx,px-4,py-4-f,0.625,0.625);drawMonster('dragon',performance.now()/1000,false);return}
- const side=dir==='left'||dir==='right';if(dir==='left')pen(ctx,px+16,py,-1,1);else pen(ctx,px,py,1,1);
+ if(c>=8){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(PCTX,px+20,py-4-f,-0.625,0.625);else pen(PCTX,px-4,py-4-f,0.625,0.625);drawMonster('dragon',performance.now()/1000,false);return}
+ const side=dir==='left'||dir==='right';if(dir==='left')pen(PCTX,px+16,py,-1,1);else pen(PCTX,px,py,1,1);
  const b=fr?1:0,Ac=c>=5?'#a32b22':gx>=5?'#6b8a3a':'#9cb0c0',A2=c>=5?'#7d1f1a':gx>=5?'#4f6a2a':'#7d93a5',L='#3a3f48',L2='#2a2e36',HEL=c>=5?'#c0392b':gx>=2?'#7aa34a':'#b8c8d4',RED='#a83a2c',WG='#5e1612',WG2='#7d1f1a';
  R(4,15,8,1,'rgba(0,0,0,.3)');
  if(c>=2){const big=c>=3?1:0,flap=Math.floor(performance.now()/300)%2;
@@ -953,6 +1155,13 @@ function drawMonster(k,t,tele){
  case 'wyvern':{const f=Math.floor(t*4)%2;R(6,23,20,1,'rgba(0,0,0,.3)');for(let y=0;y<11;y++)R(1+Math.floor(y*0.6),1+y+(f?0:1),14-Math.floor(y*0.9),1,y%3?'#3a4a6a':'#2a3a5a');for(let y=0;y<11;y++)R(17+Math.floor(y*0.3),1+y+(f?0:1),13-Math.floor(y*0.9),1,y%3?'#3a4a6a':'#2a3a5a');
   R(11,10,10,8,'#5a6a8a');R(13,12,6,5,'#bfc8d8');R(18,4,4,7,'#5a6a8a');R(20,2,8,4,'#5a6a8a');R(27,3,3,2,'#5a6a8a');R(24,3,1,1,'#f2d64b');R(21,0,1,2,'#c4c9cd');R(0,16,12,2,'#4a5a7a');R(0,14,2,2,'#f2d64b');R(12,18,2,4,'#4a5a7a');R(18,18,2,4,'#4a5a7a');
   if(tele){R(26,-2,1,3,'#fff');R(27,-4,1,2,'#f4e27a');R(5,0,1,2,'#fff');R(15,-1,1,2,'#f4e27a')}break}
+ case 'wolf':{const b=Math.floor(t*3)%2;R(1,15,14,1,'rgba(0,0,0,.25)');R(0,6+b,3,2,'#d8e4ee');R(2,7,10,6,'#d8e4ee');R(2,11,10,2,'#b8c8d4');R(10,3,5,6,'#d8e4ee');R(10,2,1,2,'#d8e4ee');R(13,2,1,2,'#d8e4ee');R(15,6,1,2,'#d8e4ee');R(12,5,1,1,'#6fd0e0');R(14,8,2,1,'#2a2a3a');R(3,13,2,2,'#b8c8d4');R(9,13,2,2,'#b8c8d4');R(5,8,4,1,'#2a3a4a');if(b)R(15,9,1,2,'rgba(191,232,250,.8)');break}
+ case 'yeti':R(2,15,12,1,'rgba(0,0,0,.25)');R(3,4,10,10,'#f2f6fa');R(2,6,12,6,'#f2f6fa');R(5,2,6,4,'#f2f6fa');R(6,4,4,3,'#8fb0c8');R(6,4,1,1,'#2a3a4a');R(9,4,1,1,'#2a3a4a');R(7,6,2,1,'#2a3a4a');R(0,7,3,6,'#e6edf2');R(13,7,3,6,'#e6edf2');R(0,12,3,2,'#8fb0c8');R(13,12,3,2,'#8fb0c8');R(4,14,3,2,'#e6edf2');R(9,14,3,2,'#e6edf2');R(4,9,1,3,'#d2dde6');R(10,8,1,3,'#d2dde6');break;
+ case 'golem':{const g=Math.floor(t*2)%2;R(2,15,12,1,'rgba(0,0,0,.3)');R(4,1,8,6,'#8d8a82');R(3,7,10,7,'#7d7a72');R(0,6,3,8,'#8d8a82');R(13,6,3,8,'#8d8a82');R(0,13,4,3,'#6d6a63');R(12,13,4,3,'#6d6a63');R(4,14,3,2,'#6d6a63');R(9,14,3,2,'#6d6a63');R(5,3,2,2,g?'#6fd0e0':'#4ab0c8');R(9,3,2,2,g?'#6fd0e0':'#4ab0c8');R(7,9,2,3,g?'#6fd0e0':'#4ab0c8');R(5,7,1,5,'#5a5852');R(10,8,1,4,'#5a5852');break}
+ case 'beholder':{const o=Math.round(Math.sin(t*2)*1);R(3,15,10,1,'rgba(0,0,0,.25)');D(8,8+o,6,'#8a4a7a');D(8,8+o,3,'#f2f0e6');D(8,8+o,1,'#c2412f');R(8,8+o,1,1,DK);R(4,12+o,8,2,'#5a2a4a');R(5,12+o,1,1,'#f2f0e6');R(7,13+o,1,1,'#f2f0e6');R(9,12+o,1,1,'#f2f0e6');
+  [[2,1],[5,-1],[8,-2],[11,-1],[14,1]].forEach(([x,y],i)=>{R(x,y+2+o,1,3,'#7a3a6a');R(x-1,y+o,3,2,'#f2f0e6');R(x,y+o+(Math.floor(t*3+i)%2),1,1,'#3e5a8a')});break}
+ case 'lich':{const g=Math.floor(t*3)%2;D(8,8,7,'rgba(169,220,238,.14)');R(3,15,10,1,'rgba(0,0,0,.25)');R(4,6,8,9,'#2a2a3a');R(3,13,10,2,'#1a1a2a');R(5,2,6,5,'#e6e2d6');R(6,4,1,1,g?'#6fd0e0':'#a9dcee');R(9,4,1,1,g?'#6fd0e0':'#a9dcee');R(7,6,2,1,'#3a3646');
+  R(5,0,1,2,'#a9dcee');R(7,-1,2,3,'#a9dcee');R(10,0,1,2,'#a9dcee');R(2,7,2,5,'#2a2a3a');R(12,7,2,5,'#2a2a3a');R(1,11,2,1,'#e6e2d6');R(13,4,1,11,'#6d6a63');R(12,2,3,3,g?'#a9dcee':'#6fd0e0');R(6,8,4,1,'#6fd0e0');break}
  case 'dragon':{R(6,23,20,1,'rgba(0,0,0,.3)');for(let y=1;y<11;y++)R(3+Math.floor(y*0.8),y,12-Math.floor(y*0.8),1,y%3?'#7d1f1a':'#5e1612');R(0,14,3,2,'#a32b22');R(2,16,9,2,'#a32b22');R(10,10,12,9,'#c0392b');R(13,12,6,6,'#e8a050');R(14,13,4,1,'#d08a40');R(14,15,4,1,'#d08a40');R(18,5,4,6,'#c0392b');R(20,2,8,5,'#c0392b');R(27,4,4,3,'#c0392b');R(29,4,1,1,DK);R(21,0,1,2,'#efe3c8');R(24,0,1,2,'#efe3c8');R(24,3,1,1,'#f4d27a');R(28,7,1,1,'#fff');R(30,7,1,1,'#fff');R(11,19,3,4,'#a32b22');R(18,19,3,4,'#a32b22');R(11,22,1,1,'#efe3c8');R(13,22,1,1,'#efe3c8');R(18,22,1,1,'#efe3c8');R(20,22,1,1,'#efe3c8');if(tele){R(31,3,1,1,'#e8823a');R(32,2-fl,2,2,'rgba(150,140,130,.7)');R(31,6,1,1,'#f4d27a')}break}
  }
 }
@@ -1039,6 +1248,43 @@ function paintSword(g,key,seed){
  case 'acorn':blade({w:8,tip:4},(i,j)=>i<2?'#f7dc80':(j%5===3?'#c9a14a':'#e6bf4a'));Hh(8,19,16,4,'#8a5a2a');for(let i=0;i<8;i++)Hh(9+i*2,19+(i%2),1,1,'#6b4a2e');grip('#6b4a2e');Hh(15,28,2,3,'#6b4a2e');break;
  case 'locket':blade({w:8,tip:3},(i,j)=>(j>=6&&j<=9&&i>=2&&i<=5)?(i===2&&j===6?'#fff':'#eef2f4'):(i<2?'#eef2f4':'#c4c9cd'));guard('#9aa0a5',12);grip('#c4c9cd');Hh(15,28,2,1,'#c4c9cd');Hh(14,29,4,2,'#c4c9cd');break;
  case 'keyfrag':blade({w:4,tip:0,top:3},(i)=>i<1?'#f7dc80':'#dcb75e');Hh(18,6,3,2,'#dcb75e');Hh(18,11,2,2,'#dcb75e');guard('#c9a14a',10);grip('#c9a14a');Hh(13,28,6,4,'#dcb75e');Hh(15,29,2,2,'#120e0a');break;
+ case 'snowpine':blade({w:8,tip:2,wfn:(j,w)=>j<2?w:[4,6,8,10][(j-2)%4]},(i,j,w)=>(j-2)%4===0?'#f2f6fa':(i<w/2?'#3d7558':'#244d3a'));guard('#5a3d26',12,21,1);grip('#5a3d26');pommel('#f2f6fa');break;
+ case 'icerock':case 'icewall':blade({w:8,tip:3},(i,j)=>nz(i,j)<12?'#ffffff':(i<3?'#cfe8f4':'#a9dcee'));guard('#8fc0d8',16);grip('#7fb0cc');pommel('#cfe8f4');break;
+ case 'snowman':blade({w:8,round:1},(i,j)=>(j===3&&(i===2||i===5))||(j===9&&i===3)||(j===13&&i===3)?DK:(j===4&&i>=3&&i<=4?'#e8823a':(j===6?'#c2412f':'#f2f6fa')));Hh(5,20,5,1,'#6b4a2e');Hh(22,20,5,1,'#6b4a2e');guard('#c2412f',12);grip('#2a2a2a');Hh(12,28,8,3,'#2a2a2a');break;
+ case 'yak':blade({w:8,tip:3},(i,j)=>j<2?'#efe3c8':(nz(i,j)<25?'#5a3d26':'#6b4a2e'));Hh(5,18,4,2,'#efe3c8');Hh(23,18,4,2,'#efe3c8');Hh(4,16,2,2,'#efe3c8');Hh(26,16,2,2,'#efe3c8');guard('#5a3d26',14);grip('#4a3220');pommel('#6b4a2e');break;
+ case 'beacon':case 'brazier':blade({w:8,tip:5,wfn:(j,w)=>w-(j%3===1?1:0)},(i,j,w)=>j<4?'#f4d27a':j<12?'#e8823a':'#c2412f');guard('#55514c',16);grip('#3a3d40');pommel('#6d6a63');break;
+ case 'snowbloom':blade({w:6,tip:3},(i,j)=>(i===2||i===3)&&j%4===1?'#ffffff':(i<2?'#e6f6fc':'#bfe8fa'));Hh(8,21,7,2,'#4c8a3a');Hh(17,21,7,2,'#4c8a3a');grip('#4c8a3a');pommel('#bfe8fa');break;
+ case 'icecrystal':case 'frostgem':blade({w:8,tip:6},(i,j,w)=>(i===1&&j%5===2)?'#ffffff':i<w/2?'#bfe8fa':'#8fd0f0');Hh(9,19,2,2,'#bfe8fa');Hh(21,19,2,2,'#bfe8fa');guard('#6fb0d0',12);grip('#4a8ab0');pommel('#e6f6fc');break;
+ case 'frozenstatue':blade({w:8,tip:3},(i,j)=>i===0?'#cfe8f4':(j%6===2?'#6a8aa0':'#9ab8d0'));guard('#8fb0c8',16);grip('#6a8aa0');pommel('#9ab8d0');break;
+ case 'gear':blade({w:8,tip:2,wfn:(j,w)=>w+(j%3===0?2:0)},(i,j)=>(i===3||i===4)&&j%3===1?'#8a6a1a':'#c9a14a');guard('#8a6a1a',14);grip('#5a6065');Hh(13,28,6,3,'#c9a14a');Hh(15,29,2,1,'#120e0a');break;
+ case 'minecart':blade({w:8,tip:2},(i,j,w)=>i===0||i===w-1?'#7a8085':(j<4?'#8d8a82':'#5a6065'));Hh(7,20,5,4,'#3a3d40');Hh(20,20,5,4,'#3a3d40');grip('#5a6065');pommel('#3a3d40');break;
+ case 'runepillar':blade({w:8,tip:2},(i,j)=>(i===3||i===4)&&j%3===0?'#6fd0e0':(i>5?'#55514c':'#6d6a63'));guard('#55514c',16);grip('#6d6a63');pommel('#6fd0e0');break;
+ case 'stonehouse':case 'longhall':case 'monastery':{const wall=key==='stonehouse'?'#9a9a8a':key==='longhall'?'#8a6744':'#e6e2d6';blade({w:8,tip:4},(i,j,w)=>j<5?(j%2?'#d2dde6':'#eef3f7'):(i===0||i===w-1?'#6b4a2e':(j%5===0?'#5a5852':wall)));guard(key==='monastery'?'#dcb75e':'#6b4a2e');grip('#5a3a22');pommel(key==='monastery'?'#dcb75e':'#8a8a7a');break}
+ case 'forge3':blade({w:8,tip:4},(i,j)=>(i===3||i===4)&&j>3?(j%2?'#f4d27a':'#e8823a'):((j+(i>3?1:0))%3===0?'#4d4a45':'#6d6a63'));Hh(8,21,16,2,'#3a3d40');grip('#7a5636');pommel('#c2412f');break;
+ case 'mirrortent':case 'mirror':blade({w:8,tip:4},(i,j,w)=>i===0||i===w-1?'#c4c9cd':((i+j)%5===0?'#ffffff':(i<4?'#bfd8f0':'#6a9ab8')));guard('#c4c9cd',16);grip('#8a9196');Hh(13,28,6,3,'#c4c9cd');Hh(14,29,4,1,'#bfd8f0');break;
+ case 'grotto':blade({w:8,tip:4},(i,j)=>(i>=3&&i<=4&&j>8)?'#120e0c':(nz(i,j)<15?'#8fd0f0':'#3a3646'));guard('#2e2a3a',16);grip('#3a3646');pommel('#8fd0f0');break;
+ case 'vault3':blade({w:8,tip:4},(i,j)=>(i>=3&&i<=4&&j>8)?'#120e0c':(nz(i,j)<15?'#c2412f':'#4a3a36'));guard('#3a2a26',16);grip('#4a3a36');pommel('#e8823a');break;
+ case 'bell':blade({w:8,tip:2,wfn:(j,w)=>Math.min(10,4+Math.floor(j/2))},(i,j)=>i<2?'#f7dc80':'#dcb75e');guard('#8a6a1a',16);grip('#5a3d26');pommel('#dcb75e');break;
+ case 'durinhammer':blade({w:12,tip:0,top:2,wfn:(j,w)=>j<6?12:3},(i,j,w)=>j<6?(j===0?'#f7dc80':(j===3&&i>2&&i<w-3?'#8a6a1a':'#c9a14a')):(i===1?'#9a7650':'#7a5636'));guard('#c9a14a',8);grip('#7a5636','#5a3d26');pommel('#c9a14a');break;
+ case 'runeaxe':blade({w:8,tip:2},(i,j)=>j<8&&i<4?(j%4===1&&i===2?'#6fd0e0':'#9aa0a5'):(i>=3&&i<=4?'#7a5636':null));guard('#5a6065',10);grip('#7a5636');pommel('#9aa0a5');break;
+ case 'dwarfmug':blade({w:8,tip:2},(i,j)=>j<3?'#f2f0e6':(j%5===2?'#8a6a1a':'#c9a14a'));guard('#8a6a1a');grip('#c9a14a');pommel('#f2f0e6');break;
+ case 'yakhorn':blade({w:6,tip:5},(i,j)=>j%6===2?'#c8b898':(i<2?'#ffffff':'#efe3c8'));guard('#6b4a2e');grip('#6b4a2e');pommel('#efe3c8');break;
+ case 'starmap':blade({w:8,tip:3},(i,j,w)=>i===0||i===w-1?'#c8b27a':(nz(i,j)<8?'#f4e27a':'#3e5a8a'));guard('#c8b27a');grip('#2e4670');pommel('#f4e27a');break;
+ case 'silverkey':blade({w:4,tip:0,top:3},(i)=>i<1?'#eef2f4':'#c4c9cd');Hh(18,6,3,2,'#c4c9cd');Hh(18,11,2,2,'#c4c9cd');guard('#9aa0a5',10);grip('#c4c9cd');Hh(13,28,6,4,'#c4c9cd');Hh(15,29,2,2,'#120e0a');break;
+ case 'wolf':blade({w:8,tip:5},(i,j)=>j<2?'#ffffff':(j===4&&(i===2||i===5)?'#6fd0e0':((i+j)%5===0?'#b8c8d4':'#d8e4ee')));Hh(5,18,4,3,'#d8e4ee');Hh(23,18,4,3,'#d8e4ee');Hh(5,17,1,1,'#d8e4ee');Hh(26,17,1,1,'#d8e4ee');guard('#b8c8d4',12);grip('#8fa0b0');pommel('#6fd0e0');break;
+ case 'yeti':blade({w:10,tip:4},(i,j)=>(j===4&&(i===3||i===6))?'#2a3a4a':((j>=3&&j<=6&&i>=2&&i<=7)?'#8fb0c8':(nz(i,j)<20?'#e6edf2':'#f2f6fa')));Hh(3,19,6,4,'#f2f6fa');Hh(23,19,6,4,'#f2f6fa');guard('#d2dde6',12);grip('#8fb0c8');Hh(12,28,8,3,'#f2f6fa');break;
+ case 'golem':blade({w:10,tip:2},(i,j)=>((i===4||i===5)&&j%5===2)?'#6fd0e0':((j%5===0||i%5===0)?'#5a5852':'#8d8a82'));Hh(2,19,7,4,'#8d8a82');Hh(23,19,7,4,'#8d8a82');guard('#6d6a63',12);grip('#7d7a72');Hh(12,28,8,4,'#6d6a63');Hh(15,29,2,2,'#6fd0e0');break;
+ case 'beholder':blade({w:8,tip:4},(i,j)=>j>=6&&j<=10&&i>=2&&i<=5?((j===8&&(i===3||i===4))?'#c2412f':'#f2f0e6'):(i<2?'#a85a9a':'#8a4a7a'));for(const x of [8,11,20,23]){Hh(x,18,1,3,'#7a3a6a');Hh(x-1,17,3,1,'#f2f0e6')}guard('#5a2a4a',12);grip('#7a3a6a');Hh(13,28,6,3,'#8a4a7a');Hh(15,29,2,1,'#c2412f');break;
+ case 'lich':blade({w:8,tip:5},(i,j)=>nz(i,j)<12?'#ffffff':(i===3||i===4?'#6fd0e0':(i<3?'#a9dcee':'#6fb0d0')));Hh(7,19,3,2,'#e6e2d6');Hh(22,19,3,2,'#e6e2d6');guard('#2a2a3a',14);Hh(15,21,2,2,'#6fd0e0');grip('#2a2a3a','#1a1a2a');Hh(13,28,6,3,'#e6e2d6');Hh(14,29,1,1,'#6fd0e0');Hh(17,29,1,1,'#6fd0e0');break;
+ case 'hrolf':person({hat:'#9a8a7a',hair:'#c4703a',skin:'#e0b48a',cloth:'#6b4a2e',cloth2:'#4a3220',belt:'#dcb75e',beard:'#c4703a',longBeard:1});grip('#7a5636');Hh(14,28,6,3,'#9aa0a5');break;
+ case 'brunhild':person({hair:'#a8342c',skin:'#e0b48a',cloth:'#5a6065',cloth2:'#3a3d40',stripe:'#4a3a2c'});grip('#7a5636');Hh(11,28,10,3,'#55595d');break;
+ case 'ysolde':person({hat:'#3e5a8a',hair:'#3e5a8a',skin:'#f0c8a0',cloth:'#e6e2d6',cloth2:'#c8c4b8',belt:'#dcb75e'});grip('#7a5636');Hh(14,28,4,3,'#dcb75e');break;
+ case 'haldor':person({hat:'#6b5a44',hair:'#7a6a5a',skin:'#d8a070',cloth:'#8a7a5a',cloth2:'#6b5a44',beard:'#9a8a7a'});grip('#6b5a3a');Hh(14,28,4,3,'#efe3c8');break;
+ case 'kael':person({hat:'#2f5129',hair:'#3a2418',skin:'#d8a070',cloth:'#3f6e2e',cloth2:'#2f5129',belt:'#6b4a2e'});grip('#7a5636');Hh(14,28,4,3,'#efe3c8');break;
+ case 'tink':person({hat:'#c9a14a',hair:'#e0dbd0',skin:'#f0c8a0',cloth:'#a87a3a',cloth2:'#8a5a2a',belt:'#5a4a3a'});grip('#9aa0a5');Hh(13,28,6,3,'#c9a14a');Hh(15,29,2,1,'#120e0a');break;
+ case 'durin':person({hair:'rgba(240,215,160,.85)',skin:'rgba(230,200,140,.8)',cloth:'rgba(230,200,140,.6)',cloth2:'rgba(200,170,110,.6)',beard:'rgba(240,215,160,.85)',longBeard:1,eye:'#3a2a10'});grip('rgba(200,170,110,.7)');Hh(12,28,8,3,'rgba(201,161,74,.8)');break;
+ case 'moth':person({hat:'#2a2a3a',hair:'#e0dbd0',skin:'#e0d8d0',cloth:'#2a2a3a',cloth2:'#1a1a2a',eye:'#6fd0e0'});grip('#6b5a3a');Hh(14,28,4,3,'#a9dcee');break;
+ case 'vesper':person({hair:'#c4c9cd',skin:'#e0d0e8',cloth:'#5a3a6a',cloth2:'#3e2a4a',belt:'#c4c9cd',eye:'#8a4a9a'});grip('#c4c9cd');Hh(13,28,6,3,'#c4c9cd');Hh(14,29,4,1,'#bfd8f0');break;
  case 'goldring':case 'compass':blade({w:6,tip:3},(i,j)=>j%5===2?'#c2412f':(i===0?'#f7dc80':'#e6bf4a'));guard('#c9a14a');grip('#9c7a24');pommel('#e6bf4a');break;
  case 'oldhelm':case 'brokensw':blade({w:8,tip:4},(i,j)=>nz(i,j)<10?'#6a7075':(i<3?'#c4c9cd':'#9aa0a5'));guard('#9aa0a5');grip('#5a3b25');pommel('#9aa0a5');break;
  case 'goblet':blade({w:6,tip:3},(i)=>i<2?'#eef2f4':'#c4c9cd');guard('#c4c9cd');grip('#c4c9cd');pommel('#eef2f4');break;
@@ -1141,7 +1387,7 @@ function buildGround(a){
 const cv=$('cv'),ctx=cv.getContext('2d'),view=$('view'),foeCv=$('foeCv'),fctx=foeCv.getContext('2d');
 let P=4,LW=300,LH=200,CAM={x:0,y:0};
 const JIT=new Set(['oak','pine','grass','flower','mushroom','boulder','shrub','bones','grave','log','crystal']);
-function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6||(S.corrupt>0&&!S.flags.purified)?'!':null;if(n.id==='whiskers')return null;if(n.id==='morvane')return S.flags.metMorvane?null:'!';if(n.id==='brine')return !S.flags.metBrine||mainStage2()===6?'!':null;if(n.id==='marigold')return null;if(n.id==='gristle')return S.flags.metGristle?null:'!';const q=GIVES[n.id];if(!q)return null;const st=S.q[q];if(!st)return '!';if(st==='active')return QUESTS[q].check()?'?':'…';return null}
+function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6||(S.corrupt>0&&!S.flags.purified)?'!':null;if(n.id==='whiskers')return null;if(n.id==='morvane')return S.flags.metMorvane?null:'!';if(n.id==='hrolf')return !S.flags.metHrolf||mainStage3()===6?'!':null;if(n.id==='brunhild')return null;if(n.id==='vesper')return S.flags.metVesper?null:'!';if(n.id==='brine')return !S.flags.metBrine||mainStage2()===6?'!':null;if(n.id==='marigold')return null;if(n.id==='gristle')return S.flags.metGristle?null:'!';const q=GIVES[n.id];if(!q)return null;const st=S.q[q];if(!st)return '!';if(st==='active')return QUESTS[q].check()?'?':'…';return null}
 function drawMarker(m,px,py,t){pen(ctx,px,py-9+(Math.floor(t*3)%2),1);const c=m==='…'?'#b3a081':'#f4d27a';if(m==='!'){R(7,0,2,4,c);R(7,5,2,1,c)}else if(m==='?'){R(6,0,4,1,c);R(9,1,1,2,c);R(7,3,2,1,c);R(7,5,1,1,c)}else{R(5,4,1,1,c);R(7,4,1,1,c);R(9,4,1,1,c)}}
 function drawMap(t){
  ctx.fillStyle='#0d0b09';ctx.fillRect(0,0,LW,LH);
@@ -1158,7 +1404,7 @@ function drawMap(t){
  NPCS.forEach(n=>{if(!n.gone&&!(CUT&&CUT.hideNPC)&&n.x>=x0&&n.x<=x1&&n.y>=y0&&n.y<=y1)ents.push({y:n.y,f:()=>{const px=n.x*16-cx,py=n.y*16-cy;pen(ctx,px,py,1);drawPerson(n.look,t,n.x);
   if(n.caged){pen(ctx,px,py,1);[1,4,11,14].forEach(x=>R(x,0,1,16,'#4f5559'));R(0,0,16,1,'#6c7378');R(0,15,16,1,'#6c7378')}const m=marker(n);if(m)drawMarker(m,px,py,t)}})});
  MONSTERS.forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
- if(!(CUT&&CUT.hidePlayer))ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayer(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0)}});
+ if(!(CUT&&CUT.hidePlayer))ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0)}});
  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
 }
 let LABELS=[];
@@ -1184,7 +1430,7 @@ const toMap=()=>{hide('dialog');mode='map';updHud()};
 function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).find(key=>THINGS[key].name===who);const face=k?`<img class="pix" src="${iconImg(k)}" alt="">`:'';
  const render=()=>{const last=i===pages.length-1;dialog(who,`<div class="speaker">${face}<div>${pages[i]}</div></div>`,last?(endBtns||[{label:'Goodbye',primary:true,fn:toMap}]):[{label:'Next',primary:true,fn:()=>{i++;render()}}])};render()}
 function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('hBlades').textContent=S.relics?S.relics.length:0;$('hPot').textContent=S.potions;
- $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter===2||S.coins);$('hCoin').textContent=S.coins||0;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
+ $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter>=2||S.coins);$('hCoin').textContent=S.coins||0;$('hGlassWrap').hidden=!S.glass;$('hGlass').textContent=`${S.glass||0} / 5`;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
 function showIntro(){mode='menu';
  dialog('The Sumunbléd Chronicles · Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
  <ul class="rules"><li>Walk <b>right next to</b> something to add it to your <b>Codex</b>. Monsters only join your Codex once you defeat them.</li>
@@ -1253,11 +1499,46 @@ Object.assign(LINES,{
  snik:{offer:['Shh! Snik not with War-Chief anymore. War-Chief mean. Snik want to make War-Chief look silly.','Tear down <b>4 of his banners</b> in the Warren. Just walk up to them and RIP. Snik will give you good stuff. Shiny stuff.'],remind:()=>[`${S.banners.size} banners down. War-Chief so angry. Hehehe.`],done:['HAHAHA! He will be SO mad! Here, Snik’s best shiv. And potions Snik borrowed. Forever.'],after:['Granny Gristle used to be pretty, Snik heard. Then she drank her own brews.']},
  vane:{offer:['You there! I am Admiral Vane of Galecrest. The goblins raided my camp and stole my <b>spyglass</b>.','It’s somewhere in the <b>far north of Grimtooth Warren</b>. Without it, I cannot watch for the Kraken. Bring it back and I will share the secret of Galecrest stormsteel.'],remind:['The far north of the Warren. Look for a glint of brass.'],done:['My spyglass! Now, stormsteel: every blade you call will be tempered by the storm. Hold still.'],after:['Guard when the wyvern calls the storm. Every time.']}
 });
+Object.assign(LINES,{
+ haldor:{offer:['Ach, Summoner, you have strong legs. Good.','Four of my yaks wandered off in the last blizzard. They like the far corners: the edges of Hearthhold and deep in <b>Frostpine Wood</b>. Walk right up to each one and it will follow its nose home.'],remind:()=>[`${S.yaks} of 4 yaks home. Look in the corners. Yaks love corners.`],done:['All four! My herd is whole again. Here, coins and potions. And a yak hug. No? Fair enough.'],after:['Never stand behind a yak.','The Jarl says the Lich wants all the north. My yaks say no.']},
+ kael:{offer:['Stay low, stranger. The wolves have been hunting in packs since the Lich woke.','Four <b>signal beacons</b> used to warn us of danger, two in Frostpine and two in the caverns. They have all gone out. Walk up to each one and light it, and I will give you my old cloak.'],remind:()=>[`${S.beacons.size} of 4 beacons lit. Two in these woods, two in Glimmerdeep.`],done:['I can see all four fires from here. Take my cloak. It has kept me alive through forty winters.'],after:['The Yeti on the ice bridge gets angrier the more you hurt it. Finish it fast.']},
+ tink:{offer:['Oh! Oh oh oh! A customer! No, a helper! Are you a helper?','My clockwork bracer is missing <b>5 brass gears</b>. They scattered all over the <b>Emberforge Ruins</b> when the Golem stomped past. Find them, please, please, please.'],remind:()=>[`${S.gears} of 5 gears. They roll everywhere. Check behind the anvils.`],done:['Click, whirr, DING! Here, try the bracer on. Raise your guard and it pumps you full of vim. And vigor.'],after:['Did you know the Beholder can switch off magic with one eye? Rude.']},
+ durin:{offer:['…a living dwarf-friend in my forge. It has been a hundred years.','I am Durin, last Thane of Emberforge. My hammer lies locked in the <b>Forge Vault</b>, far to the north-east. I cannot lift it any more. You can. Take it, and remember the dwarves.'],remind:['The Forge Vault. North-east, past the braziers. Walk in and take up my hammer.'],done:['There it is. Hold it high. Now it lives in your memory, and you may call on it whenever you need.'],after:['We built the Golem for the Lich. We did not know what he was. Forgive us.']},
+ moth:{offer:['Don’t hurt me! I’m not with him any more. I was the Lich’s apprentice. I ran.','He can’t be killed. Not really. His soul is hidden in a <b>phylactery</b> in the <b>Crystal Grotto</b>, south of these caverns. If it still exists when you fight him, he will rise again. Smash it.'],remind:['The Crystal Grotto. South of Glimmerdeep. It glows blue. Smash it.'],done:['You did it? Then when he falls, he stays fallen. Thank you. Take these, I don’t need them where I’m going.'],after:['I am going somewhere warm. Very, very warm.']},
+ ysolde:{offer:['Peace of the dawn be with you, traveller.','Fever sweeps the village. Only <b>snowblooms</b> can cure it, and they grow only at the far edges of <b>Hearthhold</b> and <b>Frostpine Wood</b>. Please bring me five.'],remind:()=>[`${S.blooms} of 5 snowblooms. They shine pale blue in the snow.`],done:['Five snowblooms! The children will be well by morning. Let me bless your potions in return.'],after:['The Dawn Bell has rung for three hundred years. It can ring out darkness. Once.','Beware the Mirror Merchant in the caves. What she sells cannot be bought back.']}
+});
+function hrolfTalk(n){const st=mainStage3();
+ if(st===0){S.flags.metHrolf=true;S.potions+=2;S.coins+=50;updHud();say(n.name,['HA! The dragon-slayer, the storm-breaker! Welcome to Hearthhold, Summoner. You arrive at a dark hour.','A <b>Frost Lich</b> has taken <b>Skyspire Citadel</b>, at the top of the mountain far to the east. Every winter grows longer. Soon it will never end.','His servants guard the road: a <b>Winter Wolf</b>, the <b>Yeti</b> of the ice bridge, a <b>Golem</b> the dwarves built for him, and something in the forge smoke that sees everything.','Brunhild sells good steel at her forge. And Sister Ysolde can help you in ways steel cannot.<p class="reward" style="margin-top:10px">You received <b>2 potions</b> and <b>50 coins</b>.</p>']);return}
+ if(st===6){S.flags.ch3done=true;S.potions+=3;S.coins+=200;updHud();const done=Object.entries(QUESTS).filter(([id,q])=>q.ch===3&&S.q[id]==='done').length;
+  say(n.name,['Summoner! The snow is melting! There are flowers on the mountain!','Tonight the whole of Hearthhold feasts in your name. Three lands saved by one Summoner. The skalds will need a longer song.',`<p><b>Chapter III complete${S.glass?' (with '+S.glass+' mirror shards in you)':''}.</b> You finished <b>${done}</b> of 6 side quests here and forged <b>${S.forged.length}</b> blades in all.</p><p class="sub">You can keep exploring and finish side quests. Chapter IV is coming.</p>`]);return}
+ say(n.name,[['','The Winter Wolf hunts at the edge of Frostpine. It freezes swords with its breath.','The Yeti waits on the ice bridge. The more you hurt it, the harder it hits.','The Golem’s stone skin shrugs off small blows. Hit it with your biggest sword.','The Beholder’s eyes do strange things. Keep spare swords.','The Lich waits at the top of Skyspire. Guard when it raises its finger.','','Hearthhold will never forget you.'][st]])}
+const SHOP3=[{id:'potion',name:'Healing potion',price:30,desc:'Heals you in battle.',rep:true,buy:()=>{S.potions++}},
+ {id:'mail',name:'Dwarven Mail',price:180,desc:'+20 max HP, for good.',buy:()=>{S.hpBonus+=20;S.hp+=20}},
+ {id:'whet3',name:'Runed Whetstone',price:150,desc:'Every new sword deals +6 damage.',buy:()=>{S.whet+=6}},
+ {id:'opal',name:'Frost Opal',price:200,desc:'A rare opal for your Codex (power 30).',buy:()=>addCodex('frostgem')},
+ {id:'belt',name:'Dwarven Sword-belt',price:300,desc:'Hold one more sword in battle.',buy:()=>{S.slots++}}];
+function forgeShop(n){mode='menu';const items=SHOP3.filter(it=>it.rep||!S.bought[it.id]);
+ dialog('Brunhild’s Forge',`<div class="speaker"><img class="pix" src="${iconImg('brunhild')}" alt=""><div><p>“Dwarven work, sharpest north of anywhere. Coin on the anvil.”${hasHex('greedy')?' <i>She sniffs your green skin and adds a goblin tax.</i>':''}</p><p class="sub">You have <b>${S.coins}</b> coins and ${S.potions} potions.</p></div></div>`,
+  [...items.map(it=>({label:`${it.name} · ${price(it)}c`,fn:()=>{if(S.coins<price(it)){toast('Not enough coins.');return}S.coins-=price(it);if(!it.rep)S.bought[it.id]=1;it.buy();updHud();toast(`Bought: <b>${it.name}</b>. ${it.desc}`);forgeShop(n)}})),{label:'Leave',primary:true,fn:toMap}])}
+const GLASS_LINES=['','Your reflection is a moment late to copy you.','You can see snow through your own hand.','Your reflection blinks when you don’t.','You are more glass than knight now. <b>One more shard</b> and the mirror will keep you.'];
+function vesperTalk(n){
+ if(!S.flags.metVesper){S.flags.metVesper=true;say(n.name,['Welcome, welcome to the Hall of Mirrors. Look how many of you there are.','They say a Summoner can only call each thing once. A sad little rule. My <b>Mirror Shards</b> break it.','Choose anything you have already summoned and spent. One shard, and it answers your call again, good as new.','Free of charge, of course. A mirror only ever takes a little reflection in return.'],vesperMenu());return}
+ say(n.name,[S.glass>=4?'So clear now. I can almost see the mirror behind you. One more?':S.glass?`${S.glass} shards, and you look lovely in glass. Another?`:'Back for a shard, darling?'],vesperMenu())}
+function vesperMenu(){return [{label:'Take a Mirror Shard',primary:true,fn:pickShard},{label:'Leave',fn:toMap}]}
+function pickShard(){const kept=new Set(S.relics.map(r=>r.key));const spent=S.seen.filter(k=>S.used.has(k)&&!kept.has(k));
+ if(!spent.length){dialog('Vesper the Mirror Merchant','<p>“You have nothing spent to reflect, darling. Summon something in battle first.”</p>',[{label:'Leave',primary:true,fn:toMap}]);return}
+ dialog('Choose something to summon again','<p>Hold a shard up to your memory of it, and it can be summoned once more.</p>',[...spent.slice(-12).reverse().map(k=>({cls:'gemopt',html:`<img class="pix" src="${iconImg(k)}" alt=""><span><b>${THINGS[k].name}</b><br><span class="sub">power ${THINGS[k].power}</span></span>`,fn:()=>useShard(k)})),{label:'Never mind',fn:toMap}])}
+function useShard(k){S.used.delete(k);S.glass=(S.glass||0)+1;S.hp=Math.min(S.hp,maxHp());updHud();
+ if(S.glass>=5){startCut('mirror');return}
+ dialog('The shard sinks in',`<div class="speaker"><img class="pix" src="${iconImg(k)}" alt=""><div><p>The <b>${THINGS[k].name}</b> glows in your Codex again. You can summon it one more time.</p><p class="corrupt">You lose 10 max HP. ${GLASS_LINES[S.glass]}</p></div></div>`,[{label:'Continue',primary:true,fn:toMap}])}
+function ysoldeCure(n){say(n.name,['Child… I can see the wall behind you. Through you. You have been to the Mirror Merchant.',`The Dawn Bell can ring the glass out of you, all ${S.glass} shards. But it rings for each soul only <b>once</b>.`],
+ [{label:'Ring the bell',primary:true,fn:()=>{const g=S.glass;S.glass=0;S.flags.glassCured=true;S.hp=Math.min(maxHp(),S.hp+g*10);updHud();say(n.name,['Cover your ears.',`<p>BONNNG. The Dawn Bell rings through the monastery. Cracks of light run through you, and the glass falls away like frost off a window.</p><p class="reward">All ${g} shards are gone, and your max HP is back. The bell will not ring for you again.</p>`])}},
+  {label:'Not now',fn:()=>{S.flags.declinedGlass=true;hide('dialog');questTalk('ysolde',n.name);S.flags.declinedGlass=false}}])}
 function brineTalk(n){const st=mainStage2();
  if(st===0){S.flags.metBrine=true;S.potions++;S.coins+=20;updHud();say(n.name,['Ahoy! You’re the Summoner who brought down the red dragon? Then the stars sent you to the right coast.','A <b>Storm Wyvern</b> nests at the top of <b>Galecrest Keep</b>, at the far east end of this coast. Its storms sink every ship that leaves this harbor.','Its allies hold the road: a <b>Bog Hag</b> in Fogmire, a <b>Drowned Knight</b> in the old Halls, the <b>Goblin War-Chief</b> of Grimtooth, and something in the water by the Keep.','Here, a potion and some coin for the shop. And whatever you do, don’t drink anything Granny Gristle offers you.<p class="reward" style="margin-top:10px">You received <b>1 potion</b> and <b>20 coins</b>.</p>']);return}
  if(st===6){S.flags.ch2done=true;S.potions+=2;S.coins+=100;updHud();const done=Object.entries(QUESTS).filter(([id,q])=>q.ch===2&&S.q[id]==='done').length;
-  say(n.name,['The sky! Look at the sky, Summoner! Blue, for the first time in years!','The boats are already going out. The whole coast owes you.',`<p><b>Chapter II complete${S.hexes.length?' (with '+S.hexes.length+' of Granny’s hexes still in you)':''}.</b> You finished <b>${done}</b> of 7 side quests here and forged <b>${S.forged.length}</b> blades in all.</p><p class="sub">You can keep exploring and finish side quests. Chapter III is coming.</p>`]);return}
- say(n.name,[['','The hag lives under the old bridge at the east end of Fogmire.','The Drowned Knight guards the far gate of the Halls. Its shield goes up every other turn.','Grimtooth goblins hide behind a palisade. Hit their chief hard and his warriors scatter.','The Kraken grabs swords. Bring spares.','The wyvern is all that’s left. Guard when the storm gathers.','','Fair winds, Summoner.'][st]]);}
+  say(n.name,['The sky! Look at the sky, Summoner! Blue, for the first time in years!','The boats are already going out. The whole coast owes you.',`<p><b>Chapter II complete${S.hexes.length?' (with '+S.hexes.length+' of Granny’s hexes still in you)':''}.</b> You finished <b>${done}</b> of 7 side quests here and forged <b>${S.forged.length}</b> blades in all.</p><p class="sub">Brine’s ship can take you north to Chapter III whenever you are ready.</p>`],[{label:'Sail north to Chapter III',primary:true,fn:()=>startChapter3()},{label:'Stay a while',fn:toMap}]);return}
+ say(n.name,[['','The hag lives under the old bridge at the east end of Fogmire.','The Drowned Knight guards the far gate of the Halls. Its shield goes up every other turn.','Grimtooth goblins hide behind a palisade. Hit their chief hard and his warriors scatter.','The Kraken grabs swords. Bring spares.','The wyvern is all that’s left. Guard when the storm gathers.','','My ship is ready to sail north whenever you are.'][st]],st===7?[{label:'Sail north to Chapter III',primary:true,fn:()=>startChapter3()},{label:'Not yet',fn:toMap}]:undefined);}
 const SHOP=[{id:'potion',name:'Healing potion',price:15,desc:'Heals 25 HP in battle.',rep:true,buy:()=>{S.potions++}},
  {id:'vigor',name:'Charm of Vigor',price:60,desc:'+10 max HP, for good.',buy:()=>{S.hpBonus+=10;S.hp+=10}},
  {id:'salt',name:'Salt Whetstone',price:50,desc:'Every new sword deals +2 damage.',buy:()=>{S.whet+=2}},
@@ -1285,6 +1566,10 @@ function tobiasCure(n){say(n.name,['Hold on. Your skin. Your ears. You’ve been
  [{label:'Stand in the light',primary:true,fn:()=>{const n2=S.hexes.length;S.hexes=[];S.brew=null;S.flags.hexCured=true;updHud();say(n.name,['Close your eyes.',`<p>Light pours down from the lighthouse and burns through you like sunrise. The green drains from your skin.</p><p class="reward">All ${n2} hexes are gone. The light will not do this again.</p>`])}},
   {label:'Not now',fn:()=>{S.flags.declinedCure=true;hide('dialog');questTalk('tobias',n.name);S.flags.declinedCure=false}}])}
 function talk(n){
+ if(n.id==='hrolf'){hrolfTalk(n);return}
+ if(n.id==='brunhild'){forgeShop(n);return}
+ if(n.id==='vesper'){vesperTalk(n);return}
+ if(n.id==='ysolde'&&S.glass&&!S.flags.glassCured&&!S.flags.declinedGlass){ysoldeCure(n);return}
  if(n.id==='morvane'){morvaneTalk(n);return}
  if(n.id==='brine'){brineTalk(n);return}
  if(n.id==='marigold'){shopTalk(n);return}
@@ -1320,7 +1605,7 @@ function talkNormal(n){
  questTalk(n.id,n.name)}
 function readSign(x,y){say('Signpost',[SIGNS[x+','+y]||'The writing has worn away.'])}
 function openChest(x,y){const k=pkey(x,y);if(S.opened.has(k)){toast('You already emptied this chest.');return}S.opened.add(k);
- const h=hh(x*3+(S.chapter===2?91:0),y*5),n=h%3===0?2:1,list=S.chapter===2?TREASURE2:TREASURE1,pool=list.filter(t=>!S.seenSet.has(t)),tr=pool.length?pool[h%pool.length]:null,coins=S.chapter===2?15+h%4*5:0;
+ const h=hh(x*3+(S.chapter===2?91:0),y*5),n=h%3===0?2:1,list=S.chapter===3?TREASURE3:S.chapter===2?TREASURE2:TREASURE1,pool=list.filter(t=>!S.seenSet.has(t)),tr=pool.length?pool[h%pool.length]:null,coins=S.chapter===3?40+h%4*10:S.chapter===2?15+h%4*5:0;
  S.potions+=n;S.coins+=coins;if(tr){S.seenSet.add(tr);S.seen.push(tr)}updHud();mode='menu';
  dialog('Treasure!',`<div class="speaker">${tr?`<img class="pix" src="${iconImg(tr)}" alt="">`:''}<div><p>You lift the lid and find:</p><ul class="rules"><li><b>${n} healing potion${n>1?'s':''}</b></li>${coins?`<li><b>${coins} coins</b></li>`:''}${tr?`<li><b>${THINGS[tr].name}</b>, added to your Codex. You can summon it as a sword (power ${THINGS[tr].power}).</li>`:''}</ul></div></div>`,[{label:'Take it all',primary:true,fn:toMap}])}
 
@@ -1330,7 +1615,7 @@ function entryHTML(k,clickable){const th=THINGS[k],used=S.used.has(k),el=EL[th.e
 function openCodex(){if(mode!=='map')return;mode='menu';const ready=S.seen.filter(k=>!S.used.has(k)).length;
  $('cSub').textContent=`${S.seen.length} things seen up close · ${ready} still ready to summon. Damage estimates use your current rank (×${RANKS[S.rank].mult.toFixed(1)}).`;
  $('cGrid').innerHTML=S.seen.length?S.seen.map(k=>entryHTML(k,false)).join(''):'<p class="sub">Nothing yet. Walk right next to something.</p>';show('codex')}
-function openQuests(){if(mode!=='map')return;mode='menu';const mainTxt=S.chapter===2?MAIN2[mainStage2()]:(S.flags.exiled?(S.wins<5?'Exiled from Brightmeadow. No one will help you now. Face the monsters alone: '+MAIN[1+S.wins].split(': ')[1]:'There is no one left to tell.'):MAIN[mainStage()]);let h=`<div class="quest main"><div class="qhead"><b>${S.chapter===2?'The Storm over Galecrest':'The Dragon of Ember Lair'}</b><span class="qstate">Main quest · ${S.wins}/5</span></div><p>${mainTxt}</p></div>`;
+function openQuests(){if(mode!=='map')return;mode='menu';const mainTxt=S.chapter===3?MAIN3[mainStage3()]:S.chapter===2?MAIN2[mainStage2()]:(S.flags.exiled?(S.wins<5?'Exiled from Brightmeadow. No one will help you now. Face the monsters alone: '+MAIN[1+S.wins].split(': ')[1]:'There is no one left to tell.'):MAIN[mainStage()]);let h=`<div class="quest main"><div class="qhead"><b>${S.chapter===3?'The Frost Lich of Skyspire':S.chapter===2?'The Storm over Galecrest':'The Dragon of Ember Lair'}</b><span class="qstate">Main quest · ${S.wins}/5</span></div><p>${mainTxt}</p></div>`;
  const rows=Object.entries(QUESTS).filter(([id,q])=>S.q[id]&&(q.ch||1)===S.chapter).sort((a,b)=>(S.q[a[0]]==='done')-(S.q[b[0]]==='done'));
  h+=rows.map(([id,q])=>{const done=S.q[id]==='done',ready=!done&&q.check();return `<div class="quest${done?' done':''}"><div class="qhead"><b>${q.title}</b><span class="qstate">${done?'Complete':ready?'Ready: see '+THINGS[q.giver].name:q.prog()}</span></div><p>${q.desc}</p><p>Reward: ${q.rewardText}.</p></div>`}).join('');
  if(!rows.length)h+='<p class="sub">No side quests yet. Look for villagers with a ! over their heads.</p>';$('qList').innerHTML=h;show('quests')}
@@ -1372,12 +1657,12 @@ function startBattle(mon){mode='battle';held=[];const M=MONS[mon.key];
  S.buffNow=S.brew;S.brew=null;B.buff=S.buffNow;B.freeLeft=B_FREE();B.minions=0;B.shield=false;B.ink=false;B.heals=0;B.swords.forEach(s=>{s.usedThis=false;s.hexed=false;s.grabbed=0});log(M.intro,'foe-l');if(B.buff){const bw=BREWS.find(x=>x.id===B.buff);log(`${bw.name} courses through you. ${bw.buff.replace('Next battle: ','')}`,'good');if(B.buff==='thunder'){B.hp=Math.round(B.max*0.75);log('Thunder cracks. The foe staggers.','good')}}if(B.swords.length)log(`Your kept blades answer your call: ${B.swords.map(s=>s.name).join(', ')}.`,'info');log('Your first summon this battle is free. Open Summon to forge a blade.','info');busy=false;show('battle');renderBattle()}
 function renderBattle(){if(!B)return;const M=MONS[B.key],r=RANKS[S.rank];
  $('bNum').textContent=`Battle ${B.idx+1} of 5`;$('fName').textContent=M.name;$('fTrait').textContent=M.trait;$('fBar').style.width=Math.max(0,B.hp/B.max*100)+'%';$('fHp').textContent=`${Math.max(0,B.hp)} / ${B.max}`;
- const chips=[];if(B.shield)chips.push('Shield up: half damage');if(B.minions)chips.push(`Goblin warriors ×${B.minions}`);if(B.ink)chips.push('Ink: you may miss');if(B.buff)chips.push('Hexbrew active');if(B.burn)chips.push(`Burning (${B.burn})`);if(B.poison)chips.push(`Poison ×${B.poison}`);if(B.frozen)chips.push('Frozen');if(B.weak)chips.push(`Weakened −${B.weak}`);$('fChips').innerHTML=chips.map(c=>`<span class="chip">${c}</span>`).join('');
- const w=$('fWarn');if(B.tele==='trap'){w.hidden=false;w.textContent='The kobold has set a trap. It springs next turn: Guard!'}else if(B.tele==='breath'){w.hidden=false;w.textContent='The dragon is inhaling. Fire breath next turn: Guard!'}else if(B.tele==='storm'){w.hidden=false;w.textContent='The storm is gathering. Lightning strikes next turn: Guard!'}else w.hidden=true;
+ const chips=[];if(B.anti>0)chips.push(`Anti-magic (${B.anti})`);if(B.revived)chips.push('Risen again');if(B.shield)chips.push('Shield up: half damage');if(B.minions)chips.push(`Goblin warriors ×${B.minions}`);if(B.ink)chips.push('Ink: you may miss');if(B.buff)chips.push('Hexbrew active');if(B.burn)chips.push(`Burning (${B.burn})`);if(B.poison)chips.push(`Poison ×${B.poison}`);if(B.frozen)chips.push('Frozen');if(B.weak)chips.push(`Weakened −${B.weak}`);$('fChips').innerHTML=chips.map(c=>`<span class="chip">${c}</span>`).join('');
+ const w=$('fWarn');if(B.tele==='trap'){w.hidden=false;w.textContent='The kobold has set a trap. It springs next turn: Guard!'}else if(B.tele==='breath'){w.hidden=false;w.textContent='The dragon is inhaling. Fire breath next turn: Guard!'}else if(B.tele==='storm'){w.hidden=false;w.textContent='The storm is gathering. Lightning strikes next turn: Guard!'}else if(B.tele==='death'){w.hidden=false;w.textContent='The Lich points at you. Finger of Death next turn: Guard!'}else w.hidden=true;
  const L=$('bLog');L.innerHTML=B.log.map(l=>`<li class="${l.cls}">${l.text}</li>`).join('');L.scrollTop=L.scrollHeight;
  $('yRank').textContent=`${r.name} · blades ×${r.mult.toFixed(1)}`;$('yBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('yHp').textContent=`${Math.max(0,S.hp)} / ${maxHp()}`;
  let h='';for(let i=0;i<S.slots;i++){const sw=B.swords[i];
-  h+=sw?`<button class="sw" data-i="${i}"${busy||sw.grabbed?' disabled':''}><img class="pix" src="${swordImg(sw)}" alt=""><span class="sw-txt"><b>${sw.name}</b><span class="sw-dmg">Strike · ${sw.dmg} dmg${sw.relic||sw.curse?` · <span style="color:#c99ae0">${sw.curse?`Curse ×${sw.curse}: costs ${2*sw.curse} HP per strike`:(sw.gem?'Soulgem blade: kept after battle':'Monster blade: kept after battle')}</span>`:''}</span><span class="sw-ab"><b>${sw.ab.name}:</b> ${sw.ab.desc}${sw.hexed?' <b style="color:#9acd32">Hexed: −30% damage.</b>':''}${sw.grabbed?` <b style="color:#e0a0d0">Grabbed by a tentacle (${sw.grabbed}).</b>`:''}</span></span><kbd>${i+1}</kbd></button>`:`<div class="slot-empty">Empty sword slot</div>`}
+  h+=sw?`<button class="sw" data-i="${i}"${busy||sw.grabbed?' disabled':''}><img class="pix" src="${swordImg(sw)}" alt=""><span class="sw-txt"><b>${sw.name}</b><span class="sw-dmg">Strike · ${sw.dmg} dmg${sw.relic||sw.curse?` · <span style="color:#c99ae0">${sw.curse?`Curse ×${sw.curse}: costs ${2*sw.curse} HP per strike`:(sw.gem?'Soulgem blade: kept after battle':'Monster blade: kept after battle')}</span>`:''}</span><span class="sw-ab"><b>${sw.ab.name}:</b> ${sw.ab.desc}${sw.hexed?' <b style="color:#9acd32">Hexed: −30% damage.</b>':''}${sw.grabbed?` <b style="color:#e0a0d0">${sw.grabWhy||'Grabbed by a tentacle'} (${sw.grabbed}).</b>`:''}</span></span><kbd>${i+1}</kbd></button>`:`<div class="slot-empty">Empty sword slot</div>`}
  $('swords').innerHTML=h;const ready=S.seen.some(k=>!S.used.has(k));const sb=$('aSummon');sb.textContent=B.freeLeft>0?'Summon (free)':'Summon (uses turn)';sb.disabled=busy||B.swords.length>=S.slots||!ready;
  $('aGuard').disabled=busy;$('aFists').disabled=busy;$('aBreak').disabled=busy||!B.swords.length;const pb=$('aPotion');pb.textContent=`Potion (${S.potions})`;pb.disabled=busy||S.potions<=0||S.hp>=maxHp();
  $('bHint').textContent=busy?`${M.name} is acting…`:(B.swords.length>=S.slots?`Your hands are full: ${S.slots} swords is the limit. `:'')+(!ready?'Nothing left in your Codex to summon. ':'')+`Keys: 1–${S.slots} strike · S summon · G guard · P potion · F fists · Break a blade frees a slot`}
@@ -1389,10 +1674,11 @@ function dodged(what){const dg=MONS[B.key].dodge||0;if(dg&&rnd()<dg){log(`${MONS
 function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw||sw.grabbed)return;
  sw.usedThis=true;if(sw.curse>0&&!GODF.inv){const c=2*sw.curse;S.hp-=c;log(`The curse on your ${sw.name} bites back: you lose ${c} HP.`,'foe-l');if(S.hp<=0){renderBattle();return lose()}}
  if(dodged(sw.name))return afterYou(false);
- const ab=sw.ab.id;let d=sw.dmg*(0.9+rnd()*.2);const notes=[];
+ const ab=B.anti>0?'none':sw.ab.id;let d=sw.dmg*(0.9+rnd()*.2);const notes=[];
  if(ab==='keen'&&rnd()<.25){d*=2;notes.push('critical!')}if(ab==='exec'&&B.hp<B.max*.35){d*=2;notes.push('Executioner doubles it')}
  if(ab==='surge'){const f=.5+rnd()*1.5;d*=f;notes.push(f>1.25?'Wild Surge flares':'Wild Surge sputters')}if(ab==='spark'){const x=ri(1,8);d+=x;notes.push(`+${x} lightning`)}
  if(ab==='shatter'&&!sw.shattered){d+=12;sw.shattered=true;notes.push('Shatter +12')}
+ if(B.key==='golem'&&d<120){d*=.5;notes.push('stone skin')}
  if(B.buff==='ogre'){d*=2;notes.push('Ogre’s Draught')}if(B.buff==='eye'&&rnd()<.4){d*=2;notes.push('Witch-Eye crit')}if(sw.hexed){d*=.7;notes.push('hexed')}if(B.shield){d*=.5;notes.push('shield wall')}
  d=Math.round(d);dealFoe(d,`Your ${sw.name} hits for ${d}${notes.length?' ('+notes.join(', ')+')':''}.`);
  if(ab==='twin'&&rnd()<.35){const d2=Math.round(sw.dmg*(0.9+rnd()*.2));dealFoe(d2,`Twin Strike! A second cut for ${d2}.`,'good')}
@@ -1402,8 +1688,8 @@ function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw||sw.grabbed)re
  if(B.key==='warchief'&&B.minions>0&&d>=20){B.minions--;log(`Your blow scatters a goblin warrior (${B.minions} left).`,'good')}
  const echo=ab==='echo'&&rnd()<.3;if(echo)log('Echo! The blade rings and you may act again.','good');afterYou(echo)}
 function fists(){if(busy||!B)return;const dmg=S.corrupt>=8?20:S.corrupt>=4?8:3;if(!dodged(S.corrupt>=4?'claws':'fist'))dealFoe(dmg,S.corrupt>=4?`You rake it with your claws for ${dmg}.`:'You punch it for 3. It is not impressed.');afterYou(false)}
-function guard(){if(busy||!B)return;B.guard=true;log(S.shield?'You raise Aldric’s shield.':'You raise your guard.','info');afterYou(false)}
-function potion(){if(busy||!B||S.potions<=0||S.hp>=maxHp())return;S.potions--;B.potUsed++;heal(hasHex('brittle')?15:25,'You drink a potion');afterYou(false)}
+function guard(){if(busy||!B)return;B.guard=true;log(S.shield?'You raise Aldric’s shield.':'You raise your guard.','info');if(S.flags.gearguard)heal(20,'Clockwork Bracer');afterYou(false)}
+function potion(){if(busy||!B||S.potions<=0||S.hp>=maxHp())return;S.potions--;B.potUsed++;heal(Math.round((hasHex('brittle')?15:25)*(S.chapter===3?3:S.chapter===2?1.6:1))+(S.flags.blessedPot?30:0),'You drink a potion');afterYou(false)}
 function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;foeTurn()}
 function hitYou(d,what){let dmg=d;const parts=[];if(B.guard){dmg*=(S.shield?.25:.4)+(hasHex('shaky')?.15:0);parts.push('guarded')}if(B.buff==='iron'){dmg*=.5;parts.push('Ironbark')}if(B.swords.some(s=>s.ab.id==='bulwark')){dmg*=.75;parts.push('Bulwark')}
  dmg=Math.max(1,Math.round(dmg));if(GODF.inv){dmg=0;parts.push('God mode')}S.hp-=dmg;log(`${what}: you take ${dmg}${parts.length?' ('+parts.join(', ')+')':''}.`,'foe-l');
@@ -1417,14 +1703,24 @@ const AI={goblin(){foeAtk()},
  boghag(){const live=B.swords.filter(s=>!s.hexed);if(B.turn%3===2&&live.length){const sw=live.sort((a,b)=>b.dmg-a.dmg)[0];sw.hexed=true;log(`The hag spits a hex onto your ${sw.name}. It feels weaker.`,'foe-l')}else if(B.hp<B.max*.5&&B.heals<2&&rnd()<.4){B.heals++;B.hp=Math.min(B.max,B.hp+30);log('The hag gulps a bubbling brew and heals 30.','foe-l')}else foeAtk()},
  drowned(){B.shield=!B.shield;if(B.shield){log('The Drowned Knight raises its barnacled shield.','foe-l');foeAtk()}else{log('The knight lowers its shield to swing with both hands.','foe-l');foeAtk('A two-handed swing');}},
  warchief(){if(B.turn%3===1&&B.minions<3){B.minions++;log(`The War-Chief blows his horn. A goblin warrior joins him (${B.minions}).`,'foe-l')}else foeAtk(B.minions?`The War-Chief and ${B.minions} goblin${B.minions>1?'s':''} attack`:null)},
- kraken(){const free=B.swords.filter(s=>!s.grabbed);if(free.length&&rnd()<.28){const sw=pick(free);sw.grabbed=2;log(`A tentacle wraps around your ${sw.name}! You cannot use it for 2 turns.`,'foe-l')}else if(rnd()<.22){B.ink=true;log('The Kraken sprays a cloud of ink in your face.','foe-l')}else foeAtk()},
+ kraken(){const free=B.swords.filter(s=>!s.grabbed);if(free.length&&rnd()<.28){const sw=pick(free);sw.grabbed=2;sw.grabWhy=null;log(`A tentacle wraps around your ${sw.name}! You cannot use it for 2 turns.`,'foe-l')}else if(rnd()<.22){B.ink=true;log('The Kraken sprays a cloud of ink in your face.','foe-l')}else foeAtk()},
  wyvern(){if(B.tele==='storm'){B.tele=null;hitYou(40-B.weak,'LIGHTNING strikes you')}else if(B.turn%4===3){B.tele='storm';log('The wyvern screams. Black clouds gather over the Keep.','foe-l')}else foeAtk()},
+ wolf(){const free=B.swords.filter(s=>!s.grabbed);if(free.length&&rnd()<.3){const sw=pick(free);sw.grabbed=2;sw.grabWhy='Frozen solid';log(`The wolf breathes frost. Your ${sw.name} freezes solid for a turn.`,'foe-l')}else foeAtk()},
+ yeti(){const rage=1+(1-B.hp/B.max);const M=MONS.yeti;hitYou(Math.round(Math.max(1,ri(M.atk[0],M.atk[1])-B.weak)*rage),rage>1.5?'The furious Yeti pounds you':M.verb)},
+ golem(){foeAtk()},
+ beholder(){const r=rnd();
+  if(r<.25){hitYou(Math.max(1,ri(34,42)-B.weak),'A FIRE RAY scorches you')}
+  else if(r<.45){const loose=B.swords.filter(s=>!s.relic);if(loose.length){const sw=pick(loose);B.swords=B.swords.filter(x=>x!==sw);log(`A DISINTEGRATION RAY turns your ${sw.name} to dust!`,'foe-l')}else foeAtk()}
+  else if(r<.62){B.sleep=true;log('A SLEEP RAY hits you. Your eyes grow heavy…','foe-l')}
+  else if(r<.8){B.anti=2;log('The great central eye opens. ANTI-MAGIC: your sword abilities stop working for 2 turns.','foe-l')}
+  else foeAtk()},
+ lich(){if(B.tele==='death'){B.tele=null;hitYou(70-B.weak,'FINGER OF DEATH')}else if(B.turn%4===3){B.tele='death';log('The Lich slowly raises one bony finger toward you.','foe-l')}else foeAtk()},
  dragon(){if(B.tele==='breath'){B.tele=null;hitYou(32-B.weak,'FIRE BREATH washes over you')}else if(B.turn%4===3){B.tele='breath';log('The dragon rears back and inhales. Smoke curls from its jaws.','foe-l')}else foeAtk()}};
 function foeTurn(){busy=true;renderBattle();setTimeout(()=>{if(!B)return;const M=MONS[B.key];
  if(B.burn>0){B.burn--;dealFoe(3,`${M.name} burns for 3.`,'good')}if(B.poison>0)dealFoe(2*B.poison,`Poison eats at it for ${2*B.poison}.`,'good');
  if(B.hp<=0){renderBattle();return win()}if(B.frozen){B.frozen=false;log(`${M.name} is frozen and loses its turn.`,'good')}else{B.turn++;AI[B.key]()}
- B.swords.forEach(sw=>{if(sw.grabbed){sw.grabbed--;if(!sw.grabbed)log(`The tentacle lets go of your ${sw.name}.`,'good')}});
- B.guard=false;updHud();if(B.hp<=0){renderBattle();return win()}if(S.hp<=0){renderBattle();return lose()}busy=false;renderBattle()},750)}
+ B.swords.forEach(sw=>{if(sw.grabbed){sw.grabbed--;if(!sw.grabbed)log(sw.grabWhy?`The ice on your ${sw.name} cracks away.`:`The tentacle lets go of your ${sw.name}.`,'good');if(!sw.grabbed)sw.grabWhy=null}});
+ B.guard=false;if(B.anti>0)B.anti--;updHud();if(B.hp<=0){renderBattle();return win()}if(S.hp<=0){renderBattle();return lose()}if(B.sleep){B.sleep=false;log('You are fast asleep. The Beholder acts again.','foe-l');renderBattle();return foeTurn()}busy=false;renderBattle()},750)}
 function openSummon(){if(busy||!B||B.swords.length>=S.slots)return;const r=RANKS[S.rank];
  $('sSub').textContent=`${B.freeLeft>0?'This summon is free.':'Summoning now uses your turn.'} Each blade is made of the thing you summon. Your rank multiplies its power (×${r.mult.toFixed(1)}). Defeated monsters become blades you keep.`;
  const list=[...S.seen].sort((a,b)=>(S.used.has(a)-S.used.has(b))||(THINGS[b].power-THINGS[a].power));$('sGrid').innerHTML=list.map(k=>entryHTML(k,true)).join('');show('summon')}
@@ -1436,10 +1732,10 @@ function doSummon(key){if(!B||S.used.has(key))return;hide('summon');const sw=for
  $('fgSpecs').innerHTML=`<dt>Made of</dt><dd>${THINGS[key].name} (power ${THINGS[key].power})</dd><dt>Rank bonus</dt><dd>×${RANKS[sw.rank].mult.toFixed(1)} (${RANKS[sw.rank].name})</dd><dt>Damage</dt><dd>${sw.dmg} per strike${S.whet?` (incl. +${S.whet} whetstone)`:''}</dd><dt>Ability</dt><dd><b>${sw.ab.name}:</b> ${sw.ab.desc}</dd>${sw.relic?'<dt>Monster blade</dt><dd>Stays with you after battle, but gains a curse each battle you strike with it. Each curse costs 2 HP per strike.</dd>':''}`;
  $('fgFlavor').textContent=sw.flavor;const f=$('fgArt');f.style.animation='none';void f.offsetWidth;f.style.animation='';show('forge')}
 $('fgOk').onclick=()=>{hide('forge');const sw=B.swords[B.swords.length-1];if(sw&&sw.ab.id==='tide')heal(12,'Mending Tide');if(!pendingFree)log('Summoning took your turn.','info');afterYou(pendingFree)};
-function win(){busy=true;const M=MONS[B.key];log(`${M.name} is defeated!`,'good');renderBattle();
+function win(){if(B&&B.key==='lich'&&!B.revived&&!S.flags.phyl){B.revived=true;B.hp=Math.round(B.max*.5);log('The Lich’s bones pull themselves back together. Somewhere, its phylactery still glows.','foe-l');busy=false;renderBattle();return}busy=true;const M=MONS[B.key];log(`${M.name} is defeated!`,'good');renderBattle();
  setTimeout(()=>{const lost=B.swords.filter(s=>!s.relic).map(s=>s.name),kept=B.swords.filter(s=>s.relic);kept.forEach(s=>{if(s.usedThis)s.curse++});
   B.mon.alive=false;S.wins++;const old=S.rank;S.rank=Math.min(RANKS.length-1,S.rank+1);S.hp=maxHp();const key=B.key;B=null;busy=false;hide('battle');mode='menu';updHud();addCodex(key);S.buffNow=null;if(S.flags.exiled&&S.wins>=5){exileEnding();return}const r=RANKS[S.rank],coins=M.coins||0;S.coins+=coins;updHud();
-  dialog('Victory!',`<p>${M.name} falls. ${M.story}</p>${lost.length?`<p>Your blades crumble to dust: <i>${lost.join(', ')}</i>.</p>`:''}${kept.length?`<p>Your kept blades stay with you, but darker: ${kept.map(s=>`<i>${s.name}</i> (curse ×${s.curse})`).join(', ')}.</p>`:''}<p>The ${M.name} is now in your Codex. You can summon it as a blade, once.</p>${S.rank>old?`<p class="rankup">Rank up: you are now a <b>${r.name}</b>. New summons hit harder (×${r.mult.toFixed(1)} base power).</p>`:''}${coins?`<p>You pick up <b>${coins} coins</b>.</p>`:''}<p>Your wounds close. HP ${S.hp} / ${maxHp()}.</p>${S.wins>=5?(S.chapter===2?'<p class="reward">Return to <b>Captain Brine</b> at the harbor to finish Chapter II.</p>':'<p class="reward">Return to <b>Elder Maren</b> in Brightmeadow to finish Chapter I.</p>'):''}`,
+  dialog('Victory!',`<p>${M.name} falls. ${M.story}</p>${lost.length?`<p>Your blades crumble to dust: <i>${lost.join(', ')}</i>.</p>`:''}${kept.length?`<p>Your kept blades stay with you, but darker: ${kept.map(s=>`<i>${s.name}</i> (curse ×${s.curse})`).join(', ')}.</p>`:''}<p>The ${M.name} is now in your Codex. You can summon it as a blade, once.</p>${S.rank>old?`<p class="rankup">Rank up: you are now a <b>${r.name}</b>. New summons hit harder (×${r.mult.toFixed(1)} base power).</p>`:''}${coins?`<p>You pick up <b>${coins} coins</b>.</p>`:''}<p>Your wounds close. HP ${S.hp} / ${maxHp()}.</p>${S.wins>=5?(S.chapter===3?'<p class="reward">Return to <b>Jarl Hrolf</b> in Hearthhold to finish Chapter III.</p>':S.chapter===2?'<p class="reward">Return to <b>Captain Brine</b> at the harbor to finish Chapter II.</p>':'<p class="reward">Return to <b>Elder Maren</b> in Brightmeadow to finish Chapter I.</p>'):''}`,
    [{label:'Onward',primary:true,fn:()=>{toMap();look()}}])},850)}
 function lose(){busy=true;setTimeout(()=>{const mon=B.mon;if(B.buff)S.brew=B.buff;S.buffNow=null;S.relics=B.relicSnap;B.used.forEach(k=>S.used.delete(k));S.forged.splice(B.forgedAt);S.potions+=B.potUsed;
  hide('battle');B=null;busy=false;mode='menu';S.hp=maxHp();updHud();
@@ -1462,23 +1758,23 @@ function restoreSnap(sn){for(const[id,a]of Object.entries(AREAS)){const z=sn.are
 function exitGod(){if(!GOD)return;restoreSnap(GOD.snap);GOD=null;GODF.inv=false;GODF.ohk=false;$('bGod').hidden=true;hide('god');mode='map';toast('<b>God mode off.</b> Everything is back how it was.');banner(A.kind==='in'?A.name:zname(S.x))}
 function tp(x,y){if(S.area!==CWID()){S.area=CWID();useArea(CWID())}
  for(let r=0;r<8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const X=x+dx,Y=y+dy;if(!solidAt(X,Y)&&!MONSTERS.some(m=>m.alive&&Math.abs(m.x-X)<=1&&Math.abs(m.y-Y)<=1)){S.x=S.dx=X;S.y=S.dy=Y;hide('god');mode='map';S.zone=zoneOf(X);banner(zname(X));look();return}}}
-function setStage(n){const ms=CW().monsters;ms.forEach((m,i)=>{m.alive=i>=n;if(i<n)addCodex(m.key)});S.wins=n;S.rank=S.chapter===2?5+n:Math.min(4,n);if(S.chapter===2)S.flags.metBrine=true;S.flags.metElder=true;S.flags.started=true;S.hp=maxHp();updHud();
- if(n<5){const m=ms[n];tp(m.x-3,CW().PATHC[m.x-3])}else{const e=CW().npcs.find(x=>x.id===(S.chapter===2?'brine':'elder'));tp(e.x,e.y+1)}}
+function setStage(n){const ms=CW().monsters;ms.forEach((m,i)=>{m.alive=i>=n;if(i<n)addCodex(m.key)});S.wins=n;S.rank=S.chapter===3?10+n:S.chapter===2?5+n:Math.min(4,n);if(S.chapter===2)S.flags.metBrine=true;if(S.chapter===3)S.flags.metHrolf=true;S.flags.metElder=true;S.flags.started=true;S.hp=maxHp();updHud();
+ if(n<5){const m=ms[n];tp(m.x-3,CW().PATHC[m.x-3])}else{const e=CW().npcs.find(x=>x.id===(S.chapter===3?'hrolf':S.chapter===2?'brine':'elder'));tp(e.x,e.y+1)}}
 function openGod(){mode='menu';const W0=CW(),btn=(label,act,on)=>`<button class="btn${on?' on':''}" data-g="${act}">${label}</button>`;
- const zones=S.chapter===2?[[4,'Saltmarsh Harbor'],[56,'Fogmire'],[114,'Drowned Halls'],[170,'Grimtooth Warren'],[220,'Galecrest Keep']]:[[3,'Brightmeadow'],[56,'Whisperwood'],[116,'Stonebrow Hills'],[176,'Quiet Graves'],[231,'Ember Lair']];
- let h=`<h3>Chapter</h3><div class="godrow">${S.chapter===2?'<span class="sub">You are in Chapter II.</span>':btn('Jump to Chapter II','ch2')}</div>`;
- h+='<h3>Skip to a step in the journey</h3><div class="godrow">'+W0.monsters.map((m,i)=>btn(`Battle ${i+1}: ${MONS[m.key].name}`,'stage:'+i)).join('')+btn(S.chapter===2?'After the wyvern (see Brine)':'After the dragon (see Elder)','stage:5')+'</div>';
+ const zones=S.chapter===3?[[4,'Hearthhold'],[60,'Frostpine Wood'],[120,'Glimmerdeep Caverns'],[175,'Emberforge Ruins'],[230,'Skyspire Citadel']]:S.chapter===2?[[4,'Saltmarsh Harbor'],[56,'Fogmire'],[114,'Drowned Halls'],[170,'Grimtooth Warren'],[220,'Galecrest Keep']]:[[3,'Brightmeadow'],[56,'Whisperwood'],[116,'Stonebrow Hills'],[176,'Quiet Graves'],[231,'Ember Lair']];
+ let h=`<h3>Chapter</h3><div class="godrow">${S.chapter<2?btn('Jump to Chapter II','ch2'):''}${S.chapter<3?btn('Jump to Chapter III','ch3'):'<span class="sub">You are in Chapter III.</span>'}</div>`;
+ h+='<h3>Skip to a step in the journey</h3><div class="godrow">'+W0.monsters.map((m,i)=>btn(`Battle ${i+1}: ${MONS[m.key].name}`,'stage:'+i)).join('')+btn(S.chapter===3?'After the Lich (see Jarl Hrolf)':S.chapter===2?'After the wyvern (see Brine)':'After the dragon (see Elder)','stage:5')+'</div>';
  h+='<h3>Go to a place</h3><div class="godrow">'+zones.map(([x,n])=>btn(n,'zone:'+x)).join('')+'</div>';
  h+='<h3>Go to a person</h3><div class="godrow">'+W0.npcs.map(n=>btn(n.name,'npc:'+n.id)).join('')+'</div>';
  h+='<h3>Go inside a building</h3><div class="godrow">'+Object.values(AREAS).filter(a=>a.kind==='in'&&a.retArea===CWID()).map(a=>btn(a.name,'in:'+a.id)).join('')+'</div>';
  h+='<h3>Cheats</h3><div class="godrow">'+btn('Invincible','inv',GODF.inv)+btn('One-hit kills','ohk',GODF.ohk)+btn('Full heal','heal')+btn('+5 potions, +200 coins','pot')+btn('Unlock whole Codex','codex')+btn('Refresh all summons','fresh')+btn('Rank up','rankup')+btn('Rank down','rankdown')+'</div>';
- h+=`<h3>Quests, Soulgems and Hexbrews (${S.corrupt}/8, Hexbrews ${S.hexes.length}/6)</h3><div class="godrow">`+btn('Start all side quests','qstart')+btn('Finish all side quests','qdone')+btn('+1 Soulgem','gem')+btn('Clear Soulgems','nogem')+btn('Reset purification','unpure')+btn('+1 Hexbrew','hex')+btn('Clear Hexbrews','nohex')+'</div>';
+ h+=`<h3>Quests, Soulgems and Hexbrews (${S.corrupt}/8, Hexbrews ${S.hexes.length}/6, Mirror Shards ${S.glass||0}/5)</h3><div class="godrow">`+btn('Start all side quests','qstart')+btn('Finish all side quests','qdone')+btn('+1 Soulgem','gem')+btn('Clear Soulgems','nogem')+btn('Reset purification','unpure')+btn('+1 Hexbrew','hex')+btn('Clear Hexbrews','nohex')+btn('+1 Mirror Shard','glass')+btn('Clear Mirror Shards','noglass')+'</div>';
  $('gBody').innerHTML=h;show('god')}
 $('gBody').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const[a,v]=b.dataset.g.split(':');
  if(a==='stage')return setStage(+v);
  if(a==='zone'){const x=+v;return tp(x,CW().PATHC[x])}
  if(a==='npc'){const n=CW().npcs.find(x=>x.id===v);return tp(n.x,n.y+1)}
- if(a==='ch2'){hide('god');return startChapter2(true)}
+ if(a==='ch2'){hide('god');return startChapter2(true)}if(a==='ch3'){hide('god');if(!AREAS.coast)genCoast();return startChapter3(true)}
  if(a==='in'){const ar=AREAS[v];hide('god');mode='map';enterArea(ar.id,ar.exit[0],ar.exit[1]);return}
  if(a==='inv')GODF.inv=!GODF.inv;if(a==='ohk')GODF.ohk=!GODF.ohk;if(a==='heal')S.hp=maxHp();if(a==='pot'){S.potions+=5;S.coins+=200}
  if(a==='codex')Object.keys(THINGS).forEach(k=>{if(!S.seenSet.has(k)){S.seenSet.add(k);S.seen.push(k)}});
@@ -1486,7 +1782,7 @@ $('gBody').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(
  if(a==='rankup')S.rank=Math.min(RANKS.length-1,S.rank+1);if(a==='rankdown')S.rank=Math.max(0,S.rank-1);
  if(a==='qstart')Object.keys(QUESTS).forEach(id=>{if(!S.q[id])S.q[id]='active'});
  if(a==='qdone')Object.entries(QUESTS).forEach(([id,q])=>{if(S.q[id]!=='done'){S.q[id]='done';q.reward()}});
- if(a==='gem')S.corrupt=Math.min(8,S.corrupt+1);if(a==='hex'){const b=BREWS.find(x=>!S.hexes.includes(x.hex));if(b)S.hexes.push(b.hex)}if(a==='nohex'){S.hexes=[];S.flags.hexCured=false}if(a==='nogem')S.corrupt=0;if(a==='unpure')S.flags.purified=false;
+ if(a==='gem')S.corrupt=Math.min(8,S.corrupt+1);if(a==='hex'){const b=BREWS.find(x=>!S.hexes.includes(x.hex));if(b)S.hexes.push(b.hex)}if(a==='nohex'){S.hexes=[];S.flags.hexCured=false}if(a==='glass')S.glass=Math.min(4,(S.glass||0)+1);if(a==='noglass'){S.glass=0;S.flags.glassCured=false}if(a==='nogem')S.corrupt=0;if(a==='unpure')S.flags.purified=false;
  S.hp=Math.min(S.hp,maxHp());updHud();toast('Done.');openGod()});
 $('gClose').onclick=()=>{hide('god');mode='map'};$('gExit').onclick=exitGod;$('bGod').onclick=()=>{if(mode==='map')openGod()};
 
@@ -1494,7 +1790,7 @@ $('gClose').onclick=()=>{hide('god');mode='map'};$('gExit').onclick=exitGod;$('b
 let CUT=null;
 function cap(html,end){const c=$('cap');if(!html){c.hidden=true;return}c.hidden=false;c.className='cap'+(end?' end':'');c.innerHTML=html}
 function startCut(type){['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);mode='cut';held=[];
- const realm=type==='goblin'?'coast':'world';if(S.area!==realm){S.area=realm;useArea(realm)}
+ const realm=type==='goblin'?'coast':type==='mirror'?'peaks':'world';if(S.area!==realm){S.area=realm;useArea(realm)}
  CUT={type,t0:performance.now()/1000,burn:new Map(),hidePlayer:false,hideNPC:false,cam:null,step:-1,px:S.x,py:S.y};
  if(type==='banish'){const ids=['elder','hilda','bram','pip','rowan','odo','greta','mott','aldric','elsabet','whiskers'];
   CUT.crowd=AREAS.world.npcs.filter(n=>ids.includes(n.id)&&!n.gone).map((n,i,arr)=>{const a=i/arr.length*Math.PI*2,near=Math.abs(n.x-S.x)<14&&Math.abs(n.y-S.y)<10;
@@ -1541,6 +1837,28 @@ function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,$
   if(ct<18.5)cap('');else cap('THE END<span class="small">Years later, travellers spoke of a young red dragon nesting in the Ember Lair. Nobody remembered that it had once been a knight.</span>',true);
   if(ct>23&&CUT.step<0){CUT.step=1;const btns=[{label:'Watch again',fn:()=>{hide('dialog');startCut('dragon')}},{label:'Start a new game',primary:true,fn:()=>{CUT=null;cap('');newGame()}}];if(GOD)btns.push({label:'Exit God mode',danger:true,fn:()=>{CUT=null;cap('');hide('dialog');exitGod()}});
    dialog('The Dragon’s Ending','<p>You became the dragon you set out to slay.</p><p class="sub">Start a new game to try for the hero’s ending, or the exile’s.</p>',btns);mode='cut'}
+  return}
+ if(CUT.type==='mirror'){
+  const P=AREAS.peaks,hx0=14,hy=P.PATHC[14];CUT.hidePlayer=true;CUT.hideNPC=false;
+  CUT.cam={x:Math.max(0,hx0*16+8-LW/2),y:Math.max(0,Math.min(P.H*16-LH,hy*16+8-LH/2))};drawMap(t);
+  const kx=hx0*16-CAM.x,ky=hy*16-CAM.y,mx=kx+30,my=ky-22;
+  const frame=(inner)=>{pen(ctx,mx,my,1);R(-2,36,24,3,'#6a7075');R(0,0,20,36,'#c4c9cd');R(1,1,18,34,'#9aa0a5');R(2,2,16,32,'#3a5a7a');ctx.save();ctx.beginPath();ctx.rect(mx+2,my+2,16,32);ctx.clip();ctx.fillStyle='rgba(143,184,216,.35)';ctx.fillRect(mx+2,my+2,16,32);inner();ctx.restore();pen(ctx,mx,my,1);R(3,3,2,8,'rgba(255,255,255,.5)');R(9,0,2,1,'#e6e2d6')};
+  if(ct<2.8){const rise=Math.min(1,ct/1.4);ctx.globalAlpha=rise;frame(()=>drawPlayerFx(mx+2,my+16,'left',0,1));ctx.globalAlpha=1;drawPlayerFx(kx,ky,'right',0,4);
+   cap(ct<1.4?'The fifth shard slides into place…':'A mirror rises out of the snow. Your reflection is smiling.');return}
+  if(ct<3.4){frame(()=>{});ctx.fillStyle=`rgba(255,255,255,${1-Math.abs(ct-3.1)/0.3})`;ctx.fillRect(0,0,LW,LH);return}
+  if(ct<7){const k=(ct-3.4)/3.6,walk=[1,0,2,0][Math.floor(ct*8)%4];
+   frame(()=>{if(k>0.5)drawPlayerFx(mx+2,my+16,'right',0,5)});
+   if(k<=0.5)drawPlayerFx(Math.round(kx+(mx+2-kx)*k*2),ky,'right',walk,5);
+   drawPlayerFx(Math.round(mx+4+k*40),ky,'right',walk,0);
+   cap('Your reflection steps out into the snow. You are pulled in through the glass.');return}
+  const k=ct-7,walk=[1,0,2,0][Math.floor(ct*8)%4],knock=Math.floor(k*2)%2===0&&k%0.5<0.12?1:0;
+  frame(()=>drawPlayerFx(mx+2+knock,my+16,'right',0,5));
+  drawPlayerFx(Math.round(mx+44+k*38),ky,'right',walk,0);
+  cap(k<2?'Your reflection walks home in your boots, and waves to the villagers.':'Nobody hears you knocking on the glass.');
+  if(k>3.2)fade((k-3.2)/1);
+  if(k>4.2){fade(1);cap(k<5.4?'':'THE END<span class="small">Years later, the hero of three lands lived quietly in Hearthhold. Nobody knew he was only a reflection, or that a knight still knocks on the inside of Vesper’s mirror.</span>',k>=5.4)}
+  if(k>9&&CUT.step<0){CUT.step=1;const btns=[{label:'Watch again',fn:()=>{hide('dialog');startCut('mirror')}},{label:'Start a new game',primary:true,fn:()=>{CUT=null;cap('');newGame()}}];if(GOD)btns.push({label:'Exit God mode',danger:true,fn:()=>{CUT=null;cap('');hide('dialog');exitGod()}});
+   dialog('The Mirror’s Ending','<p>You summoned too many things twice. In the end, there were two of you, and only one could leave.</p><p class="sub">Start a new game to try for a different ending.</p>',btns);mode='cut'}
   return}
  if(CUT.type==='goblin'){
   if(ct<3.4){CUT.hidePlayer=ct>0.8;drawMap(t);const sx=S.x*16-CAM.x,sy=S.y*16-CAM.y;
