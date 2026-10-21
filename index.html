@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 </head>
 <body>
-<title>Summonblade</title>
+<title>The Sumunbléd Chronicles</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Alegreya+Sans:wght@400;500;700;800&display=swap">
@@ -149,7 +149,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
 
 <div id="app">
   <div class="hud">
-    <div class="logo">Summonblade</div>
+    <div class="logo">The Sumunbléd Chronicles</div>
     <div class="stat"><span class="lbl">Rank</span><span class="val" id="hRank">Squire</span></div>
     <div class="stat"><span class="lbl">Blade power</span><span class="val" id="hMat">×1.0</span></div>
     <div class="stat"><span class="lbl">HP <span id="hHp">40/40</span></span><div class="bar"><i id="hBar"></i></div></div>
@@ -848,7 +848,7 @@ function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).
 function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('hPot').textContent=S.potions;
  $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`}
 function showIntro(){mode='menu';
- dialog('Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
+ dialog('The Sumunbléd Chronicles · Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
  <ul class="rules"><li>Walk <b>right next to</b> something to add it to your <b>Codex</b>. Monsters only join your Codex once you defeat them.</li>
  <li>In battle, pick a Codex entry and it is forged into a sword on the spot, with a <b>random special ability</b>. A daisy sword is made of daisy, and it is about as dangerous.</li>
  <li>Things get stronger the further east you travel. Your <b>rank</b> also multiplies the power of new swords. Win battles to rank up.</li>

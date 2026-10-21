@@ -1,4 +1,4 @@
-# Summonblade
+# The Sumunbléd Chronicles
 
 A pixel-art, tile-scrolling medieval RPG. Anything you have seen up close can be summoned in battle as a sword made of that very thing, with a random special ability.
 
