@@ -11,7 +11,7 @@ Open `index.html` in a web browser. No install needed.
 - Move: arrow keys or WASD (on-screen pad on touch screens)
 - Talk, read signs, open chests: walk into them
 - Enter buildings: walk through the door
-- C: Codex · B: Kept blades (destroy them here) · Q: Quest log
+- C: Codex · B: Kept blades (destroy them here) · Q: Quest log · T: Travel to any land you have reached
 - Battle: 1–4 strike, S summon, G guard, P potion, F fists, Break a blade (free action)
 
 ## What's in Chapter I

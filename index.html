@@ -163,6 +163,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <div class="hud-btns">
       <button class="btn" id="bCodex">Codex · <span id="hCodex">0</span></button>
       <button class="btn" id="bArmory">Blades · <span id="hBlades">0</span></button>
+      <button class="btn" id="bTravel" hidden>Travel</button>
       <button class="btn" id="bQuests">Quests</button>
       <button class="btn godbadge" id="bGod" hidden>God mode</button>
       <button class="btn" id="bHelp">Rules</button>
@@ -789,8 +790,9 @@ function genPeaks(){
  if(vt)makeInterior('vault3in','The Forge Vault','stone',9,7,[['anvil',1,2],['weaponrack',7,2],['minecart',1,5],['hammer',4,2],['chest',7,5]],vt,'peaks');
 }
 function startChapter3(dev){
+ if(S.maxChapter>=3&&AREAS.peaks){travelTo(3,4);return}
  if(!AREAS.peaks)genPeaks();
- S.chapter=3;S.ch2wins=S.wins;S.wins=0;if(S.rank<10)S.rank=10;S.flags.ch2done=true;S.flags.metBrine=true;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
+ S.winsBy[S.chapter]=S.wins;S.chapter=3;S.maxChapter=Math.max(S.maxChapter,3);S.ch2wins=S.wins;S.wins=0;S.visited.add('3:0');if(S.rank<10)S.rank=10;S.flags.ch2done=true;S.flags.metBrine=true;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
  S.area='peaks';useArea('peaks');const st=AREAS.peaks.start;S.x=S.dx=st[0];S.y=S.dy=st[1];S.zone=0;S.dir='right';
  ['battle','summon','codex','quests','forge','god'].forEach(hide);mode='menu';updHud();look();
  dialog('Chapter III: The Frostspire Peaks',`<p>Captain Brine’s ship carries you north until the sea turns to ice. You climb the last miles on foot, into a land of snow and wind.</p>
@@ -800,8 +802,9 @@ function startChapter3(dev){
  <p class="sub">Start with Jarl Hrolf outside the Longhall.</p>`,[{label:'Step into the snow',primary:true,fn:()=>{hide('dialog');mode='map';banner(zname(S.x))}}]);
 }
 function startChapter2(dev){
+ if(S.maxChapter>=2&&AREAS.coast){travelTo(2,4);return}
  if(!AREAS.coast)genCoast();
- S.chapter=2;S.ch1wins=S.wins;S.wins=0;if(S.rank<5)S.rank=5;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
+ S.winsBy[S.chapter]=S.wins;S.chapter=2;S.maxChapter=Math.max(S.maxChapter,2);S.ch1wins=S.wins;S.wins=0;S.visited.add('2:0');if(S.rank<5)S.rank=5;S.flags.chapterDone=true;S.flags.metElder=true;S.hp=maxHp();
  S.area='coast';useArea('coast');const st=AREAS.coast.start;S.x=S.dx=st[0];S.y=S.dy=st[1];S.zone=0;S.dir='right';
  ['battle','summon','codex','quests','forge','god'].forEach(hide);mode='menu';updHud();look();
  dialog('Chapter II: The Saltmarsh Coast',`<p>A fishing boat carries you east across the bay. Brightmeadow shrinks behind you. Ahead, storm clouds sit over a long grey coast.</p>
@@ -876,7 +879,7 @@ const maxHp=()=>40+S.rank*12+S.hpBonus-(hasHex('frail')?12:0)-(S.glass||0)*10;
 function newGame(){
  genWorld();const P0=AREAS.world.PATHC[3];if(AREAS.coast)delete AREAS.coast;if(AREAS.peaks)delete AREAS.peaks;
  S={area:'world',x:3,y:P0,dx:3,dy:P0,dir:'right',walk:0,rank:0,hp:40,seen:[],seenSet:new Set(),used:new Set(),wins:0,zone:0,forged:[],
-    potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0,chapter:1,coins:0,hexes:[],glass:0,yaks:0,beacons:new Set(),gears:0,blooms:0,brew:null,buffNow:null,fish:0,oil:0,pages:0,banners:new Set(),bought:{}};
+    potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0,chapter:1,maxChapter:1,winsBy:{},visited:new Set(['1:0']),coins:0,hexes:[],glass:0,yaks:0,beacons:new Set(),gears:0,blooms:0,brew:null,buffNow:null,fish:0,oil:0,pages:0,banners:new Set(),bought:{}};
  CUT=null;if($('cap'))$('cap').hidden=true;B=null;busy=false;GOD=null;GODF.inv=false;GODF.ohk=false;if($('bGod'))$('bGod').hidden=true;['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);
  useArea('world');look();updHud();showIntro();
 }
@@ -1429,7 +1432,7 @@ function dialog(title,html,btns){$('dTitle').textContent=title;$('dBody').innerH
 const toMap=()=>{hide('dialog');mode='map';updHud()};
 function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).find(key=>THINGS[key].name===who);const face=k?`<img class="pix" src="${iconImg(k)}" alt="">`:'';
  const render=()=>{const last=i===pages.length-1;dialog(who,`<div class="speaker">${face}<div>${pages[i]}</div></div>`,last?(endBtns||[{label:'Goodbye',primary:true,fn:toMap}]):[{label:'Next',primary:true,fn:()=>{i++;render()}}])};render()}
-function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('hBlades').textContent=S.relics?S.relics.length:0;$('hPot').textContent=S.potions;
+function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('bTravel').hidden=!(S.visited&&S.visited.size>1);$('hBlades').textContent=S.relics?S.relics.length:0;$('hPot').textContent=S.potions;
  $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter>=2||S.coins);$('hCoin').textContent=S.coins||0;$('hGlassWrap').hidden=!S.glass;$('hGlass').textContent=`${S.glass||0} / 5`;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
 function showIntro(){mode='menu';
  dialog('The Sumunbléd Chronicles · Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
@@ -1439,7 +1442,7 @@ function showIntro(){mode='menu';
  <li>Each thing can be summoned <b>only once, ever</b>. Swords crumble after battle, except <b>monster blades</b>: those stay with you but gain a <b>curse</b> each battle you strike with them.</li>
  <li>Your first summon each battle is free. You can hold up to 3 swords.</li>
  <li>Villagers with <b>!</b> have quests; <b>?</b> means one is ready to hand in. Walk through a building’s door to go inside. Treasure chests hide all over the realm.</li></ul>
- <p class="sub">Move with arrows or WASD (or the pad on touch screens). Bump into people, signs and chests. C opens the Codex, B your kept blades (where you can destroy them), Q the quest log. Start with Elder Maren outside the blue-roofed hall.</p>`,
+ <p class="sub">Move with arrows or WASD (or the pad on touch screens). Bump into people, signs and chests. C opens the Codex, B your kept blades (where you can destroy them), Q the quest log, T the travel map once you have reached more than one land. Start with Elder Maren outside the blue-roofed hall.</p>`,
  [{label:S.flags.started?'Back to the game':'Begin the journey',primary:true,fn:()=>{S.flags.started=true;hide('dialog');mode=B?'battle':'map';if(!B&&A.kind==='out')banner(zname(S.x))}},
   ...(S.flags.started?[{label:'Enter code',fn:()=>{mode='map';openCode()}},{label:'Start a new game',danger:true,fn:()=>dialog('Start over?','<p>This wipes your Codex, quests and progress and starts Chapter I from the beginning.</p>',[{label:'Keep playing',primary:true,fn:toMap},{label:'Yes, start over',danger:true,fn:()=>newGame()}])}]:[])])}
 
@@ -1639,13 +1642,13 @@ function step(dx,dy){
  if(solidAt(nx,ny))return;
  S.x=nx;S.y=ny;pickup(nx,ny);look();
  const near=MONSTERS.find(m=>m.alive&&Math.abs(m.x-S.x)<=1&&Math.abs(m.y-S.y)<=1);if(near){startBattle(near);return}
- if(A.kind==='out'){const z=zoneOf(S.x);if(z!==S.zone){S.zone=z;banner(zname(S.x))}}
+ if(A.kind==='out'){const z=zoneOf(S.x);if(z!==S.zone){S.zone=z;banner(zname(S.x))}if(!S.visited.has(S.chapter+':'+z)){S.visited.add(S.chapter+':'+z);updHud()}}
 }
 function press(k){const d=DIRS[k];if(!d)return;if(!held.includes(k)){held.push(k);if(mode==='map'&&arrived())step(d[0],d[1])}}
 function release(k){held=held.filter(h=>h!==k)}
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
  if(k==='escape'){if(!$('summon').hidden)hide('summon');else if(!$('codex').hidden){hide('codex');mode='map'}else if(!$('quests').hidden){hide('quests');mode='map'}return}
- if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='b'){openArmory();return}if(k==='q'){openQuests();return}if(k==='`'){openCode();return}}
+ if(mode==='map'){if(DIRS[k]){e.preventDefault();press(k);return}if(k==='c'){openCodex();return}if(k==='b'){openArmory();return}if(k==='t'){openTravel();return}if(k==='q'){openQuests();return}if(k==='`'){openCode();return}}
  if(mode==='battle'&&B&&!busy&&$('summon').hidden&&$('forge').hidden&&$('dialog').hidden){if(['1','2','3','4'].includes(k))strike(+k-1);else if(k==='s')openSummon();else if(k==='g')guard();else if(k==='f')fists();else if(k==='p')potion()}});
 window.addEventListener('keyup',e=>release(e.key.toLowerCase()));window.addEventListener('blur',()=>{held=[]});
 $('pad').querySelectorAll('button').forEach(b=>{const d=b.dataset.d;b.addEventListener('pointerdown',e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}press(d)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>release(d)))});
@@ -1917,6 +1920,20 @@ function openArmory(){if(mode!=='map')return;mode='menu';const list=S.relics;
 function battleBreak(){if(busy||!B||!B.swords.length)return;
  dialog('Break a blade',`<p>Shatter one of your swords to free its slot. This does not use your turn.</p>`,[...B.swords.map(sw=>({cls:'gemopt',html:bladeRow(sw),fn:()=>confirmBreak(sw,battleBreak)})),{label:'Never mind',primary:true,fn:()=>hide('dialog')}])}
 $('bArmory').onclick=()=>openArmory();$('aBreak').onclick=()=>battleBreak();
+
+/* ================= TRAVEL ================= */
+const REALMS={1:{id:'world',name:'The Kingdom of Brightmeadow',zn:ZNAMES,zb:ZB},2:{id:'coast',name:'The Saltmarsh Coast',zn:ZN2,zb:ZB2},3:{id:'peaks',name:'The Frostspire Peaks',zn:ZN3,zb:ZB3}};
+function landX(ch,z){const zb=REALMS[ch].zb;return z===0?4:zb[z-1]+(z===2?9:6)}
+function travelTo(ch,x){S.winsBy[S.chapter]=S.wins;S.chapter=ch;S.wins=S.winsBy[ch]||0;['dialog','god'].forEach(hide);mode='map';tp(x,CW().PATHC[x]);updHud()}
+function openTravel(){if(mode!=='map'||!S.visited||S.visited.size<2)return;mode='menu';
+ let h='<p>Travel to any land you have already reached. Monsters you beat stay beaten, and each realm keeps its own quests.</p>';const btns=[];
+ for(let ch=1;ch<=S.maxChapter;ch++){const R0=REALMS[ch];const lands=R0.zn.map((n,z)=>({n,z})).filter(o=>S.visited.has(ch+':'+o.z));if(!lands.length)continue;
+  btns.push({cls:'gemopt',html:`<span><b>${R0.name}</b><br><span class="sub">Chapter ${['I','II','III'][ch-1]}</span></span>`,fn:()=>{}});
+  lands.forEach(o=>btns.push({label:`${o.n}${ch===S.chapter&&zoneOf(S.x)===o.z&&A.kind==='out'?' (you are here)':''}`,fn:()=>{travelTo(ch,landX(ch,o.z));banner(o.n);toast(`You travel to <b>${o.n}</b>.`)}}))}
+ btns.push({label:'Stay here',primary:true,fn:toMap});
+ dialog('Travel',h,btns);
+ [...$('dBtns').querySelectorAll('.gemopt')].forEach(b=>{b.disabled=true;b.style.cursor='default';b.style.flexBasis='100%';b.style.marginTop='6px'})}
+$('bTravel').onclick=()=>openTravel();
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
