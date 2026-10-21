@@ -782,7 +782,7 @@ function buildGround(a){
 const cv=$('cv'),ctx=cv.getContext('2d'),view=$('view'),foeCv=$('foeCv'),fctx=foeCv.getContext('2d');
 let P=4,LW=300,LH=200,CAM={x:0,y:0};
 const JIT=new Set(['oak','pine','grass','flower','mushroom','boulder','shrub','bones','grave','log','crystal']);
-function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6?'!':null;if(n.id==='whiskers')return null;if(n.id==='morvane')return S.flags.metMorvane?null:'!';const q=GIVES[n.id];if(!q)return null;const st=S.q[q];if(!st)return '!';if(st==='active')return QUESTS[q].check()?'?':'…';return null}
+function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6||(S.corrupt>0&&!S.flags.purified)?'!':null;if(n.id==='whiskers')return null;if(n.id==='morvane')return S.flags.metMorvane?null:'!';const q=GIVES[n.id];if(!q)return null;const st=S.q[q];if(!st)return '!';if(st==='active')return QUESTS[q].check()?'?':'…';return null}
 function drawMarker(m,px,py,t){pen(ctx,px,py-9+(Math.floor(t*3)%2),1);const c=m==='…'?'#b3a081':'#f4d27a';if(m==='!'){R(7,0,2,4,c);R(7,5,2,1,c)}else if(m==='?'){R(6,0,4,1,c);R(9,1,1,2,c);R(7,3,2,1,c);R(7,5,1,1,c)}else{R(5,4,1,1,c);R(7,4,1,1,c);R(9,4,1,1,c)}}
 function drawMap(t){
  ctx.fillStyle='#0d0b09';ctx.fillRect(0,0,LW,LH);
@@ -851,7 +851,7 @@ const LINES={
   remind:()=>S.flags.oakFound?[`You found the Oak! Now the acorns. You have ${S.acorns} of 6. They could be anywhere in these woods, north or south.`]:['The Great Oak. Far south-west. Past the thickest trees.'],
   done:['Six golden acorns. Grandfather wasn’t mad after all. Wear this. It’ll keep you standing a little longer.'],after:['The kobold’s bridge is just east. Guard when it sets a trap.']},
  odo:{offer:['Hm. Visitors. The hills are restless since the dragon came.','Three <b>standing stones</b> stand here, older than the kingdom. One in the far <b>north-west</b>, one in the far <b>south</b>, one in the <b>north-east</b> near the cliffs. Touch all three and the sky will owe you a favor.'],
-  remind:['The stones. Three of them. Their runes glow when touched.'],done:['Ah. The sky remembers you now. It dropped this. I have no use for falling stars.'],after:['The owlbear in the pass hugs. Often twice.','Morvane lives up north. He sells gifts that are not gifts.']},
+  remind:['The stones. Three of them. Their runes glow when touched.'],done:['Ah. The sky remembers you now. It dropped this. I have no use for falling stars.'],after:['The owlbear in the pass hugs. Often twice.','Morvane lives up north. He sells gifts that are not gifts. If you are ever marked by him, Elder Maren knows an old rite.']},
  elsabet:{offer:['…you can see me? Oh, it has been so long since anyone looked.','I was buried with nothing. My <b>silver locket</b>, with my husband’s portrait, lies in the far <b>north-west corner</b> of the graves. It still shines. Please bring it to me.'],
   remind:['The north-west corner. Look for something silver shining in the grass.'],done:['My locket. I can rest now. Take my lantern. Its light was meant for the living.'],after:['The dragon inhales before it burns. Brace yourself when it does.']},
  mott:{offer:()=>['Shh. This is the Quiet Graves. Quiet means quiet.',`The candles keep blowing out, and they only relight for the living. There are <b>${CANDLE_TOTAL}</b> of them scattered all over the graveyard. Light <b>every single one</b>.`],
@@ -893,8 +893,22 @@ function dragonEnding(sw){
 }
 function talk(n){
  if(n.id==='morvane'){morvaneTalk(n);return}
- if(n.id!=='whiskers'&&S.corrupt>=6&&n.id!=='elsabet'&&!(n.id==='elder'&&mainStage()===6)){const pre=S.corrupt>=8?'AAH! A DRAGON! …wait. Summoner? Is that you in there?':'Summoner… your wings. Your tail. What have you done to yourself?';say(n.name,[pre],[{label:'It’s still me',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);return}
+ if(n.id==='elder'&&S.corrupt>0){elderCorrupt(n);return}
+ if(n.id!=='whiskers'&&S.corrupt>=6&&n.id!=='elsabet'){const pre=S.corrupt>=8?'AAH! A DRAGON! …wait. Summoner? Is that you in there?':'Summoner… your wings. Your tail. What have you done to yourself?';say(n.name,[pre],[{label:'It’s still me',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);return}
  talkNormal(n)}
+function elderCorrupt(n){
+ const c=S.corrupt,sev=c>=8?'A dragon, in my village… and yet it speaks with your voice. Summoner, is that truly you?':c>=4?'Horns. Wings. Summoner, Morvane’s gems are eating you alive.':'Your eyes… there is red in them. You have been to see Morvane, haven’t you?';
+ if(S.flags.purified){say(n.name,[sev,'I already performed the old rite for you once. It cannot be done twice. Whatever you become now, you chose it.'],[{label:'I understand',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);return}
+ const gemmed=S.relics.filter(s=>s.gem);
+ say(n.name,[sev,`There is an old rite, older than this village. I can burn the gems out of you and make you whole again. But it only works <b>once in a lifetime</b>.${gemmed.length?` And the blades those gems bound (${gemmed.map(s=>'<i>'+s.name+'</i>').join(', ')}) will crumble with them.`:''}`],
+  [{label:'Purify me',primary:true,fn:()=>purify(n)},{label:'Not now',fn:()=>{hide('dialog');talkNormal(n)}}]);
+}
+function purify(n){
+ const gone=S.relics.filter(s=>s.gem);S.relics=S.relics.filter(s=>!s.gem);gone.forEach(s=>{s.relic=false;s.gem=false});
+ S.corrupt=0;S.flags.purified=true;updHud();
+ say(n.name,['Hold still. This will burn.',`<p>Elder Maren presses her palms to your chest and speaks words you don’t know. Red light pours out of you and scatters like sparks.</p><p class="reward">You are purified. Your wings, horns and scales are gone.${gone.length?` The gem-bound blades crumble: <i>${gone.map(s=>s.name).join(', ')}</i>.`:''}</p><p class="sub">The rite cannot be done again. If you take more Soulgems, there will be no way back.</p>`],
+  [{label:'Thank you, Elder',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);
+}
 function talkNormal(n){
  if(n.id==='elder'){const st=mainStage();
   if(st===0){S.flags.metElder=true;S.potions++;updHud();say(n.name,['Ah, the Summoner. Thank the stars you came.','Three nights ago a young <b>red dragon</b> flew over Brightmeadow and set the Pell farm alight. It nests in the <b>Ember Lair</b>, far to the east, past Whisperwood, Stonebrow Hills and the Quiet Graves.','Its servants block every road, and they are stronger than they look. Start with the <b>goblin at the edge of Whisperwood</b>.','Take this potion. Talk to everyone, look inside the houses, and explore. What you see up close is what you can fight with.<p class="reward" style="margin-top:10px">You received <b>1 healing potion</b>.</p>'])}

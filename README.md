@@ -21,4 +21,4 @@ Open `index.html` in a web browser. No install needed.
 - 9 side quests, 12 villagers, 10 enterable buildings, 7+ treasure chests
 - Every Codex entry has its own sword design
 - Monster blades stay with you but gather curses
-- Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending)
+- Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending). Elder Maren can purify you, but only once
