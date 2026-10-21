@@ -1,0 +1,24 @@
+# Summonblade
+
+A pixel-art, tile-scrolling medieval RPG. Anything you have seen up close can be summoned in battle as a sword made of that very thing, with a random special ability.
+
+Project manager: Kimball. Built with Claude.
+
+## Play
+
+Open `index.html` in a web browser. No install needed.
+
+- Move: arrow keys or WASD (on-screen pad on touch screens)
+- Talk, read signs, open chests: walk into them
+- Enter buildings: walk through the door
+- C: Codex · Q: Quest log
+- Battle: 1–4 strike, S summon, G guard, P potion, F fists
+
+## What's in Chapter I
+
+- 5 lands: Brightmeadow Village, Whisperwood, Stonebrow Hills, the Quiet Graves, Ember Lair
+- 5 battles: Goblin Scout, Kobold Trapper, Owlbear, Gelatinous Cube, Young Red Dragon
+- 9 side quests, 12 villagers, 10 enterable buildings, 7+ treasure chests
+- Every Codex entry has its own sword design
+- Monster blades stay with you but gather curses
+- Morvane's Soulgems bring fallen blades back, at a price: take 8 and you become a dragon (the alternate ending)
