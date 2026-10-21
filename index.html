@@ -335,6 +335,7 @@ const THINGS={
 };
 // ---- Chapter I treasures (found in chests) ----
 Object.assign(THINGS,{
+ acorn:T('Golden Acorn','Acorn',6,'nature','#e6bf4a',{item:1}),locket:T('Silver Locket','Locket',8,'holy','#c4c9cd',{item:1}),keyfrag:T('Key Piece','Keyshard',7,'metal','#dcb75e',{item:1}),
  goldring:T('Gold Ring','Ring',4,'arcane','#e6bf4a',{item:1}),oldhelm:T('Dented Helmet','Helm',5,'metal','#9aa0a5',{item:1}),
  goblet:T('Silver Goblet','Goblet',4,'holy','#c4c9cd',{item:1}),ruby:T('Ruby','Ruby',7,'fire','#c2412f',{item:1}),
  hornh:T('Hunting Horn','Horn',5,'nature','#c8b27a',{item:1}),scroll:T('Old Scroll','Scroll',6,'arcane','#efe3c8',{item:1}),
@@ -741,10 +742,10 @@ function look(){
  checkQuests();
 }
 function pickup(x,y){const t=MAP[y][x],o=t.o;
- if(o==='locket'){t.o=null;S.flags.locket=true;toast('You pick up a <b>silver locket</b>. A tiny portrait is inside.')}
- else if(o==='acorn'&&S.flags.oakFound){t.o=null;S.acorns++;toast(`Golden acorn collected (${S.acorns}/6).`)}
+ if(o==='locket'){t.o=null;S.flags.locket=true;addCodex('locket');toast('You pick up a <b>silver locket</b>. A tiny portrait is inside.')}
+ else if(o==='acorn'&&S.flags.oakFound){t.o=null;S.acorns++;addCodex('acorn');toast(`Golden acorn collected (${S.acorns}/6).`)}
  else if(o==='bones'&&S.q.bones==='active'){t.o=null;S.bones++;toast(`You bag the bones (${Math.min(15,S.bones)}/15).`)}
- else if(o==='keyfrag'){t.o=null;S.frags.add(S.area);toast(`You found a <b>key piece</b> (${S.frags.size}/3).`)}
+ else if(o==='keyfrag'){t.o=null;S.frags.add(S.area);addCodex('keyfrag');toast(`You found a <b>key piece</b> (${S.frags.size}/3).`)}
  else if(o==='fishspot'){t.o=null;S.fish++;toast(`You scoop up a fish (${Math.min(6,S.fish)}/6).`)}
  else if(o==='oil'){t.o=null;S.oil++;toast(`You found a jar of <b>lamp oil</b> (${S.oil}/3).`)}
  else if(o==='kite'){t.o=null;S.flags.kite=true;toast('You untangle <b>Wren’s kite</b> from the branches.')}
@@ -1035,6 +1036,9 @@ function paintSword(g,key,seed){
  case 'greta':person({hair:'#5a4a3a',skin:'#d8a878',cloth:'#5a4e3e',cloth2:'#3a3228',stripe:'#6b5a44'});grip('#7a5636');Hh(13,28,6,3,'#7d858a');break;
  case 'aldric':person({helmet:'#b8c8d4',hair:'#b8c8d4',skin:'#e0b48a',cloth:'#9cb0c0',cloth2:'#7d93a5',stripe:'#3e5a8a',belt:'#6b4a2e'});grip('#5a3b25','#3a2618');pommel('#dcb75e');break;
  case 'elsabet':person({hair:'rgba(220,240,245,.85)',skin:'rgba(191,227,234,.8)',cloth:'rgba(191,227,234,.6)',cloth2:'rgba(160,200,210,.6)',eye:'#1a2a30'});grip('rgba(191,227,234,.6)');Hh(14,28,4,3,'#c4c9cd');break;
+ case 'acorn':blade({w:8,tip:4},(i,j)=>i<2?'#f7dc80':(j%5===3?'#c9a14a':'#e6bf4a'));Hh(8,19,16,4,'#8a5a2a');for(let i=0;i<8;i++)Hh(9+i*2,19+(i%2),1,1,'#6b4a2e');grip('#6b4a2e');Hh(15,28,2,3,'#6b4a2e');break;
+ case 'locket':blade({w:8,tip:3},(i,j)=>(j>=6&&j<=9&&i>=2&&i<=5)?(i===2&&j===6?'#fff':'#eef2f4'):(i<2?'#eef2f4':'#c4c9cd'));guard('#9aa0a5',12);grip('#c4c9cd');Hh(15,28,2,1,'#c4c9cd');Hh(14,29,4,2,'#c4c9cd');break;
+ case 'keyfrag':blade({w:4,tip:0,top:3},(i)=>i<1?'#f7dc80':'#dcb75e');Hh(18,6,3,2,'#dcb75e');Hh(18,11,2,2,'#dcb75e');guard('#c9a14a',10);grip('#c9a14a');Hh(13,28,6,4,'#dcb75e');Hh(15,29,2,2,'#120e0a');break;
  case 'goldring':case 'compass':blade({w:6,tip:3},(i,j)=>j%5===2?'#c2412f':(i===0?'#f7dc80':'#e6bf4a'));guard('#c9a14a');grip('#9c7a24');pommel('#e6bf4a');break;
  case 'oldhelm':case 'brokensw':blade({w:8,tip:4},(i,j)=>nz(i,j)<10?'#6a7075':(i<3?'#c4c9cd':'#9aa0a5'));guard('#9aa0a5');grip('#5a3b25');pommel('#9aa0a5');break;
  case 'goblet':blade({w:6,tip:3},(i)=>i<2?'#eef2f4':'#c4c9cd');guard('#c4c9cd');grip('#c4c9cd');pommel('#eef2f4');break;
