@@ -135,6 +135,9 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
 .codein{font:inherit;font-size:16px;padding:8px 10px;width:100%;box-sizing:border-box;background:var(--ink);color:var(--parch);border:2px solid var(--line);margin:6px 0 4px}
 .codein:focus{outline:2px solid var(--gold);outline-offset:1px}
 .err{color:#f0a48c;font-size:14px;min-height:20px}
+.cap{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:min(640px,calc(100% - 32px));text-align:center;font-family:var(--display);font-size:clamp(16px,2.6vw,22px);line-height:1.35;color:var(--parch);text-shadow:2px 2px 0 #000;z-index:4;pointer-events:none}
+.cap.end{bottom:auto;top:10%;z-index:9;font-size:clamp(40px,9vw,84px);color:#e8423a;letter-spacing:.06em}
+.cap .small{display:block;font-size:clamp(14px,2.2vw,18px);color:var(--parch);letter-spacing:0;margin-top:14px;font-family:var(--body);font-style:italic;text-shadow:1px 1px 0 #000}
 .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:20px;color:var(--dim);z-index:4;background:#0d0b09}
 .pad{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;display:none;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:4px;z-index:2}
 @media (pointer:coarse){.pad{display:grid}}
@@ -165,6 +168,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <canvas id="cv" aria-label="Game map"></canvas>
     <div class="labels" id="labels"></div>
     <div class="banner" id="banner"></div>
+    <div class="cap" id="cap" hidden></div>
     <div class="toasts" id="toasts"></div>
     <div class="loading" id="loading">Building the realm…</div>
     <div class="pad" id="pad">
@@ -481,7 +485,7 @@ function makeInterior(id,name,style,w,h,items,b){
  AREAS.world.doors[b.door[0]+','+b.door[1]]=id;
 }
 const baseKey=o=>o&&o[0]==='_'?o.slice(1):o;
-function npcAt(x,y){return NPCS.find(n=>n.x===x&&n.y===y)}
+function npcAt(x,y){return NPCS.find(n=>!n.gone&&n.x===x&&n.y===y)}
 function solidAt(x,y){if(x<0||y<0||x>=W||y>=H)return true;if(npcAt(x,y))return true;const t=MAP[y][x];if(t.ter==='w'||t.ter==='l'||t.ter==='wall')return true;const o=t.o;if(!o||o==='door'||o==='exit')return false;const k=baseKey(o);return !!(THINGS[k]&&THINGS[k].solid)}
 
 /* ================= QUESTS ================= */
@@ -516,7 +520,7 @@ function newGame(){
  genWorld();const P0=AREAS.world.PATHC[3];
  S={area:'world',x:3,y:P0,dx:3,dy:P0,dir:'right',walk:0,rank:0,hp:40,seen:[],seenSet:new Set(),used:new Set(),wins:0,zone:0,forged:[],
     potions:0,whet:0,hpBonus:0,shield:false,slots:3,relics:[],q:{},flags:{},stones:new Set(),lit:new Set(),frags:new Set(),opened:new Set(),notified:{},acorns:0,bones:0,corrupt:0};
- B=null;busy=false;GOD=null;GODF.inv=false;GODF.ohk=false;if($('bGod'))$('bGod').hidden=true;['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);
+ CUT=null;if($('cap'))$('cap').hidden=true;B=null;busy=false;GOD=null;GODF.inv=false;GODF.ohk=false;if($('bGod'))$('bGod').hidden=true;['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);
  useArea('world');look();updHud();showIntro();
 }
 
@@ -533,7 +537,7 @@ function look(){
   if(o==='greatoak'&&!S.flags.oakFound){S.flags.oakFound=true;toast('The Great Oak shudders. <b>Golden acorns</b> rain down across Whisperwood!')}
   if(o==='acorn'&&!S.flags.oakFound)continue;
   add(o)}
- NPCS.forEach(n=>{if(Math.abs(n.x-S.x)<=1&&Math.abs(n.y-S.y)<=1)add(n.id)});
+ NPCS.forEach(n=>{if(!n.gone&&Math.abs(n.x-S.x)<=1&&Math.abs(n.y-S.y)<=1)add(n.id)});
  if(fresh.length){toast(`New in your Codex: <b>${fresh.map(k=>THINGS[k].name).join(', ')}</b>`);updHud()}
  checkQuests();
 }
@@ -765,7 +769,7 @@ function swordImg(sw){const c=sw.curse||0,gm=sw.gem?1:0;if(!sw.img||sw.imgC!==c|
 function iconImg(k){drawIcon(scratch.getContext('2d'),k,0);return scratch.toDataURL()}
 const swDmg=k=>Math.round((2+THINGS[k].power)*RANKS[S.rank].mult)+S.whet;
 function forge(key){const th=THINGS[key],matching=ABILITIES.filter(a=>a.el.includes(th.el));const ab=(rnd()<0.5&&matching.length)?pick(matching):pick(ABILITIES);
- return {key,ab,rank:S.rank,seed:ri(1,999),dmg:swDmg(key),relic:!!th.monster,curse:0,name:`${th.short} ${pick(NOUNS)}`,flavor:`Made entirely of ${th.monster||th.npc?'':'the '}${th.name}. ${pick(FLAVOR[th.el])}`,shattered:false}}
+ return {key,ab,rank:S.rank,seed:ri(1,999),dmg:swDmg(key),relic:!!th.monster,curse:S.flags.exiled?1:0,name:`${th.short} ${pick(NOUNS)}`,flavor:`Made entirely of ${th.monster||th.npc?'':'the '}${th.name}. ${pick(FLAVOR[th.el])}`,shattered:false}}
 
 /* ================= GROUND ================= */
 const hx=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];
@@ -804,7 +808,7 @@ function drawMarker(m,px,py,t){pen(ctx,px,py-9+(Math.floor(t*3)%2),1);const c=m=
 function drawMap(t){
  ctx.fillStyle='#0d0b09';ctx.fillRect(0,0,LW,LH);
  const mw=W*16,mh=H*16;let cx=Math.round(S.dx*16+8-LW/2),cy=Math.round(S.dy*16+8-LH/2);
- cx=mw<=LW?Math.round((mw-LW)/2):Math.max(0,Math.min(mw-LW,cx));cy=mh<=LH?Math.round((mh-LH)/2):Math.max(0,Math.min(mh-LH,cy));CAM={x:cx,y:cy};
+ cx=mw<=LW?Math.round((mw-LW)/2):Math.max(0,Math.min(mw-LW,cx));cy=mh<=LH?Math.round((mh-LH)/2):Math.max(0,Math.min(mh-LH,cy));if(CUT&&CUT.cam){cx=Math.round(CUT.cam.x);cy=Math.round(CUT.cam.y)}CAM={x:cx,y:cy};
  ctx.drawImage(A.ground,Math.max(0,cx),Math.max(0,cy),Math.min(mw,LW),Math.min(mh,LH),Math.max(0,-cx),Math.max(0,-cy),Math.min(mw,LW),Math.min(mh,LH));
  const x0=Math.max(0,Math.floor(cx/16)-6),x1=Math.min(W-1,Math.ceil((cx+LW)/16)+1),y0=Math.max(0,Math.floor(cy/16)-4),y1=Math.min(H-1,Math.ceil((cy+LH)/16)+1);
  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const tl=MAP[y][x],px=x*16-cx,py=y*16-cy,h=hh(x,y);
@@ -813,17 +817,17 @@ function drawMap(t){
   else if(tl.ter==='b'){pen(ctx,px,py,1);R(0,0,16,16,'#8b6a44');for(let k=3;k<16;k+=4)R(k,0,1,16,'#6e5236');R(0,0,16,1,'#5e4630');R(0,15,16,1,'#5e4630')}
   const o=tl.o;if(o&&o[0]!=='_'&&o!=='door'){const jx=JIT.has(o)?(h%5)-2:0,jy=JIT.has(o)?((h>>4)%3)-1:0;pen(ctx,px+jx,py+jy,1);drawThing(o,t,x,y)}}
  const ents=[];
- NPCS.forEach(n=>{if(n.x>=x0&&n.x<=x1&&n.y>=y0&&n.y<=y1)ents.push({y:n.y,f:()=>{const px=n.x*16-cx,py=n.y*16-cy;pen(ctx,px,py,1);drawPerson(n.look,t,n.x);
+ NPCS.forEach(n=>{if(!n.gone&&!(CUT&&CUT.hideNPC)&&n.x>=x0&&n.x<=x1&&n.y>=y0&&n.y<=y1)ents.push({y:n.y,f:()=>{const px=n.x*16-cx,py=n.y*16-cy;pen(ctx,px,py,1);drawPerson(n.look,t,n.x);
   if(n.caged){pen(ctx,px,py,1);[1,4,11,14].forEach(x=>R(x,0,1,16,'#4f5559'));R(0,0,16,1,'#6c7378');R(0,15,16,1,'#6c7378')}const m=marker(n);if(m)drawMarker(m,px,py,t)}})});
  MONSTERS.forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(m.key==='dragon')pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
- ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayer(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0)}});
+ if(!(CUT&&CUT.hidePlayer))ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayer(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0)}});
  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
 }
 let LABELS=[];
 function buildLabels(){const box=$('labels');box.innerHTML='';LABELS=[];
  NPCS.forEach(n=>{const d=document.createElement('div');d.className='tag';d.hidden=true;box.appendChild(d);LABELS.push({el:d,get:()=>n,foe:false})});
  MONSTERS.forEach(m=>{const d=document.createElement('div');d.className='tag foe';d.hidden=true;d.textContent=MONS[m.key].name;box.appendChild(d);LABELS.push({el:d,get:()=>m,foe:true})})}
-function updLabels(){for(const L of LABELS){const e=L.get();const near=(L.foe?e.alive:true)&&Math.max(Math.abs(e.x-S.x),Math.abs(e.y-S.y))<=3&&mode==='map';
+function updLabels(){for(const L of LABELS){const e=L.get();const near=(L.foe?e.alive:!e.gone)&&Math.max(Math.abs(e.x-S.x),Math.abs(e.y-S.y))<=3&&mode==='map';
  if(!near){L.el.hidden=true;continue}L.el.hidden=false;if(!L.foe)L.el.textContent=e.name;const lift=L.foe&&e.key==='dragon'?12:(!L.foe&&marker(e)?11:2);
  L.el.style.left=((e.x*16+8-CAM.x)*P)+'px';L.el.style.top=((e.y*16-lift-CAM.y)*P)+'px'}}
 function drawFoe(t){fctx.clearRect(0,0,40,40);let ox=0;if(performance.now()-B.flash<260)ox=(Math.floor(performance.now()/40)%2)?1:-1;
@@ -899,14 +903,8 @@ function pickGemSword(){
 }
 function bindGem(sw){
  sw.relic=true;sw.gem=true;sw.curse=sw.curse||0;S.relics.push(sw);S.corrupt++;updHud();
- if(S.corrupt===8){dragonEnding(sw);return}
+ if(S.corrupt===8){startCut('dragon');return}
  dialog('The gem takes hold',`<div class="speaker"><img class="pix" src="${swordImg(sw)}" alt=""><div><p>The <b>${sw.name}</b> rebuilds itself around the red gem. It will stay with you now.</p><p class="corrupt">${CORRUPT_LINES[Math.min(7,S.corrupt)]}</p></div></div>`,[{label:'Continue',primary:true,fn:toMap}]);
-}
-function dragonEnding(sw){
- dialog('The Dragon’s Ending',`<p>The eighth gem melts into your chest. Your wings spread wide enough to blot out the sun. Your armor splits, and scales pour out underneath.</p>
- <p>Brightmeadow will tell stories about the Summoner who went looking for a dragon and became one.</p>
- <p class="corrupt"><b>Alternate ending reached.</b> You are now a dragon. You can keep exploring in your new form, or start over to try for the hero’s ending.</p>`,
- [{label:'Keep flying',primary:true,fn:toMap},{label:'Start a new game',danger:true,fn:()=>newGame()}]);
 }
 function talk(n){
  if(n.id==='morvane'){morvaneTalk(n);return}
@@ -915,7 +913,9 @@ function talk(n){
  talkNormal(n)}
 function elderCorrupt(n){
  const c=S.corrupt,sev=c>=8?'A dragon, in my village… and yet it speaks with your voice. Summoner, is that truly you?':c>=4?'Horns. Wings. Summoner, Morvane’s gems are eating you alive.':'Your eyes… there is red in them. You have been to see Morvane, haven’t you?';
- if(S.flags.purified){say(n.name,[sev,'I already performed the old rite for you once. It cannot be done twice. Whatever you become now, you chose it.'],[{label:'I understand',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);return}
+ if(S.flags.purified){
+  if(c>=6){say(n.name,['You gave in to temptation again.','Wings. A tail. The gems are eating you alive, and I cannot cleanse you twice.','You are one gem away from becoming the very thing we feared. For the sake of Brightmeadow…','Villagers! Gather round. All of you.'],[{label:'Wait, no…',primary:true,fn:()=>startCut('banish')}]);return}
+  say(n.name,['You gave in to temptation again.','I cannot perform the rite twice. Those gems are eating away at you. <b>Stop now</b>, while you are still yourself.','If you come back to me any closer to a dragon, I will have no choice.'],[{label:'I understand',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);return}
  const gemmed=S.relics.filter(s=>s.gem);
  say(n.name,[sev,`There is an old rite, older than this village. I can burn the gems out of you and make you whole again. But it only works <b>once in a lifetime</b>.${gemmed.length?` And the blades those gems bound (${gemmed.map(s=>'<i>'+s.name+'</i>').join(', ')}) will crumble with them.`:''}`],
   [{label:'Purify me',primary:true,fn:()=>purify(n)},{label:'Not now',fn:()=>{hide('dialog');talkNormal(n)}}]);
@@ -923,7 +923,7 @@ function elderCorrupt(n){
 function purify(n){
  const gone=S.relics.filter(s=>s.gem);S.relics=S.relics.filter(s=>!s.gem);gone.forEach(s=>{s.relic=false;s.gem=false});
  S.corrupt=0;S.flags.purified=true;updHud();
- say(n.name,['Hold still. This will burn.',`<p>Elder Maren presses her palms to your chest and speaks words you don’t know. Red light pours out of you and scatters like sparks.</p><p class="reward">You are purified. Your wings, horns and scales are gone.${gone.length?` The gem-bound blades crumble: <i>${gone.map(s=>s.name).join(', ')}</i>.`:''}</p><p class="sub">The rite cannot be done again. If you take more Soulgems, there will be no way back.</p>`],
+ say(n.name,['Hold still. This will burn.',`<p>Elder Maren presses his palms to your chest and speaks words you don’t know. Red light pours out of you and scatters like sparks.</p><p class="reward">You are purified. Your wings, horns and scales are gone.${gone.length?` The gem-bound blades crumble: <i>${gone.map(s=>s.name).join(', ')}</i>.`:''}</p><p class="sub">The rite cannot be done again. If you take more Soulgems, there will be no way back.</p>`],
   [{label:'Thank you, Elder',primary:true,fn:()=>{hide('dialog');talkNormal(n)}}]);
 }
 function talkNormal(n){
@@ -945,7 +945,7 @@ function entryHTML(k,clickable){const th=THINGS[k],used=S.used.has(k),el=EL[th.e
 function openCodex(){if(mode!=='map')return;mode='menu';const ready=S.seen.filter(k=>!S.used.has(k)).length;
  $('cSub').textContent=`${S.seen.length} things seen up close · ${ready} still ready to summon. Damage estimates use your current rank (×${RANKS[S.rank].mult.toFixed(1)}).`;
  $('cGrid').innerHTML=S.seen.length?S.seen.map(k=>entryHTML(k,false)).join(''):'<p class="sub">Nothing yet. Walk right next to something.</p>';show('codex')}
-function openQuests(){if(mode!=='map')return;mode='menu';let h=`<div class="quest main"><div class="qhead"><b>The Dragon of Ember Lair</b><span class="qstate">Main quest · ${S.wins}/5</span></div><p>${MAIN[mainStage()]}</p></div>`;
+function openQuests(){if(mode!=='map')return;mode='menu';let h=`<div class="quest main"><div class="qhead"><b>The Dragon of Ember Lair</b><span class="qstate">Main quest · ${S.wins}/5</span></div><p>${S.flags.exiled?(S.wins<5?'Exiled from Brightmeadow. No one will help you now. Face the monsters alone: '+MAIN[1+S.wins].split(': ')[1]:'There is no one left to tell.'):MAIN[mainStage()]}</p></div>`;
  const rows=Object.entries(QUESTS).filter(([id])=>S.q[id]).sort((a,b)=>(S.q[a[0]]==='done')-(S.q[b[0]]==='done'));
  h+=rows.map(([id,q])=>{const done=S.q[id]==='done',ready=!done&&q.check();return `<div class="quest${done?' done':''}"><div class="qhead"><b>${q.title}</b><span class="qstate">${done?'Complete':ready?'Ready: see '+THINGS[q.giver].name:q.prog()}</span></div><p>${q.desc}</p><p>Reward: ${q.rewardText}.</p></div>`}).join('');
  if(!rows.length)h+='<p class="sub">No side quests yet. Look for villagers with a ! over their heads.</p>';$('qList').innerHTML=h;show('quests')}
@@ -992,7 +992,7 @@ function renderBattle(){if(!B)return;const M=MONS[B.key],r=RANKS[S.rank];
  const L=$('bLog');L.innerHTML=B.log.map(l=>`<li class="${l.cls}">${l.text}</li>`).join('');L.scrollTop=L.scrollHeight;
  $('yRank').textContent=`${r.name} · blades ×${r.mult.toFixed(1)}`;$('yBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('yHp').textContent=`${Math.max(0,S.hp)} / ${maxHp()}`;
  let h='';for(let i=0;i<S.slots;i++){const sw=B.swords[i];
-  h+=sw?`<button class="sw" data-i="${i}"${busy?' disabled':''}><img class="pix" src="${swordImg(sw)}" alt=""><span class="sw-txt"><b>${sw.name}</b><span class="sw-dmg">Strike · ${sw.dmg} dmg${sw.relic?` · <span style="color:#c99ae0">${sw.curse?`Curse ×${sw.curse}: costs ${2*sw.curse} HP per strike`:(sw.gem?'Soulgem blade: kept after battle':'Monster blade: kept after battle')}</span>`:''}</span><span class="sw-ab"><b>${sw.ab.name}:</b> ${sw.ab.desc}</span></span><kbd>${i+1}</kbd></button>`:`<div class="slot-empty">Empty sword slot</div>`}
+  h+=sw?`<button class="sw" data-i="${i}"${busy?' disabled':''}><img class="pix" src="${swordImg(sw)}" alt=""><span class="sw-txt"><b>${sw.name}</b><span class="sw-dmg">Strike · ${sw.dmg} dmg${sw.relic||sw.curse?` · <span style="color:#c99ae0">${sw.curse?`Curse ×${sw.curse}: costs ${2*sw.curse} HP per strike`:(sw.gem?'Soulgem blade: kept after battle':'Monster blade: kept after battle')}</span>`:''}</span><span class="sw-ab"><b>${sw.ab.name}:</b> ${sw.ab.desc}</span></span><kbd>${i+1}</kbd></button>`:`<div class="slot-empty">Empty sword slot</div>`}
  $('swords').innerHTML=h;const ready=S.seen.some(k=>!S.used.has(k));const sb=$('aSummon');sb.textContent=B.free?'Summon (free)':'Summon (uses turn)';sb.disabled=busy||B.swords.length>=S.slots||!ready;
  $('aGuard').disabled=busy;$('aFists').disabled=busy;const pb=$('aPotion');pb.textContent=`Potion (${S.potions})`;pb.disabled=busy||S.potions<=0||S.hp>=maxHp();
  $('bHint').textContent=busy?`${M.name} is acting…`:(B.swords.length>=S.slots?`Your hands are full: ${S.slots} swords is the limit. `:'')+(!ready?'Nothing left in your Codex to summon. ':'')+`Keys: 1–${S.slots} strike · S summon · G guard · P potion · F fists`}
@@ -1002,7 +1002,7 @@ function dealFoe(d,msg,cls){if(GODF.ohk&&cls!=='good')d=Math.max(d,B.hp);B.hp-=d
 function heal(n,why){const before=S.hp;S.hp=Math.min(maxHp(),S.hp+n);const got=S.hp-before;if(got>0)log(`${why}: you heal ${got}.`,'good');updHud()}
 function dodged(what){const dg=MONS[B.key].dodge||0;if(dg&&rnd()<dg){log(`The goblin ducks under your ${what}!`,'foe-l');return true}return false}
 function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw)return;
- sw.usedThis=true;if(sw.relic&&sw.curse>0&&!GODF.inv){const c=2*sw.curse;S.hp-=c;log(`The curse on your ${sw.name} bites back: you lose ${c} HP.`,'foe-l');if(S.hp<=0){renderBattle();return lose()}}
+ sw.usedThis=true;if(sw.curse>0&&!GODF.inv){const c=2*sw.curse;S.hp-=c;log(`The curse on your ${sw.name} bites back: you lose ${c} HP.`,'foe-l');if(S.hp<=0){renderBattle();return lose()}}
  if(dodged(sw.name))return afterYou(false);
  const ab=sw.ab.id;let d=sw.dmg*(0.9+rnd()*.2);const notes=[];
  if(ab==='keen'&&rnd()<.25){d*=2;notes.push('critical!')}if(ab==='exec'&&B.hp<B.max*.35){d*=2;notes.push('Executioner doubles it')}
@@ -1045,7 +1045,7 @@ function doSummon(key){if(!B||S.used.has(key))return;hide('summon');const sw=for
 $('fgOk').onclick=()=>{hide('forge');const sw=B.swords[B.swords.length-1];if(sw&&sw.ab.id==='tide')heal(12,'Mending Tide');if(!pendingFree)log('Summoning took your turn.','info');afterYou(pendingFree)};
 function win(){busy=true;const M=MONS[B.key];log(`${M.name} is defeated!`,'good');renderBattle();
  setTimeout(()=>{const lost=B.swords.filter(s=>!s.relic).map(s=>s.name),kept=B.swords.filter(s=>s.relic);kept.forEach(s=>{if(s.usedThis)s.curse++});
-  B.mon.alive=false;S.wins++;const old=S.rank;S.rank=Math.min(4,S.rank+1);S.hp=maxHp();const key=B.key;B=null;busy=false;hide('battle');mode='menu';updHud();addCodex(key);const r=RANKS[S.rank];
+  B.mon.alive=false;S.wins++;const old=S.rank;S.rank=Math.min(4,S.rank+1);S.hp=maxHp();const key=B.key;B=null;busy=false;hide('battle');mode='menu';updHud();addCodex(key);if(S.flags.exiled&&S.wins>=5){exileEnding();return}const r=RANKS[S.rank];
   dialog('Victory!',`<p>${M.name} falls. ${M.story}</p>${lost.length?`<p>Your blades crumble to dust: <i>${lost.join(', ')}</i>.</p>`:''}${kept.length?`<p>Your kept blades stay with you, but darker: ${kept.map(s=>`<i>${s.name}</i> (curse ×${s.curse})`).join(', ')}.</p>`:''}<p>The ${M.name} is now in your Codex. You can summon it as a blade, once.</p>${S.rank>old?`<p class="rankup">Rank up: you are now a <b>${r.name}</b>. New summons hit harder (×${r.mult.toFixed(1)} base power).</p>`:''}<p>Your wounds close. HP ${S.hp} / ${maxHp()}.</p>${S.wins>=5?'<p class="reward">Return to <b>Elder Maren</b> in Brightmeadow to finish Chapter I.</p>':''}`,
    [{label:'Onward',primary:true,fn:()=>{toMap();look()}}])},850)}
 function lose(){busy=true;setTimeout(()=>{const mon=B.mon;S.relics=B.relicSnap;B.used.forEach(k=>S.used.delete(k));S.forged.splice(B.forgedAt);S.potions+=B.potUsed;
@@ -1063,7 +1063,7 @@ function openCode(){if(mode!=='map')return;if(GOD){openGod();return}mode='menu';
  setTimeout(()=>{const i=$('godCode');if(i){i.focus();i.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')tryCode()})}},40)}
 function tryCode(){const v=($('godCode')||{}).value||'';if(strHash(v)!==GOD_HASH){$('godErr').textContent='That code is not right.';const f=$('dialog').querySelector('.frame');f.classList.remove('hurt');void f.offsetWidth;f.classList.add('hurt');return}
  GOD={snap:snapshot()};hide('dialog');$('bGod').hidden=false;toast('<b>God mode on.</b> Everything resets when you exit.');openGod()}
-function snapshot(){const areas={};for(const[id,a]of Object.entries(AREAS))areas[id]={o:a.map.map(r=>r.map(t=>t.o)),npcs:a.npcs.map(n=>({x:n.x,y:n.y,caged:n.caged})),mons:a.monsters.map(m=>m.alive)};return {S:structuredClone(S),areas}}
+function snapshot(){const areas={};for(const[id,a]of Object.entries(AREAS))areas[id]={o:a.map.map(r=>r.map(t=>t.o)),npcs:a.npcs.map(n=>({x:n.x,y:n.y,caged:n.caged,gone:!!n.gone})),mons:a.monsters.map(m=>m.alive)};return {S:structuredClone(S),areas}}
 function restoreSnap(sn){for(const[id,a]of Object.entries(AREAS)){const z=sn.areas[id];if(!z)continue;a.map.forEach((r,y)=>r.forEach((t,x)=>t.o=z.o[y][x]));a.npcs.forEach((n,i)=>Object.assign(n,z.npcs[i]));a.monsters.forEach((m,i)=>m.alive=z.mons[i])}
  S=structuredClone(sn.S);useArea(S.area);updHud();look()}
 function exitGod(){if(!GOD)return;restoreSnap(GOD.snap);GOD=null;GODF.inv=false;GODF.ohk=false;$('bGod').hidden=true;hide('god');mode='map';toast('<b>God mode off.</b> Everything is back how it was.');banner(A.kind==='in'?A.name:ZNAMES[zoneOf(S.x)])}
@@ -1095,11 +1095,69 @@ $('gBody').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(
  S.hp=Math.min(S.hp,maxHp());updHud();toast('Done.');openGod()});
 $('gClose').onclick=()=>{hide('god');mode='map'};$('gExit').onclick=exitGod;$('bGod').onclick=()=>{if(mode==='map')openGod()};
 
+/* ================= CUTSCENES ================= */
+let CUT=null;
+function cap(html,end){const c=$('cap');if(!html){c.hidden=true;return}c.hidden=false;c.className='cap'+(end?' end':'');c.innerHTML=html}
+function startCut(type){['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);mode='cut';held=[];
+ if(S.area!=='world'){S.area='world';useArea('world')}
+ CUT={type,t0:performance.now()/1000,burn:new Map(),hidePlayer:false,hideNPC:false,cam:null,step:-1,px:S.x,py:S.y};
+ if(type==='banish'){const ids=['elder','hilda','bram','pip','rowan','odo','greta','mott','aldric','elsabet','whiskers'];
+  CUT.crowd=AREAS.world.npcs.filter(n=>ids.includes(n.id)&&!n.gone).map((n,i,arr)=>{const a=i/arr.length*Math.PI*2,near=Math.abs(n.x-S.x)<14&&Math.abs(n.y-S.y)<10;
+   const sx=near?n.x:S.x+Math.cos(a)*14,sy=near?n.y:S.y+Math.sin(a)*9;return {n,sx,sy,tx:S.x+Math.cos(a)*2.3,ty:S.y+Math.sin(a)*2.3}});CUT.hideNPC=true}}
+function flameAt(px,py,t,seed){const f=Math.floor(t*10+seed)%3;pen(ctx,px,py,1);R(3,9-f,10,7+f,'rgba(194,65,47,.85)');R(5,6+f,6,8-f,'#e8823a');R(6,4+(f%2)*2,4,6,'#f4d27a');R(7,2+f,2,3,'#f4d27a');if(f===1)R(10,1,1,2,'#f4d27a')}
+function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,${Math.max(0,Math.min(1,a))})`;ctx.fillRect(0,0,LW,LH)};
+ if(CUT.type==='dragon'){
+  const VILY=AREAS.world.PATHC[12]*16;
+  if(ct<3.2){CUT.hidePlayer=ct>0.6;drawMap(t);const sx=S.x*16-CAM.x+8,sy=S.y*16-CAM.y+10,sc=Math.min(2.2,0.4+ct*0.7);
+   if(ct>0.6){pen(ctx,sx-16*sc,sy-20*sc-(ct-0.6)*12,sc);drawMonster('dragon',t,false)}
+   ctx.fillStyle=`rgba(200,40,30,${0.18+0.15*Math.sin(ct*14)})`;ctx.fillRect(0,0,LW,LH);
+   cap(ct<1.4?'The eighth gem melts into your chest…':'Wings tear free. Scales pour over your armor.');if(ct>2.4)fade((ct-2.4)/0.8);return}
+  if(ct<13.5){const k=ct-3.2,dxw=-80+k*95,dyw=VILY-80+Math.sin(k*2.2)*8;
+   CUT.hidePlayer=true;CUT.cam={x:Math.max(0,Math.min(50*16-LW,dxw-LW*0.35)),y:Math.max(0,Math.min(AREAS.world.H*16-LH,VILY-LH/2))};
+   for(let y=Math.floor(CUT.cam.y/16);y<=Math.ceil((CUT.cam.y+LH)/16);y++)for(let x=Math.max(0,Math.floor((dxw+10)/16));x<=Math.min(49,Math.floor((dxw+56)/16));x++){const tl=AREAS.world.map[y]&&AREAS.world.map[y][x];if(!tl)continue;const key=x+','+y;if(!CUT.burn.has(key)&&(tl.o||hh(x,y)%3===0))CUT.burn.set(key,ct)}
+   drawMap(t);
+   for(const[key,st]of CUT.burn){const[x,y]=key.split(',').map(Number);const px=x*16-CAM.x,py=y*16-CAM.y;if(px<-16||py<-16||px>LW||py>LH)continue;ctx.fillStyle='rgba(30,10,4,.45)';ctx.fillRect(px,py,16,16);flameAt(px,py-2,t,x*7+y)}
+   ctx.fillStyle=`rgba(255,90,20,${Math.min(.22,CUT.burn.size/900)})`;ctx.fillRect(0,0,LW,LH);
+   const sx=dxw-CAM.x,sy=dyw-CAM.y;pen(ctx,sx,sy,2);drawMonster('dragon',t,true);
+   const mx=sx+62,my=sy+12;for(let i=0;i<26;i++){const f=(Math.floor(t*20)+i)%4,fy=my+i*3.4,fx=mx-4+i*0.6+((i*7+f)%5)-2;ctx.fillStyle=i<6?'#f4d27a':i<16?'#e8823a':'#c2412f';ctx.fillRect(fx,fy,3+(i>>3),3)}
+   cap(k<0.8?'':k<4?'You fly west, to the only home you ever knew.':k<7.5?'Brightmeadow burns.':'The villagers you saved scatter into the smoke.');if(k<0.6)fade(1-k/0.6);return}
+  if(ct<16.5){const k=ct-13.5,base=-80+10.3*95,dxw=base+k*120,dyw=VILY-80-k*k*28,sc=Math.max(0.5,2-k*0.5);
+   drawMap(t);for(const[key]of CUT.burn){const[x,y]=key.split(',').map(Number);const px=x*16-CAM.x,py=y*16-CAM.y;if(px<-16||py<-16||px>LW||py>LH)continue;ctx.fillStyle='rgba(30,10,4,.45)';ctx.fillRect(px,py,16,16);flameAt(px,py-2,t,x*7+y)}
+   ctx.fillStyle='rgba(255,90,20,.22)';ctx.fillRect(0,0,LW,LH);pen(ctx,dxw-CAM.x,dyw-CAM.y,sc);drawMonster('dragon',t,false);
+   cap('Then you turn east, toward the Ember Lair, and you do not look back.');if(k>2)fade((k-2)/1);return}
+  fade(1);
+  if(ct<18.5)cap('');else cap('THE END<span class="small">Years later, travellers spoke of a young red dragon nesting in the Ember Lair. Nobody remembered that it had once been a knight.</span>',true);
+  if(ct>23&&CUT.step<0){CUT.step=1;const btns=[{label:'Watch again',fn:()=>{hide('dialog');startCut('dragon')}},{label:'Start a new game',primary:true,fn:()=>{CUT=null;cap('');newGame()}}];if(GOD)btns.push({label:'Exit God mode',danger:true,fn:()=>{CUT=null;cap('');hide('dialog');exitGod()}});
+   dialog('The Dragon’s Ending','<p>You became the dragon you set out to slay.</p><p class="sub">Start a new game to try for the hero’s ending, or the exile’s.</p>',btns);mode='cut'}
+  return}
+ if(CUT.type==='banish'){
+  drawMap(t);const ease=v=>v<0?0:v>1?1:v*v*(3-2*v),k=ease(ct/3.4);
+  for(const c of CUT.crowd){const x=c.sx+(c.tx-c.sx)*k,y=c.sy+(c.ty-c.sy)*k,px=Math.round(x*16-CAM.x),py=Math.round(y*16-CAM.y-(k<1?Math.floor(t*8)%2:0));pen(ctx,px,py,1);drawPerson(c.n.look,t,c.n.x)}
+  const cx=S.x*16-CAM.x+8,cy=S.y*16-CAM.y+8;
+  if(ct>3.4){const pulse=(Math.sin(ct*6)+1)/2;ctx.strokeStyle=`rgba(170,120,255,${0.5+pulse*0.4})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,30+pulse*4,0,7);ctx.stroke();
+   for(const c of CUT.crowd){ctx.strokeStyle=`rgba(200,170,255,${0.35+pulse*0.4})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(c.tx*16-CAM.x+8,c.ty*16-CAM.y+6);ctx.lineTo(cx,cy);ctx.stroke()}
+   ctx.fillStyle=`rgba(120,80,220,${0.12+pulse*0.12})`;ctx.fillRect(0,0,LW,LH)}
+  cap(ct<1.6?'Elder Maren: “By the old law of Brightmeadow…”':ct<3.4?'The villagers come from every door and road, and circle you.':ct<5?'Elder Maren: “You gave in again. You are no longer one of us.”':ct<6.4?'All: “BE GONE.”':'');
+  if(ct>6.2&&ct<6.9){ctx.fillStyle=`rgba(255,255,255,${1-Math.abs(ct-6.55)/0.35})`;ctx.fillRect(0,0,LW,LH)}
+  if(ct>6.9&&CUT.step<0){CUT.step=1;exile()}
+  if(ct>6.9)fade(1-(ct-6.9)/1);
+  if(ct>8){CUT=null;cap('');mode='map';banner('Exiled');toast('<b>You have been exiled.</b> No villagers. No side quests. Every blade you summon is cursed.')}
+ }
+}
+function exile(){
+ const W0=AREAS.world;W0.npcs.forEach(n=>{if(n.id!=='morvane')n.gone=true});W0.monsters.forEach(m=>m.alive=true);
+ S.flags.exiled=true;S.wins=0;S.rank=0;S.seen=[];S.seenSet=new Set();S.used=new Set(S.relics.map(r=>r.key));S.relics.forEach(r=>r.curse++);
+ Object.keys(S.q).forEach(id=>{if(S.q[id]!=='done')delete S.q[id]});S.hp=maxHp();S.x=S.dx=3;S.y=S.dy=W0.PATHC[3];S.zone=0;S.dir='right';updHud();look()}
+function exileEnding(){
+ dialog('The Exile’s Ending','<p>The young red dragon falls. Its hoard spills across the cave floor, and nobody is there to see it.</p><p>No bells ring in Brightmeadow. No one knows it was you. You walk out of the Ember Lair alone, your cursed blades heavy at your side, and keep walking.</p><p class="corrupt"><b>Ending reached: the Exile’s Ending.</b></p>',
+  [{label:'Start a new game',primary:true,fn:()=>newGame()},...(GOD?[{label:'Exit God mode',danger:true,fn:exitGod}]:[])]);
+}
+
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
 function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
-  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}drawMap(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
+  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else drawMap(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
  requestAnimationFrame(frame)}
 resize();
 setTimeout(()=>{S={flags:{}};newGame();$('loading').hidden=true;requestAnimationFrame(frame)},30);
