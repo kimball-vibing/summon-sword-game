@@ -2801,7 +2801,7 @@ function drawTravel(ct){const n=CUT.legs.length;if(ct>n*LEGDUR){endTravel();retu
   ctx.fillStyle='#fff6c0';ctx.fillRect(cx-9,0,1,LH);ctx.fillRect(cx+8,0,1,LH);for(let y=((off%10)+10)%10;y<LH;y+=10)ctx.fillRect(cx-9,Math.round(y),18,1);
   P(cx-8,LH/2-8,'up',[1,0,2,0][Math.floor(ct*6)%4])}
  const fa=Math.max(0,1-k*6,(k-0.86)*7);if(fa>0){ctx.fillStyle=`rgba(0,0,0,${Math.min(1,fa)})`;ctx.fillRect(0,0,LW,LH)}
- if(inU())invertOverlay(1);
+ if(inU()){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.fillRect(0,0,LW,LH)}
  cap(`${LEGTXT[type][dir>0?0:1]}<span class="small">Space to skip</span>`)}
 function passEnd(ch,from){const a=AREAS[REALMS[ch].id];if(!a||!a.passKind)return null;for(const k in a.passKind)if(a.passKind[k].to===from){const[x,y]=k.split(',').map(Number);return[x,y]}return null}
 function usePassage(pk){const to=pk.to,from=S.chapter;
@@ -2925,7 +2925,7 @@ function shadowHurt(){if(GODF&&GODF.inv)return;const floor=Math.round(maxHp()*.2
 function wanderShadows(){for(const h of (A.shadows||[])){const dx=S.x-h.x,dy=S.y-h.y,close=Math.abs(dx)+Math.abs(dy)<=6;let mv;if(close&&rnd()<.7)mv=Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)];else{if(rnd()<.4)continue;mv=pick([[1,0],[-1,0],[0,1],[0,-1]])}
  const nx=h.x+mv[0],ny=h.y+mv[1];if(nx===S.x&&ny===S.y){shadowHurt();continue}if(solidAt(nx,ny)||MAP[ny][nx].o||MONSTERS.some(m=>m.alive&&m.x===nx&&m.y===ny)||zoneIn(A,nx)!==h.zone)continue;h.x=nx;h.y=ny}}
 {const _w=wanderRares;wanderRares=function(){_w();if(inU()&&mode==='map')wanderShadows()}}
-function uPost(t,cx,cy){invertOverlay(1);
+function uPost(t,cx,cy){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.fillRect(0,0,LW,LH);
  for(const h of (A.shadows||[])){h.rx+=(h.x-h.rx)*.12;h.ry+=(h.y-h.ry)*.12;const px=Math.round(h.rx*16-cx),py=Math.round(h.ry*16-cy);if(px<-16||py<-16||px>LW||py>LH)continue;const w=Math.floor(t*3+h.x)%2,c='rgba(24,6,36,.82)';pen(ctx,px,py,1);
   R(5,1,6,6,c);R(4,7,8,6,c);R(3+w,13,3,2,c);R(9-w,13,3,2,c);R(6,3,1,1,'#ff4060');R(9,3,1,1,'#ff4060');R(2,8,2,3,'rgba(24,6,36,.5)');R(12,8,2,3,'rgba(24,6,36,.5)')}
  if(!(CUT&&CUT.hidePlayer)){AU.x+=(S.dx-0.9-AU.x)*.05;AU.y+=(S.dy-0.5-AU.y)*.05;const ax=Math.round(AU.x*16-cx),ay=Math.round(AU.y*16-cy+Math.sin(t*2)*2);ctx.globalAlpha=.85;D2(ax+8,ay+8,9,'rgba(244,226,122,.18)');pen(ctx,ax,ay,1);drawPerson(LOOKS.aurenreal,t,0);ctx.globalAlpha=1;
