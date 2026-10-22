@@ -76,6 +76,18 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 - IV: Tamsin → Lyra → Osric: Lyra's Blade
 - V: Auren → Gears → Auren: the Star Quill, which also weakens the Unwritten by 25%
 
+## The twist, and Chapter VI: The Unraveled World
+
+- When you beat the Unwritten, an old man made of light is left behind: the **real Auren**. The Unwritten was a shell that trapped him. Through it, something called the **Unraveler** pulled the strings of every monster. Every alternate ending that sent you back to the start was the Unraveler making Auren rewrite you. The game counts how many times this has happened.
+- The ghost "Auren" in Cloudhaven was the Unraveler all along. Confront it, and a cutscene plays: it becomes a huge purple horned genie, turns the world inside out, and tries to kill you. The real Auren takes the hit and bonds with you.
+- **Chapter VI** takes place in a twisted mirror of all five lands: flipped upside down, with inverted colors and backwards names. You free them in reverse order (the Reaches, the Vale, the Frostspire, the coast, Brightmeadow), each with **five twisted guardians** that have familiar names and much more power.
+- **Auren** floats beside you the whole time. Press **H** (or the Auren button) and he tells you the truth, including where the villagers lied.
+- **Villagers** are passive-aggressive and give you wrong directions. Five of them hand you a quest and then attack you as **Hollow villagers**. **Shadows** drift toward you and hurt you if they touch you.
+- **Allies:** Morvane, Granny Gristle, Vesper and the Whispering Blade help you **for free** here: a clean soulgem, a brew with no hex, a free mirror shard, or curses cleansed. Each is available once after every victory.
+- **20 backward side quests** from allies, lying villagers and the **quest board** in every town: you plant things back into glowing mounds or gather things up. For example, you un-cook Hilda's stew by planting the toadstool, daisy and thornbush back in their lands.
+- You can't leave the Unraveled World. You can only travel between its towns you have freed.
+- **Final battle:** the Unraveler unravels a sword every 4 turns, and it pulls a Twisted Dragon, a Twisted Hollow King and Your Own Shadow out of your past. Auren's light heals you every 5 turns. Beat it for the **True Ending** cutscene, then go home to Brightmeadow, where the real Auren is waiting.
+
 ## Getting around
 
 - **Walking:** the crack in the world joins the far east of the Frostspire Peaks to Ashfall Camp. The ladder of light joins Ashfall Camp to Cloudhaven.
