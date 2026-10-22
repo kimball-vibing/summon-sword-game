@@ -1569,7 +1569,9 @@ case 'irontree':R(3,15,10,1,'rgba(0,0,0,.25)');R(7,9,2,6,'#5a5a5a');R(6,13,4,2,'
   else if(kind==='rift'){D(8,8,6,`rgba(138,106,168,${g?.35:.2})`);R(7,1,2,14,'#1a1426');R(6,4,1,3,'#8a6aa8');R(9,8,1,4,'#8a6aa8');R(7,6,2,1,g?'#e0d0f0':'#bfa0e0')}
   else if(kind==='cloudhole'){D(8,9,6,'#eef2f8');D(8,9,4,'#c8d6e2');D(8,9,2,'#5a8ac8');if(g)R(10,6,1,1,'#fff')}
   else{R(2,14,12,1,'rgba(0,0,0,.25)');R(3,5,10,9,'#8d8a82');R(4,4,8,1,'#8d8a82');R(9,7,4,7,'#6f6c65');R(6,7,1,7,'#2a2622');R(7,8,1,2,'#2a2622');R(5,11,1,3,'#2a2622')}break}
- case 'uplot':{const g=Math.floor(t*3+wx)%2;R(3,11,10,3,'#5a3d26');R(4,10,8,1,'#6b4a2e');D(8,9,3,`rgba(201,154,224,${g?.55:.3})`);R(8,5-g,1,1,'#fff');R(5,7+g,1,1,'#e0d0f0');break}
+ case 'uplot':{const g=Math.floor(t*3+wx)%2,pk=A&&A.plotKind&&A.plotKind[wx+','+wy],QC=['201,154,224','120,200,255','255,170,80','140,230,140','255,120,160','250,230,110'],qc=pk?QC[[...pk.q].reduce((h,ch)=>h+ch.charCodeAt(0),0)%QC.length]:QC[0];
+  R(3,12,10,3,'#5a3d26');R(4,11,8,1,'#6b4a2e');D(8,12,5,`rgba(${qc},${g?.45:.25})`);R(3,15,10,1,`rgba(${qc},.8)`);
+  if(pk){const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,bob=Math.round(Math.sin(t*2.5+wx)*1.5);PC.save();PC.globalAlpha=.95;pen(PC,ox+2*sx,oy+(-6+bob)*sy,sx*0.75,sy*0.75);drawThing(pk.item,t,wx,wy);PC.restore();pen(pc,ox,oy,sx,sy)}break}
  case 'qboard':R(3,12,1,4,'#5a3d26');R(12,12,1,4,'#5a3d26');R(2,3,12,9,'#8a6744');R(2,3,12,1,'#a8845a');R(4,5,3,4,'#efe3c8');R(9,4,3,3,'#efe3c8');R(8,8,4,3,'#e6d6a8');R(5,6,1,1,'#c2412f');R(10,5,1,1,'#2a3050');break;
  case 'u_stillvane':R(7,4,2,11,'#8a6744');R(2,6,12,2,'#efe3c8');R(7,1,2,5,'#efe3c8');R(7,8,2,5,'#d8ccb0');R(6,14,4,1,'#5a3d26');break;
  case 'u_overduebook':R(4,7,8,6,'#8a3a3a');R(5,8,6,4,'#efe3c8');R(8,8,1,4,'#8a6a44');R(11,4,2,3,'#c2412f');R(3,13,10,1,'rgba(0,0,0,.25)');break;
