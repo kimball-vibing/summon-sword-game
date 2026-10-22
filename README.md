@@ -57,7 +57,7 @@ Reached by finishing Chapter III and following the falling blades south.
 ## Chapter V: The Celestial Reaches
 
 - Climb the ladder of light from Ashfall Camp to a realm of floating islands: Cloudhaven, the Windmill Isles, Starfall Crater, the Clockwork Archive and the Throne of First Light.
-- Five battles: Storm Giant (thunderclap), Couatl (heals), Djinni (wishes), Clockwork Dragon, and **The Unwritten**, which erases a sword every 3 turns and rewrites the dragon, wyvern, lich and Hollow King as echoes you must beat again.
+- Five battles: Storm Giant (thunderclap), Couatl (heals), Djinni (wishes), the Clockwork Dragon (beat it and its inventor, **the Tinkerer**, climbs out for round two: overcharged zaps, cog shields, repair kits and clockwork wasps), and **The Unwritten**, which erases a sword every 3 turns and rewrites the dragon, wyvern, lich and Hollow King as echoes you must beat again.
 - Temptation: **Twinkle the fallen star** grants wishes (next foe starts at half health, all summons free) for 15 max HP each. Five wishes: the Star ending, where you become a constellation. Vela the Astronomer can cure you once.
 - New side quests: turn 4 windmills, gather 5 stardust, return 5 lost books. Nimbus runs the cloud shop.
 
@@ -75,6 +75,13 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 - III: Kael → Tink → Thane Durin: the Frost Bow
 - IV: Tamsin → Lyra → Osric: Lyra's Blade
 - V: Auren → Gears → Auren: the Star Quill, which also weakens the Unwritten by 25%
+
+## Getting around
+
+- **Walking:** the crack in the world joins the far east of the Frostspire Peaks to Ashfall Camp. The ladder of light joins Ashfall Camp to Cloudhaven.
+- **Sailing:** Brightmeadow ↔ Saltmarsh and Saltmarsh ↔ Hearthhold are sea routes, so they use fast travel.
+- **Fast travel** works only while you stand in a start town (Brightmeadow, Saltmarsh, Hearthhold, Ashfall Camp, Cloudhaven).
+- Every journey plays a short cutscene for each leg (boat, ice ship, crack in the world, ladder of light). Press Space to skip.
 
 ## Linked realms
 

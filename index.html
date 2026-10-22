@@ -445,6 +445,7 @@ Object.assign(THINGS,{
  auren:T('Auren, the First Summoner',"Auren's",70,'holy','#f4e27a',{npc:1}),
  stormgiant:T('Storm Giant','Giant',60,'arcane','#6a7a9a',{monster:1}),couatl:T('Couatl','Couatl',62,'holy','#5f9a45',{monster:1}),
  djinni:T('Djinni','Djinni',64,'arcane','#4a8ab0',{monster:1}),clockdragon:T('Clockwork Dragon','Clockdragon',66,'metal','#c9a14a',{monster:1}),
+ tinkerer:T('The Tinkerer','Tinker',64,'metal','#c9a14a',{monster:1}),
  unwritten:T('The Unwritten','Blankpage',75,'shadow','#f2f0e6',{monster:1}),
  // chain-quest items and rewards
  rustyhilt:T('Old King’s Hilt','Hilt',8,'metal','#a8642a',{item:1}),stariron:T('Star Iron','Stariron',14,'arcane','#8fb0d0',{item:1}),kingsword:T('The Old King’s Sword','Kingsblade',16,'holy','#dcb75e',{item:1}),
@@ -519,7 +520,8 @@ Object.assign(MONS,{
  stormgiant:{name:'Storm Giant',hp:5000,atk:[48,58],coins:500,verb:'The Storm Giant swings a fist like a falling tower',trait:'Thunderclap every 3 turns. Guard when it raises its hands!',intro:'The clouds part. A Storm Giant stands on the next island, lightning crawling over its shoulders.',story:'The giant topples into the clouds below. The wind smells of ink.'},
  couatl:{name:'Couatl',hp:5500,atk:[44,52],dodge:.2,coins:550,verb:'The Couatl strikes like a whip',trait:'A feathered serpent of light. Dodges 20% and heals itself with radiant feathers.',intro:'A great feathered serpent coils around the sky bridge, rainbow wings spread wide.',story:'The Couatl bows its head before it fades. “Something is erasing the world, Summoner. Hurry.”'},
  djinni:{name:'Djinni',hp:6000,atk:[46,54],coins:600,verb:'The Djinni lashes out with a smoky fist',trait:'Grants itself a wish every turn: heal, a shield, or a double attack.',intro:'Smoke pours out of a fallen star and takes the shape of a grinning Djinni.',story:'The Djinni wishes itself away, laughing. The path to the Clockwork Archive is open.'},
- clockdragon:{name:'Clockwork Dragon',base:'dragon',tint:'rgba(210,170,70,.55)',mult:4,hp:7000,atk:[12,15],coins:650,verb:'The Clockwork Dragon snaps its brass jaws',trait:'Breathes molten brass every few turns. Guard when its gears start to spin!',intro:'Gears grind. A dragon made of brass and clockwork unfolds from the Archive doors.',story:'The Clockwork Dragon winds down with a long, sad whirr. Beyond it, a door of light.'},
+ clockdragon:{name:'Clockwork Dragon',base:'dragon',mult:4,hp:7000,atk:[12,15],coins:650,verb:'The Clockwork Dragon snaps its brass jaws',trait:'Breathes molten brass every few turns. Guard when its gears start to spin!',intro:'Gears grind. A dragon made of brass and clockwork unfolds from the Archive doors.',story:'The Clockwork Dragon winds down with a long, sad whirr.'},
+ tinkerer:{name:'The Tinkerer',hp:6000,atk:[44,52],coins:450,verb:'The Tinkerer whacks you with a giant wrench',trait:'Every few turns he overcharges (Guard!) or builds a gadget: a cog shield, a repair kit, or clockwork wasps.',intro:'A hatch on the dragon’s back pops open. Out climbs a tiny old gnome in goggles, waving a wrench. “You BROKE her! Forty years I spent on her! FORTY!”',story:'The Tinkerer sits down hard on a pile of gears. “Fine. FINE. You win. I only wanted someone to see how clever she was.” He hands you the key to the Archive. Beyond it, a door of light.'},
  unwritten:{name:'The Unwritten',hp:10000,atk:[50,60],coins:0,verb:'The Unwritten scratches at you with a blank hand',trait:'Erases one of your swords every 3 turns. As it weakens, it rewrites the great foes you have beaten.',intro:'At the end of everything stands a figure with no face, no color, no story. The Unwritten. “Every tale ends. I am how.”',story:'The Unwritten tears like paper and blows away. Every story it ever erased writes itself back, one word at a time. Sky Captain Zephyr must hear this.'}
 });
 RARE_DEFS.forEach(([key,name,base,tint,ch,drop])=>{const bm=MONS[base];const hp=[160,800,2000,3600,6000][ch-1],atk=[[7,10],[15,19],[26,32],[36,44],[50,60]][ch-1];
@@ -527,10 +529,10 @@ RARE_DEFS.forEach(([key,name,base,tint,ch,drop])=>{const bm=MONS[base];const hp=
  THINGS[key]=T(name,name.split(' ').pop(),[12,24,38,52,68][ch-1],THINGS[base].el,THINGS[base].color,{monster:1});
  THINGS[key+'_d']=T(drop,drop.split(' ').pop(),[14,26,40,54,70][ch-1],THINGS[base].el,THINGS[base].color,{item:1});
  if(BIGMON.has(base))BIGMON.add(key)});
-BIGMON.add('clockdragon');
+BIGMON.add('clockdragon');BIGMON.add('couatl');
 /* ================= AREAS ================= */
 let AREAS={},A=null,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS;
-function useArea(id){A=AREAS[id];MAP=A.map;W=A.W;H=A.H;NPCS=A.npcs;MONSTERS=A.monsters;SIGNS=A.signs;DOORS=A.doors;if(!A.ground)buildGround(A);buildLabels()}
+function useArea(id){A=AREAS[id];MAP=A.map;W=A.W;H=A.H;NPCS=A.npcs;MONSTERS=A.monsters;SIGNS=A.signs;DOORS=A.doors;if(!A.ground)buildGround(A);if(id==='sky')normCD();buildLabels()}
 const ZB=[50,110,170,225];
 function zoneIn(a,x){const zb=(a&&a.zb)||ZB;let z=0;while(z<zb.length&&x>=zb[z])z++;return z}
 function OUT(){if(!A)return AREAS.world;return A.kind==='out'?A:(AREAS[A.retArea]||AREAS.world)}
@@ -994,6 +996,7 @@ function startChapter4(dev){
  <li>In Rustwood, a sword in a stone whispers. Do not listen too long.</li></ul>
  <p class="sub">Start with Warden Ilsa in Ashfall Camp.</p>`,[{label:'Step into the ash',primary:true,fn:()=>{hide('dialog');mode='map';banner(zname(S.x))}}]);
 }
+const PASS={peaks:[['crack',4,-8]],vale:[['crack',3,12],['ladder',5,26]],sky:[['ladder',4,10]]};
 const EXTRAS={
  world:{rares:[['r_goldgob',1],['r_shadowowl',2]],secrets:[
   {id:'sec_hollow',name:'The Hollow Tree',ent:'hollowtree',at:[60,4],style:'wood',items:[['rustyhilt',4,2],['flower',1,2],['flower',7,2],['chest',7,5],['mushroom',1,5]]},
@@ -1012,10 +1015,11 @@ const EXTRAS={
   {id:'sec_cloud',name:'The Cloud Grotto',ent:'cloudhole',at:[48,3],style:'wood',items:[['firstquill',4,2],['skyflower',1,2],['skyflower',7,2],['chest',7,5]],rare:'r_cosmic'},
   {id:'sec_stacks',name:'The Forbidden Stacks',ent:'hatch',at:[212,60],style:'wood',items:[['firstink',4,2],['bookstack',1,2],['bookstack',7,2],['chest',1,5]]}]}
 };
-function aSolid(a,x,y){if(x<0||y<0||x>=a.W||y>=a.H)return true;if(a.npcs.some(n=>!n.gone&&n.x===x&&n.y===y))return true;const t=a.map[y][x];if(t.ter==='w'||t.ter==='l'||t.ter==='wall')return true;const o=t.o;if(!o||o==='door'||o==='exit'||o==='secret')return false;if(o==='phylactery'||o==='cursedblade')return true;const k=baseKey(o);return !!(THINGS[k]&&THINGS[k].solid)}
+function aSolid(a,x,y){if(x<0||y<0||x>=a.W||y>=a.H)return true;if(a.npcs.some(n=>!n.gone&&n.x===x&&n.y===y))return true;const t=a.map[y][x];if(t.ter==='w'||t.ter==='l'||t.ter==='wall')return true;const o=t.o;if(!o||o==='door'||o==='exit'||o==='secret'||o==='passage')return false;if(o==='phylactery'||o==='cursedblade')return true;const k=baseKey(o);return !!(THINGS[k]&&THINGS[k].solid)}
 function reach(a){const st=a.start||[3,a.PATHC[3]],seen=new Uint8Array(a.W*a.H),q=[st[0]+st[1]*a.W];seen[q[0]]=1;while(q.length){const i=q.pop(),x=i%a.W,y=(i/a.W)|0;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=a.W||Y>=a.H)continue;const j=Y*a.W+X;if(seen[j]||aSolid(a,X,Y))continue;seen[j]=1;q.push(j)}}return seen}
 function spotNear(a,tx,ty,seen){let best=null,bd=1e9;for(let y=2;y<a.H-2;y++)for(let x=2;x<a.W-2;x++){const t=a.map[y][x];if(t.ter!=='g'||t.o)continue;if(!seen[(y+1)*a.W+x])continue;const d=Math.abs(x-tx)+Math.abs(y-ty);if(d<bd){bd=d;best=[x,y]}}return best}
-function addExtras(id){const a=AREAS[id],E=EXTRAS[id];if(!a||!E)return;a.secretKind={};a.rares=[];let seen=reach(a);
+function addExtras(id){const a=AREAS[id],E=EXTRAS[id];if(!a||!E)return;a.secretKind={};a.passKind={};a.rares=[];let seen=reach(a);
+ (PASS[id]||[]).forEach(([kind,to,xx])=>{const x=xx<0?a.W+xx:xx;const p=spotNear(a,x,a.PATHC[x]-3,seen);if(!p)return;a.map[p[1]][p[0]].o='passage';a.passKind[p[0]+','+p[1]]={kind,to};seen=reach(a)});
  (E.secrets||[]).forEach(d=>{const p=spotNear(a,d.at[0],d.at[1],seen);if(!p)return;a.map[p[1]][p[0]].o='secret';a.secretKind[p[0]+','+p[1]]=d.ent;
   makeInterior(d.id,d.name,d.style,9,7,d.items,{door:p},id,[]);AREAS[d.id].secret=true;AREAS[d.id].rares=d.rare?[{key:d.rare,x:4,y:4,alive:true}]:[];seen=reach(a)});
  (E.special||[]).forEach(([k,x,y])=>{const p=spotNear(a,x,y,seen);if(p)a.map[p[1]][p[0]].o=k});
@@ -1488,6 +1492,9 @@ case 'irontree':R(3,15,10,1,'rgba(0,0,0,.25)');R(7,9,2,6,'#5a5a5a');R(6,13,4,2,'
   else if(kind==='rift'){D(8,8,6,`rgba(138,106,168,${g?.35:.2})`);R(7,1,2,14,'#1a1426');R(6,4,1,3,'#8a6aa8');R(9,8,1,4,'#8a6aa8');R(7,6,2,1,g?'#e0d0f0':'#bfa0e0')}
   else if(kind==='cloudhole'){D(8,9,6,'#eef2f8');D(8,9,4,'#c8d6e2');D(8,9,2,'#5a8ac8');if(g)R(10,6,1,1,'#fff')}
   else{R(2,14,12,1,'rgba(0,0,0,.25)');R(3,5,10,9,'#8d8a82');R(4,4,8,1,'#8d8a82');R(9,7,4,7,'#6f6c65');R(6,7,1,7,'#2a2622');R(7,8,1,2,'#2a2622');R(5,11,1,3,'#2a2622')}break}
+ case 'passage':{const pk=(A&&A.passKind&&A.passKind[wx+','+wy])||{kind:'crack'},g=Math.floor(t*3+wx)%2;
+  if(pk.kind==='ladder'){const open=S&&(S.maxChapter>=5||(S.chapter===4&&S.wins>=5));const al=open?(g?.55:.42):.14;D(8,12,6,`rgba(255,246,192,${al*0.6})`);R(4,-30,8,44,`rgba(255,246,192,${al})`);R(4,-30,1,44,`rgba(255,246,192,${al+.2})`);R(11,-30,1,44,`rgba(255,246,192,${al+.2})`);for(let y=-28;y<14;y+=5)R(4,y,8,1,`rgba(255,246,192,${al+.2})`)}
+  else{R(2,14,12,1,'rgba(0,0,0,.25)');R(3,4,10,10,'#5a5450');R(4,3,8,1,'#6a6460');R(7,4,2,10,'#1a1426');R(6,7,1,3,'#1a1426');R(9,9,1,3,'#1a1426');D(8,9,4,`rgba(138,106,168,${g?.3:.18})`);if(g)R(8,6,1,1,'#e0d0f0')}break}
  case 'smugchest':{const f=Math.floor(t*4)%2;D(8,10,6,'rgba(230,190,70,.18)');R(3,14,10,1,'rgba(0,0,0,.25)');R(3,8,10,6,'#6b3a2a');R(3,11,10,1,'#e6bf4a');R(3,6,10,3,'#5a2e20');R(7,8,2,3,'#e6bf4a');if(f)R(12,4,1,1,'#fff');break}
  case 'cloudbank':D(5,10,4,'#e0e8f2');D(10,9,5,'#eef2f8');D(8,6,3,'#f8fafc');R(3,13,10,1,'rgba(90,138,200,.25)');break;
  case 'windmill':{const sp=(S&&S.mills&&(S.mills.has(wx+','+wy)||S.q.windmills==='done'))?t*4:0,a=sp%(Math.PI/2);R(6,5,4,10,'#c8b27a');R(5,14,6,2,'#8a6744');R(6,4,4,2,'#a8342c');
@@ -1564,7 +1571,7 @@ function drawPlayer(px,py,dir,fr){
  if(gx>=1&&dir!=='up'){if(side)R(9,3+b,1,1,'#f2d64b');else{R(6,3+b,1,1,'#f2d64b');R(9,3+b,1,1,'#f2d64b')}}
 }
 const TC=document.createElement('canvas');TC.width=160;TC.height=160;const TCX=TC.getContext('2d');
-function drawMonster(k,t,tele){const M=MONS[k];if(M&&M.base){const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,as=Math.abs(sx);TCX.clearRect(0,0,160,160);pen(TCX,40,40,as,Math.abs(sy));drawMonsterRaw(M.base,t,tele);
+function drawMonster(k,t,tele){const M=MONS[k];if(M&&M.base&&M.tint){const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,as=Math.abs(sx);TCX.clearRect(0,0,160,160);pen(TCX,40,40,as,Math.abs(sy));drawMonsterRaw(M.base,t,tele);
  TCX.globalCompositeOperation='source-atop';TCX.fillStyle=M.tint;TCX.fillRect(0,0,160,160);TCX.globalCompositeOperation='source-over';
  if(sx<0){pc.save();pc.translate(ox,oy);pc.scale(-1,1);pc.drawImage(TC,-40,-40);pc.restore()}else pc.drawImage(TC,ox-40,oy-40);pen(pc,ox,oy,sx,sy);return}
  drawMonsterRaw(k,t,tele)}
@@ -1589,8 +1596,44 @@ function drawMonsterRaw(k,t,tele){
  case 'golem':{const g=Math.floor(t*2)%2;R(2,15,12,1,'rgba(0,0,0,.3)');R(4,1,8,6,'#8d8a82');R(3,7,10,7,'#7d7a72');R(0,6,3,8,'#8d8a82');R(13,6,3,8,'#8d8a82');R(0,13,4,3,'#6d6a63');R(12,13,4,3,'#6d6a63');R(4,14,3,2,'#6d6a63');R(9,14,3,2,'#6d6a63');R(5,3,2,2,g?'#6fd0e0':'#4ab0c8');R(9,3,2,2,g?'#6fd0e0':'#4ab0c8');R(7,9,2,3,g?'#6fd0e0':'#4ab0c8');R(5,7,1,5,'#5a5852');R(10,8,1,4,'#5a5852');break}
  case 'beholder':{const o=Math.round(Math.sin(t*2)*1);R(3,15,10,1,'rgba(0,0,0,.25)');D(8,8+o,6,'#8a4a7a');D(8,8+o,3,'#f2f0e6');D(8,8+o,1,'#c2412f');R(8,8+o,1,1,DK);R(4,12+o,8,2,'#5a2a4a');R(5,12+o,1,1,'#f2f0e6');R(7,13+o,1,1,'#f2f0e6');R(9,12+o,1,1,'#f2f0e6');
   [[2,1],[5,-1],[8,-2],[11,-1],[14,1]].forEach(([x,y],i)=>{R(x,y+2+o,1,3,'#7a3a6a');R(x-1,y+o,3,2,'#f2f0e6');R(x,y+o+(Math.floor(t*3+i)%2),1,1,'#3e5a8a')});break}
-case 'stormgiant':{const g=Math.floor(t*6)%3;R(1,15,14,1,'rgba(0,0,0,.3)');R(4,0,8,5,'#9aa8c0');R(5,2,2,1,'#f4e27a');R(9,2,2,1,'#f4e27a');R(4,0,8,1,'#e0e8f2');R(2,5,12,7,'#6a7a9a');R(0,5,2,7,'#7a8aa8');R(14,5,2,7,'#7a8aa8');R(4,12,3,4,'#5a6a8a');R(9,12,3,4,'#5a6a8a');R(6,7,4,3,'#4a5a7a');if(g===0){R(0,1,1,3,'#fff');R(15,2,1,3,'#f4e27a')}break}
- case 'couatl':{const w=Math.floor(t*4)%2;for(let i=0;i<12;i++)R(1+i,10+Math.round(Math.sin(t*3+i*0.6)*2),2,2,i%2?'#5f9a45':'#7ac74f');R(11,3,4,5,'#5f9a45');R(12,4,1,1,'#f4e27a');R(15,6,1,1,'#c2412f');
+case 'couatl':{const RB=['#c2412f','#e6bf4a','#5fb05a','#4a90c8','#a98be0'],DKC=['#8a2a20','#a8842e','#3f7a3a','#2e6a9a','#7a5ab0'];const fa=Math.sin(t*4)*0.12;R(2,23,26,1,'rgba(0,0,0,.3)');
+  const feather=(sx,sy,ang,len,c,dk)=>{for(let r=0;r<len;r++){const x=Math.round(sx+Math.cos(ang)*r),y=Math.round(sy+Math.sin(ang)*r);if(y<0||x<0)continue;R(x,y,2,1,r===len-1?'#fff6c0':c);R(x,y+1,2,1,dk)}};
+  for(let i=4;i>=0;i--)feather(14,12,Math.PI*(1.10+i*0.085)+fa,13-i,DKC[i],'rgba(0,0,0,.25)');
+  for(let i=0;i<14;i++){const x=Math.round(19-i*1.3),y=17+Math.round(Math.sin(t*3+i*0.6)*1.6)+Math.floor(i/5);R(x,y-1,2,1,'#3f8a4a');R(x,y,2,1,i%3===0?'#2e6a3a':'#5fb05a');R(x,y+1,2,1,'#e6d27a')}
+  R(0,19,1,3,RB[0]);R(1,18,1,2,RB[1]);R(1,21,1,2,RB[3]);
+  for(let y=8;y<17;y++){const x=19+Math.round((16-y)*0.3);R(x,y,3,1,'#5fb05a');R(x+2,y,1,1,'#e6d27a');R(x,y,1,1,'#3f8a4a')}
+  R(21,3,7,5,'#5fb05a');R(27,5,4,3,'#4f9a4a');R(21,7,9,1,'#3f8a4a');R(25,4,1,1,'#f4e27a');R(25,5,1,1,DK);R(30,5,1,1,DK);
+  if(fl){R(31,7,1,1,'#c2412f');R(32,8,1,1,'#c2412f')}
+  R(19,0,2,4,RB[0]);R(21,0,2,3,RB[1]);R(23,0,2,3,RB[3]);R(18,2,1,3,RB[4]);
+  for(let i=4;i>=0;i--)feather(17,12,Math.PI*(1.16+i*0.08)-fa,12-i,RB[i],DKC[i]);
+  if(tele)R(25,4,1,1,'#fff');break}
+ case 'clockdragon':{const g=Math.floor(t*6)%2,kk=Math.floor(t*3)%2,a=t*3,up=fl?3:0;R(3,23,26,1,'rgba(0,0,0,.3)');
+  const tips=[[0,1+up],[5,0+up],[10,2+up]],sh=[14,10];
+  const sx=(tx,ty,y)=>Math.round(sh[0]+(tx-sh[0])*(sh[1]-y)/(sh[1]-ty));
+  for(let y=Math.min(...tips.map(q=>q[1]));y<sh[1];y++){const xs=tips.filter(q=>y>=q[1]).map(q=>sx(q[0],q[1],y));if(!xs.length)continue;const x0=Math.min(...xs);R(x0,y,sh[0]-x0,1,y%2?'#a8642a':'#8a5020')}
+  tips.forEach(([tx,ty])=>{for(let i=0;i<=12;i++){const y=Math.round(ty+(sh[1]-ty)*i/12),x=sx(tx,ty,y);R(x,y,1,1,'#c9a14a')}R(tx,ty,1,1,'#f7dc80')});
+  for(let i=0;i<9;i++){const x=8-i,y=15+Math.round(i*0.4+Math.sin(t*2+i*0.6));R(x,y,2,2,i%2?'#a8842e':'#c9a14a')}R(0,17,1,3,'#c4c9cd');R(0,16,1,1,'#eef2f4');
+  R(9,11,14,8,'#c9a14a');R(8,12,1,6,'#a8842e');R(23,12,1,6,'#a8842e');R(9,11,14,1,'#f7dc80');for(let x=11;x<23;x+=3)R(x,12,1,6,'#8a6a3a');R(9,18,14,1,'#8a6a3a');
+  D(16,15,3,'#8a6a3a');D(16,15,2,'#a8842e');R(16,15,1,1,'#f7dc80');for(let i=0;i<6;i++){const an=a+i*Math.PI/3;R(16+Math.round(Math.cos(an)*3.5),15+Math.round(Math.sin(an)*3.5),1,1,'#c9a14a')}
+  R(16,7,1,4,'#8a6a3a');if(kk){R(13,5,7,2,'#c9a14a');R(13,5,1,2,'#f7dc80')}else{R(15,3,3,4,'#c9a14a');R(16,3,1,1,'#f7dc80')}
+  for(const lx of [10,19]){R(lx,19,3,3,'#8a6a3a');R(lx+1,19,1,3,'#c4c9cd');R(lx-1,22,5,1,'#5a4420');R(lx+3,22,1,1,'#c9a14a')}
+  for(let y=5;y<12;y++){const x=21+Math.round((11-y)*0.5);R(x,y,3,1,y%2?'#c9a14a':'#a8842e')}
+  R(23,1,7,4,'#c9a14a');R(23,1,7,1,'#f7dc80');R(30,2,2,3,'#c9a14a');R(21,0,2,1,'#8a6a3a');R(20,1,2,1,'#8a6a3a');
+  R(26,2,2,1,g?'#6ad0ff':'#bfefff');R(31,3,1,1,DK);
+  if(tele){R(25,5,7,2,'#5a4420');R(26,5,5,1,'#e8823a');R(32,4,1,1,'#f4d27a');R(33,3-fl,2,2,'rgba(240,160,60,.8)')}else{R(25,5,7,1,'#8a6a3a')}
+  if(Math.floor(t*2)%3===0){R(32,1,1,1,'rgba(255,255,255,.8)');R(33,0,2,1,'rgba(255,255,255,.5)')}
+  break}
+ case 'tinkerer':{const pf=Math.floor(t*3)%3,o=Math.round(Math.sin(t*4)*0.5);R(3,15,10,1,'rgba(0,0,0,.3)');
+  R(5,12,1,3,'#8a6a3a');R(10,12,1,3,'#8a6a3a');R(4,14,3,1,'#5a4420');R(9,14,3,1,'#5a4420');
+  D(4,7,2,'#c9a14a');R(4,7,1,1,'#f7dc80');R(2,2-pf,1,3,'#5a6065');R(1,0-pf,2,1,'rgba(220,220,220,.6)');
+  R(4,7+o,1,3,'#3e6a9a');R(5,7+o,6,5,'#6b4a2e');R(6,8+o,4,1,'#8a6744');R(7,10+o,2,1,'#c9a14a');
+  R(6,2+o,4,4,'#e0b48a');R(5,2+o,1,2,'#eef2f8');R(10,2+o,1,2,'#eef2f8');R(6,1+o,4,1,'#eef2f8');
+  R(6,3+o,4,1,'#5a6065');R(6,3+o,1,1,'#6ad0ff');R(9,3+o,1,1,'#6ad0ff');R(6,5+o,4,3,'#eef2f8');R(7,5+o,2,1,'#c08a6a');
+  R(11,7+o,1,4,'#c9a14a');R(12,10+o,2,1,'#9aa0a5');R(13,9+o,1,1,'#9aa0a5');
+  R(2,8+o,2,1,'#9aa0a5');R(1,6+o,1,4,'#9aa0a5');R(0,6+o,1,1,'#9aa0a5');R(0,9+o,1,1,'#9aa0a5');
+  if(tele){const z=Math.floor(t*10)%2;R(12,4+z,1,3,'#6ad0ff');R(13,2+z,1,2,'#fff');R(11,1,1,2,'#6ad0ff')}break}
+ case 'stormgiant':{const g=Math.floor(t*6)%3;R(1,15,14,1,'rgba(0,0,0,.3)');R(4,0,8,5,'#9aa8c0');R(5,2,2,1,'#f4e27a');R(9,2,2,1,'#f4e27a');R(4,0,8,1,'#e0e8f2');R(2,5,12,7,'#6a7a9a');R(0,5,2,7,'#7a8aa8');R(14,5,2,7,'#7a8aa8');R(4,12,3,4,'#5a6a8a');R(9,12,3,4,'#5a6a8a');R(6,7,4,3,'#4a5a7a');if(g===0){R(0,1,1,3,'#fff');R(15,2,1,3,'#f4e27a')}break}
+ case 'couatl_old':{const w=Math.floor(t*4)%2;for(let i=0;i<12;i++)R(1+i,10+Math.round(Math.sin(t*3+i*0.6)*2),2,2,i%2?'#5f9a45':'#7ac74f');R(11,3,4,5,'#5f9a45');R(12,4,1,1,'#f4e27a');R(15,6,1,1,'#c2412f');
   for(let i=0;i<5;i++){R(4+i*2,w?2+i%2:5,2,4,['#c2412f','#e6bf4a','#5f9a45','#4a90c8','#a98be0'][i])}break}
  case 'djinni':{const o=Math.round(Math.sin(t*2));R(5,1+o,6,5,'#4a8ab0');R(6,3+o,1,1,'#f4e27a');R(9,3+o,1,1,'#f4e27a');R(5,0+o,6,1,'#e6bf4a');R(7,-1+o,2,1,'#c2412f');R(3,6+o,10,5,'#4a8ab0');R(1,6+o,2,3,'#4a8ab0');R(13,6+o,2,3,'#4a8ab0');R(5,11+o,6,2,'rgba(160,200,230,.8)');R(6,13+o,4,2,'rgba(160,200,230,.6)');R(7,15,2,1,'rgba(160,200,230,.4)');R(6,8+o,4,1,'#e6bf4a');break}
  case 'unwritten':{const gl=Math.floor(t*8)%5===0?1:0;R(3,15,10,1,'rgba(0,0,0,.3)');R(4+gl,1,8,14,'#f2f0e6');R(3+gl,4,10,8,'#f2f0e6');R(5+gl,3,6,1,'#d8d4c8');R(2+gl,6,1,6,'#f2f0e6');R(13+gl,6,1,6,'#f2f0e6');
@@ -1688,6 +1731,7 @@ function paintSword(g,key,seed){
  case 'greta':person({hair:'#5a4a3a',skin:'#d8a878',cloth:'#5a4e3e',cloth2:'#3a3228',stripe:'#6b5a44'});grip('#7a5636');Hh(13,28,6,3,'#7d858a');break;
  case 'aldric':person({helmet:'#b8c8d4',hair:'#b8c8d4',skin:'#e0b48a',cloth:'#9cb0c0',cloth2:'#7d93a5',stripe:'#3e5a8a',belt:'#6b4a2e'});grip('#5a3b25','#3a2618');pommel('#dcb75e');break;
  case 'elsabet':person({hair:'rgba(220,240,245,.85)',skin:'rgba(191,227,234,.8)',cloth:'rgba(191,227,234,.6)',cloth2:'rgba(160,200,210,.6)',eye:'#1a2a30'});grip('rgba(191,227,234,.6)');Hh(14,28,4,3,'#c4c9cd');break;
+ case 'tinkerer':blade({w:6,tip:2},(i,j)=>j<4?'#9aa0a5':(i<2?'#c4c9cd':'#9aa0a5'));Hh(11,0,3,5,'#9aa0a5');Hh(18,0,3,5,'#9aa0a5');guard('#c9a14a',18);grip('#6b4a2e');Hh(14,28,4,3,'#6ad0ff');break;
  case 'stormgiant':blade({w:10,tip:4},(i,j)=>nz(i,j)<12?'#f4e27a':(i<3?'#9aa8c0':'#6a7a9a'));guard('#4a5a7a',16);grip('#5a6a8a');pommel('#f4e27a');break;
  case 'couatl':blade({w:8,tip:5},(i,j)=>['#c2412f','#e6bf4a','#5f9a45','#4a90c8','#a98be0'][(j+i)%5]);guard('#5f9a45',18);grip('#5f9a45');pommel('#f4e27a');break;
  case 'djinni':blade({w:8,tip:5,wfn:(j,w)=>Math.max(2,w-Math.max(0,j-12))},(i,j)=>j>12?'rgba(160,200,230,.8)':(i<3?'#6aaad0':'#4a8ab0'));guard('#e6bf4a');grip('#4a8ab0');pommel('#c2412f');break;
@@ -2076,7 +2120,7 @@ function zephyrTalk(n){const st=mainStage5();
  if(st===0){S.flags.metZephyr=true;S.potions+=3;S.coins+=200;updHud();say(n.name,['Welcome aboard, Summoner! Well, welcome to the sky. You climbed the light? Brave.','I am Captain Zephyr of Cloudhaven. Something is wrong up here. Things are vanishing. Not dying, not breaking. <b>Erased</b>, like they were never written.','It calls itself <b>the Unwritten</b>. It waits at the <b>Throne of First Light</b>, at the far end of the Reaches. Its guards are old powers: a Storm Giant, a Couatl, a Djinni and a dragon made of clockwork.','The ghost of the first Summoner haunts this town. Talk to her. She knows how to fight a thing like this.<p class="reward" style="margin-top:10px">You received <b>3 potions</b> and <b>200 coins</b>.</p>']);return}
  if(st===6){S.flags.ch5done=true;S.potions+=3;S.coins+=500;updHud();const done=Object.entries(QUESTS).filter(([id,q])=>S.q[id]==='done').length,total=Object.keys(QUESTS).length;
   say(n.name,['Summoner! Everything that vanished is coming back! The windmills, the stars, the islands!','You did more than win a fight. You wrote yourself into the story of the world. Nothing can erase that.',`<p><b>The Sumunbléd Chronicles: complete.</b></p><ul class="rules"><li>Side quests finished: <b>${done}</b> of ${total}</li><li>Rare creatures defeated: <b>${S.rareKills||0}</b> of 15</li><li>Hidden places found: <b>${Object.keys(S.flags).filter(k=>k.startsWith('found_')).length}</b> of 10</li><li>Things seen up close: <b>${S.seen.length}</b></li><li>Blades forged: <b>${S.forged.length}</b></li></ul><p class="sub">Thank you for playing. You can keep exploring and travel between the towns.</p>`]);return}
- say(n.name,[['','The Storm Giant claps before it strikes. Guard!','The Couatl heals itself. Hit it hard and fast.','The Djinni grants itself wishes. Be ready for anything.','The Clockwork Dragon breathes molten brass. Watch its gears.','The Unwritten erases your swords. Keep spares. And talk to Auren first.','','The sky is safe. Thanks to you.'][st]])}
+ say(n.name,[['','The Storm Giant claps before it strikes. Guard!','The Couatl heals itself. Hit it hard and fast.','The Djinni grants itself wishes. Be ready for anything.','The Clockwork Dragon breathes molten brass. And I hear someone built it. Someone grumpy.','The Unwritten erases your swords. Keep spares. And talk to Auren first.','','The sky is safe. Thanks to you.'][st]])}
 const SHOP5=[{id:'potion',name:'Healing potion',price:100,desc:'Heals you in battle.',rep:true,buy:()=>{S.potions++}},
  {id:'cloak',name:'Cloudweave Cloak',price:600,desc:'+40 max HP, for good.',buy:()=>{S.hpBonus+=40;S.hp+=40}},
  {id:'whet5',name:'Starsteel Whetstone',price:500,desc:'Every new sword deals +15 damage.',buy:()=>{S.whet+=15}},
@@ -2204,6 +2248,7 @@ function step(dx,dy){
  const o=MAP[ny][nx].o;
  if(o==='sign'){readSign(nx,ny);return}
  if(o==='chest'){openChest(nx,ny);return}
+ if(o==='passage'&&A.passKind&&A.passKind[nx+','+ny]){usePassage(A.passKind[nx+','+ny]);return}
  if((o==='door'||o==='secret')&&DOORS[nx+','+ny]){if(o==='secret'&&!S.flags['found_'+DOORS[nx+','+ny]]){S.flags['found_'+DOORS[nx+','+ny]]=true;toast('You found a <b>hidden place</b>!')}const a=AREAS[DOORS[nx+','+ny]];enterArea(a.id,a.exit[0],a.exit[1]);return}
  if(o==='exit'){const r=A.ret;enterArea(A.retArea||'world',r[0],r[1]);return}
  if(solidAt(nx,ny))return;
@@ -2222,13 +2267,14 @@ $('pad').querySelectorAll('button').forEach(b=>{const d=b.dataset.d;b.addEventLi
 
 /* ================= BATTLE ================= */
 function log(text,cls){B.log.push({text,cls:cls||'you'});if(B.log.length>40)B.log.shift()}
-function startBattle(mon){mode='battle';held=[];const M=MONS[mon.key];
+function normCD(){const a=AREAS.sky;if(!a||!S)return;a.monsters.forEach(m=>{if(m.key==='clockdragon'||m.key==='tinkerer')m.key=S.flags.cdragonDown?'tinkerer':'clockdragon'})}
+function startBattle(mon){normCD();mode='battle';held=[];const M=MONS[mon.key];
  const MULT=(S.flags.redeemed&&S.chapter===1)?2:(MONS[mon.key].mult||1);const HPM=(mon.key==='unwritten'&&S.flags.unwrittenWeak)?0.75:1;const IMM=mon.key==='soulgem'&&(S.lichKills||0)<3;B={mon,key:mon.key,idx:MONSTERS.indexOf(mon),hp:Math.round(M.hp*(M.mult?1:MULT)*HPM),max:Math.round(M.hp*(M.mult?1:MULT)*HPM),mult:MULT,immortal:IMM,turn:0,swords:S.relics.slice(0,S.slots),relicSnap:S.relics.slice(),freeLeft:B_FREE(),burn:0,poison:0,frozen:false,weak:0,tele:null,guard:false,used:[],forgedAt:S.forged.length,potUsed:0,log:[],flash:0};
  B.sub=null;B.summoned=[];B.kingNext=0;B.heads=3;B.swords.forEach(s=>s.rust=0);if(mon.cb)setupCB(mon);if(S.pacts&&!GODF.inv){const c=10*S.pacts;S.hp=Math.max(1,S.hp-c);B.log.push({text:`Your blade pacts cut you as the fight begins (−${c} HP).`,cls:'foe-l'})}S.buffNow=S.brew;S.brew=null;B.buff=S.buffNow;B.freeLeft=B_FREE();if(S.wishNext&&!mon.gem){S.wishNext=false;B.freeLeft=99;B.hp=Math.round(B.hp*.5);B.log.push({text:'Your star wish comes true: the foe starts at half health, and every summon is free.',cls:'good'})}B.minions=0;B.shield=false;B.ink=false;B.heals=0;B.swords.forEach(s=>{s.usedThis=false;s.hexed=false;s.grabbed=0});log(M.intro,'foe-l');if(B.buff){const bw=BREWS.find(x=>x.id===B.buff);log(`${bw.name} courses through you. ${bw.buff.replace('Next battle: ','')}`,'good');if(B.buff==='thunder'){B.hp=Math.round(B.max*0.75);log('Thunder cracks. The foe staggers.','good')}}if(B.swords.length)log(`Your kept blades answer your call: ${B.swords.map(s=>s.name).join(', ')}.`,'info');log('Your first summon this battle is free. Open Summon to forge a blade.','info');busy=false;show('battle');renderBattle()}
 function renderBattle(){if(!B)return;const M=MONS[B.key],r=RANKS[S.rank];
  $('bNum').textContent=MONS[B.key].rare?`★ Rare creature · escapes in ${Math.max(0,8-B.turn)} turns`:B.key==='soulgem'?'The Crystal Grotto':`Battle ${B.idx+1} of 5`;const TG=B.sub||B;$('fName').textContent=B.sub?B.sub.name:(B.title||M.name);$('fTrait').textContent=B.sub?(B.sub.kind==='echo'?'A great foe you beat long ago, rewritten by the Unwritten. Beat it again.':B.sub.kind==='traitor'?'Your own blade, turned against you by its curses. Defeat it to cleanse it.':'A corrupted copy, called up by the Hollow King. Defeat it to set it free.'):(B.mult>1&&!M.mult?'DOUBLE STRENGTH. ':'')+M.trait;$('fBar').style.width=Math.max(0,TG.hp/TG.max*100)+'%';$('fHp').textContent=B.sub?`${Math.max(0,B.sub.hp)} / ${B.sub.max}`:B.immortal?'∞ (unbreakable)':`${Math.max(0,B.hp)} / ${B.max}`;
- const chips=[];if(B.sub)chips.push(`${M.name} waits behind it: ${Math.max(0,B.hp)}/${B.max}`);if(B.key==='hydra')chips.push(`Heads: ${B.heads}`);if((B.key==='hollowking'||B.key==='unwritten')&&!B.sub)chips.push(`${B.key==='unwritten'?'Rewrites':'Copies'} left: ${4-B.kingNext}`);if(B.anti>0)chips.push(`Anti-magic (${B.anti})`);if(B.key==='lich'&&!S.flags.phyl)chips.push(`Cannot die: soul gem intact · gem cracked ${S.lichKills||0}/3`);if(B.key==='soulgem')chips.push(B.immortal?`Unbreakable · Lich defeated ${S.lichKills||0}/3`:'Cracked: it can break!');if(B.revived)chips.push(`Risen ${B.revived}×`);if(B.shield)chips.push('Shield up: half damage');if(B.minions)chips.push(`Goblin warriors ×${B.minions}`);if(B.ink)chips.push('Ink: you may miss');if(B.buff)chips.push('Hexbrew active');if(B.burn)chips.push(`Burning (${B.burn})`);if(B.poison)chips.push(`Poison ×${B.poison}`);if(B.frozen)chips.push('Frozen');if(B.weak)chips.push(`Weakened −${B.weak}`);$('fChips').innerHTML=chips.map(c=>`<span class="chip">${c}</span>`).join('');
- const w=$('fWarn');if(B.tele==='trap'){w.hidden=false;w.textContent='The kobold has set a trap. It springs next turn: Guard!'}else if(B.tele==='breath'){w.hidden=false;w.textContent='The dragon is inhaling. Fire breath next turn: Guard!'}else if(B.tele==='storm'){w.hidden=false;w.textContent='The storm is gathering. Lightning strikes next turn: Guard!'}else if(B.tele==='clap'){w.hidden=false;w.textContent='The Storm Giant raises its hands. Thunderclap next turn: Guard!'}else if(B.tele==='death'){w.hidden=false;w.textContent='The Lich points at you. Finger of Death next turn: Guard!'}else w.hidden=true;
+ const chips=[];if(B.sub)chips.push(`${M.name} waits behind it: ${Math.max(0,B.hp)}/${B.max}`);if(B.key==='hydra')chips.push(`Heads: ${B.heads}`);if((B.key==='hollowking'||B.key==='unwritten')&&!B.sub)chips.push(`${B.key==='unwritten'?'Rewrites':'Copies'} left: ${4-B.kingNext}`);if(B.anti>0)chips.push(`Anti-magic (${B.anti})`);if(B.key==='lich'&&!S.flags.phyl)chips.push(`Cannot die: soul gem intact · gem cracked ${S.lichKills||0}/3`);if(B.key==='soulgem')chips.push(B.immortal?`Unbreakable · Lich defeated ${S.lichKills||0}/3`:'Cracked: it can break!');if(B.revived)chips.push(`Risen ${B.revived}×`);if(B.shield)chips.push('Shield up: half damage');if(B.wasps)chips.push(`Wasps: ${B.wasps}`);if(B.minions)chips.push(`Goblin warriors ×${B.minions}`);if(B.ink)chips.push('Ink: you may miss');if(B.buff)chips.push('Hexbrew active');if(B.burn)chips.push(`Burning (${B.burn})`);if(B.poison)chips.push(`Poison ×${B.poison}`);if(B.frozen)chips.push('Frozen');if(B.weak)chips.push(`Weakened −${B.weak}`);$('fChips').innerHTML=chips.map(c=>`<span class="chip">${c}</span>`).join('');
+ const w=$('fWarn');if(B.tele==='trap'){w.hidden=false;w.textContent='The kobold has set a trap. It springs next turn: Guard!'}else if(B.tele==='breath'){w.hidden=false;w.textContent='The dragon is inhaling. Fire breath next turn: Guard!'}else if(B.tele==='storm'){w.hidden=false;w.textContent='The storm is gathering. Lightning strikes next turn: Guard!'}else if(B.tele==='zap'){w.hidden=false;w.textContent='The Tinkerer is overcharging. Big zap next turn: Guard!'}else if(B.tele==='clap'){w.hidden=false;w.textContent='The Storm Giant raises its hands. Thunderclap next turn: Guard!'}else if(B.tele==='death'){w.hidden=false;w.textContent='The Lich points at you. Finger of Death next turn: Guard!'}else w.hidden=true;
  const L=$('bLog');L.innerHTML=B.log.map(l=>`<li class="${l.cls}">${l.text}</li>`).join('');L.scrollTop=L.scrollHeight;
  $('yRank').textContent=`${r.name} · blades ×${r.mult.toFixed(1)}`;$('yBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('yHp').textContent=`${Math.max(0,S.hp)} / ${maxHp()}`;
  let h='';for(let i=0;i<S.slots;i++){const sw=B.swords[i];
@@ -2289,6 +2335,11 @@ const AI={goblin(){foeAtk()},
  stormgiant(){if(B.tele==='clap'){B.tele=null;hitYou(140-B.weak,'THUNDERCLAP')}else if(B.turn%3===2){B.tele='clap';log('The Storm Giant raises both hands. The air crackles.','foe-l')}else foeAtk()},
  couatl(){if(B.hp<B.max*.7&&rnd()<.25){B.hp=Math.min(B.max,B.hp+450);log('The Couatl’s feathers flash. It heals 450.','foe-l')}else foeAtk()},
  djinni(){const r=rnd();if(r<.25&&B.hp<B.max){B.hp=Math.min(B.max,B.hp+400);log('“I wish to be well!” The Djinni heals 400.','foe-l')}else if(r<.5){B.shield=true;log('“I wish for a shield!” Your next hits do half damage.','foe-l')}else if(r<.75){log('“I wish to hit twice!”','foe-l');foeAtk();foeAtk()}else{B.shield=false;foeAtk()}},
+ tinkerer(){if(B.tele==='zap'){B.tele=null;hitYou(150-B.weak,'OVERCHARGED ZAP');return}
+  if(B.wasps>0){B.wasps--;hitYou(14+Math.floor(rnd()*8),'A clockwork wasp stings')}
+  const r=B.turn%4;if(r===1){B.tele='zap';log('The Tinkerer cranks a big lever. Sparks crawl up his arm.','foe-l')}
+  else if(r===3){const g=pick(['shield','repair','wasps']);if(g==='shield'){B.shield=true;log('The Tinkerer bolts together a cog shield. Your next hits do half damage.','foe-l')}else if(g==='repair'){B.hp=Math.min(B.max,B.hp+700);log('The Tinkerer patches himself up with spare parts. He heals 700.','foe-l')}else{B.wasps=3;log('The Tinkerer lets loose three clockwork wasps!','foe-l')}}
+  else{B.shield=false;foeAtk()}},
  unwritten(){if(B.turn%3===0&&B.swords.length){const sw=B.swords.slice().sort((a,b)=>b.dmg-a.dmg)[0];B.swords=B.swords.filter(x=>x!==sw);log(`The Unwritten touches your ${sw.name}. It goes blank, then it is gone. (Erased for this battle.)`,'foe-l')}else foeAtk()},
  rustknight(){foeAtk();const ok=B.swords.filter(s=>(s.rust||0)<4);if(ok.length){const sw=pick(ok);sw.rust=(sw.rust||0)+1;log(`Rust spreads over your ${sw.name} (−${15*sw.rust}% damage).`,'foe-l')}},
  bladeswarm(){const n=ri(2,4);log(`The swarm cuts you ${n} times.`,'foe-l');for(let i=0;i<n;i++)foeAtk('A spinning blade')},
@@ -2322,6 +2373,7 @@ function win(){if(B&&B.key==='lich'&&!S.flags.phyl){const k0=S.lichKills||0;B.re
  if(B&&B.key==='soulgem')return gemBreak();
  if(B&&B.key==='corruptblade')return cbFreed();
  if(B&&MONS[B.key].rare)return rareWin();
+ if(B&&B.key==='clockdragon')return dragonDown();
  if(B&&B.key==='unwritten'&&!S.flags.unwrittenWeak&&false)return;busy=true;const M=MONS[B.key];log(`${M.name} is defeated!`,'good');renderBattle();
  setTimeout(()=>{const lost=B.swords.filter(s=>!s.relic).map(s=>s.name),kept=B.swords.filter(s=>s.relic);kept.forEach(s=>{if(s.usedThis)s.curse++});
   B.mon.alive=false;S.wins++;const old=S.rank;S.rank=Math.min(RANKS.length-1,S.rank+1);S.hp=maxHp();const key=B.key;B=null;busy=false;hide('battle');mode='menu';updHud();addCodex(key);S.buffNow=null;if(S.flags.exiled&&S.wins>=5){exileEnding();return}const r=RANKS[S.rank],coins=M.coins||0;S.coins+=coins;updHud();
@@ -2348,7 +2400,7 @@ function restoreSnap(sn){for(const[id,a]of Object.entries(AREAS)){const z=sn.are
 function exitGod(){if(!GOD)return;restoreSnap(GOD.snap);GOD=null;GODF.inv=false;GODF.ohk=false;$('bGod').hidden=true;hide('god');mode='map';toast('<b>God mode off.</b> Everything is back how it was.');banner(A.kind==='in'?A.name:zname(S.x))}
 function tp(x,y){if(S.area!==CWID()){S.area=CWID();useArea(CWID())}
  for(let r=0;r<8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const X=x+dx,Y=y+dy;if(!solidAt(X,Y)&&!MONSTERS.some(m=>m.alive&&Math.abs(m.x-X)<=1&&Math.abs(m.y-Y)<=1)){S.x=S.dx=X;S.y=S.dy=Y;hide('god');mode='map';S.zone=zoneOf(X);banner(zname(X));look();return}}}
-function setStage(n){const ms=CW().monsters;ms.forEach((m,i)=>{m.alive=i>=n;if(i<n)addCodex(m.key)});S.wins=n;S.rank=S.chapter===5?Math.min(24,20+n):S.chapter===4?Math.min(19,15+n):S.chapter===3?10+n:S.chapter===2?5+n:Math.min(4,n);if(S.chapter===2)S.flags.metBrine=true;if(S.chapter===3)S.flags.metHrolf=true;if(S.chapter===4){S.flags.metIlsa=true;if(n>=5)S.lichKills=3}if(S.chapter===5)S.flags.metZephyr=true;S.flags.metElder=true;S.flags.started=true;S.hp=maxHp();updHud();
+function setStage(n){if(S.chapter===5){S.flags.cdragonDown=n>=4;normCD()}const ms=CW().monsters;ms.forEach((m,i)=>{m.alive=i>=n;if(i<n)addCodex(m.key)});S.wins=n;S.rank=S.chapter===5?Math.min(24,20+n):S.chapter===4?Math.min(19,15+n):S.chapter===3?10+n:S.chapter===2?5+n:Math.min(4,n);if(S.chapter===2)S.flags.metBrine=true;if(S.chapter===3)S.flags.metHrolf=true;if(S.chapter===4){S.flags.metIlsa=true;if(n>=5)S.lichKills=3}if(S.chapter===5)S.flags.metZephyr=true;S.flags.metElder=true;S.flags.started=true;S.hp=maxHp();updHud();
  if(n<5){const m=ms[n];tp(m.x-3,CW().PATHC[m.x-3])}else{const e=CW().npcs.find(x=>x.id===(S.chapter===5?'zephyr':S.chapter===4?'ilsa':S.chapter===3?'hrolf':S.chapter===2?'brine':'elder'));tp(e.x,e.y+1)}}
 function openGod(){mode='menu';const W0=CW(),btn=(label,act,on)=>`<button class="btn${on?' on':''}" data-g="${act}">${label}</button>`;
  const zones=S.chapter===5?[[4,'Cloudhaven'],[60,'Windmill Isles'],[124,'Starfall Crater'],[176,'Clockwork Archive'],[230,'Throne of First Light']]:S.chapter===4?[[4,'Ashfall Camp'],[60,'Rustwood'],[124,'Field of a Thousand Swords'],[176,'Hollow Mines'],[230,'Blade Spire']]:S.chapter===3?[[4,'Hearthhold'],[60,'Frostpine Wood'],[120,'Glimmerdeep Caverns'],[175,'Emberforge Ruins'],[230,'Skyspire Citadel']]:S.chapter===2?[[4,'Saltmarsh Harbor'],[56,'Fogmire'],[114,'Drowned Halls'],[170,'Grimtooth Warren'],[220,'Galecrest Keep']]:[[3,'Brightmeadow'],[56,'Whisperwood'],[116,'Stonebrow Hills'],[176,'Quiet Graves'],[231,'Ember Lair']];
@@ -2405,6 +2457,7 @@ function breathTop(nx,ny,t,len){for(let i=0;i<34;i++){const d=i*len/34,fr=Math.f
   ctx.fillStyle=i<7?'#fff6c0':i<15?'#f4d27a':i<25?'#e8823a':'#c2412f';ctx.fillRect(Math.round(nx+d),Math.round(ny+sp-sz/2),sz,sz)}}
 function flameAt(px,py,t,seed){const f=Math.floor(t*10+seed)%3;pen(ctx,px,py,1);R(3,9-f,10,7+f,'rgba(194,65,47,.85)');R(5,6+f,6,8-f,'#e8823a');R(6,4+(f%2)*2,4,6,'#f4d27a');R(7,2+f,2,3,'#f4d27a');if(f===1)R(10,1,1,2,'#f4d27a')}
 function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,${Math.max(0,Math.min(1,a))})`;ctx.fillRect(0,0,LW,LH)};
+ if(CUT.type==='travel'){drawTravel(ct);return}
  if(CUT.type==='dragon'){
   const VILY=AREAS.world.PATHC[12]*16;
   if(ct<3.2){CUT.hidePlayer=ct>0.6;drawMap(t);const sx=S.x*16-CAM.x+8,sy=S.y*16-CAM.y+10,sc=Math.min(2.2,0.4+ct*0.7);
@@ -2582,13 +2635,68 @@ function flee(){if(busy||!B)return;const mon=B.mon;S.relics=B.relicSnap;B.used.f
 $('aFlee').onclick=()=>flee();
 $('bArmory').onclick=()=>openArmory();$('aBreak').onclick=()=>battleBreak();
 
+/* ================= JOURNEYS ================= */
+const LEG={'1-2':'sea','2-3':'sea2','3-4':'rift','4-5':'sky'},LEGDUR=2.8;
+const LEGTXT={sea:['A fishing boat carries you east across the bay.','A fishing boat carries you west, back across the bay.'],sea2:['Captain Brine’s ship sails north, into the ice.','Captain Brine’s ship sails south, out of the ice.'],
+ rift:['You walk down the mountain and step through the crack in the world.','You step back through the crack in the world and climb up into the snow.'],sky:['You climb the ladder of light, up through the clouds.','You climb down the ladder of light, back to the ash.']};
+function legsBetween(a,b){const L=[];if(a<b)for(let c=a;c<b;c++)L.push([LEG[c+'-'+(c+1)],1]);else for(let c=a;c>b;c--)L.push([LEG[(c-1)+'-'+c],-1]);return L}
+function travelCut(legs,done){if(!legs.length){done();return}const bn=$('banner');if(bn)bn.classList.remove('show');['battle','summon','codex','quests','forge','dialog','god'].forEach(hide);mode='cut';held=[];CUT={type:'travel',t0:performance.now()/1000,legs,done,step:-1,hidePlayer:true,cam:null}}
+function endTravel(){if(!CUT||CUT.type!=='travel')return;const f=CUT.done;CUT=null;cap('');mode='map';f()}
+addEventListener('keydown',e=>{if(CUT&&CUT.type==='travel'&&[' ','Enter','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation();CUT.t0-=999}},true);
+addEventListener('pointerdown',e=>{if(CUT&&CUT.type==='travel'&&e.target&&e.target.tagName==='CANVAS')CUT.t0-=999},true);
+function drawTravel(ct){const n=CUT.legs.length;if(ct>n*LEGDUR){endTravel();return}
+ ct=Math.max(0,ct);const i=Math.min(n-1,Math.floor(ct/LEGDUR)),k=Math.min(1,(ct-i*LEGDUR)/LEGDUR),[type,dir]=CUT.legs[i],fr=[1,0,2,0][Math.floor(ct*8)%4];
+ const P=(x,y,d,f)=>drawPlayerFx(Math.round(x),Math.round(y),d,f,S.glass||0,S.pacts||0,S.wishes||0);
+ const band=(y0,y1,cols)=>{const h=(y1-y0)/cols.length;cols.forEach((c,j)=>{ctx.fillStyle=c;ctx.fillRect(0,Math.round(y0+j*h),LW,Math.ceil(h))})};
+ if(type==='sea'||type==='sea2'){const ice=type==='sea2',sy=Math.round(LH*0.48);
+  band(0,sy,ice?['#8aa8c4','#a4bed4','#bed2e2','#d6e4ee']:['#4f8ac8','#6aa0d8','#88b8e6','#a8d0f0']);
+  ctx.fillStyle=ice?'#eef6fa':'#4f8a3e';for(let x=0;x<LW;x+=2){const h=4+Math.round(4*Math.abs(Math.sin(x*0.05+(ice?1:0))));ctx.fillRect(x,sy-h,2,h)}
+  ctx.fillStyle=ice?'#34607e':'#2a6a9a';ctx.fillRect(0,sy,LW,LH-sy);
+  for(let j=0;j<70;j++){const x=((hh(j,7)%LW)+Math.floor(ct*18)*(j%2?1:-1)+LW*40)%LW,y=sy+5+hh(j,3)%(LH-sy-6);ctx.fillStyle=ice?'#a9dcee':'#5a9ac8';ctx.fillRect(x,y,4,1)}
+  if(ice)for(let j=0;j<5;j++){const x=(hh(j,11)%(LW-20)),y=sy+12+hh(j,5)%(LH-sy-40);ctx.fillStyle='#eef6fa';ctx.fillRect(x,y,16,6);ctx.fillRect(x+4,y-5,8,5);ctx.fillStyle='#a9dcee';ctx.fillRect(x,y+6,16,2)}
+  const x0=dir>0?-44:LW+4,x1=dir>0?LW+4:-44,bx=Math.round(x0+(x1-x0)*k),by=Math.round(sy+22+Math.sin(ct*3)*2);
+  if(dir>0)pen(ctx,bx,by,1,1);else pen(ctx,bx+40,by,-1,1);
+  R(18,-16,2,26,'#5a3d26');R(6,-14,24,15,'#efe3c8');R(6,-8,24,2,ice?'#2a3050':'#a8342c');R(20,-19,6,3,ice?'#2a3050':'#a8342c');
+  P(dir>0?bx+24:bx+0,by-6,dir>0?'right':'left',0);
+  if(dir>0)pen(ctx,bx,by,1,1);else pen(ctx,bx+40,by,-1,1);
+  R(0,9,38,6,'#6b4a2e');R(0,9,38,1,'#8a6744');R(3,15,32,2,'#4a3220');R(38,7,3,6,'#6b4a2e');for(let x=4;x<36;x+=6)R(x,11,2,2,'#2a1e16');
+  for(let j=0;j<6;j++)R((dir>0?-2-j*3:42+j*3),14+(j%2),2,1,'rgba(255,255,255,.6)')}
+ else if(type==='rift'){const gy=Math.round(LH*0.66);
+  band(0,gy,['#5e6068','#6a6c74','#7a7c84','#8a8a90']);
+  ctx.fillStyle='#e6eef4';for(let x=0;x<LW;x++){const h=Math.round(40+30*Math.abs(Math.sin(x*0.03))+10*Math.sin(x*0.11));if(x<LW*0.5)ctx.fillRect(x,gy-h,1,h)}
+  ctx.fillStyle='#4a4440';for(let x=0;x<LW;x++){const h=Math.round(30+20*Math.abs(Math.sin(x*0.04+2)));if(x>=LW*0.5)ctx.fillRect(x,gy-h,1,h)}
+  ctx.fillStyle='#8a8a90';ctx.fillRect(0,gy,LW,LH-gy);ctx.fillStyle='#6a6c74';for(let j=0;j<40;j++)ctx.fillRect(hh(j,4)%LW,gy+4+hh(j,8)%(LH-gy-4),3,1);
+  const cx=Math.round(LW/2),pulse=Math.floor(ct*6)%2;ctx.fillStyle=`rgba(138,106,168,${pulse?.35:.22})`;ctx.fillRect(cx-10,gy-60,20,64);
+  ctx.fillStyle='#1a1426';for(let y=gy-56;y<gy+4;y++){ctx.fillRect(cx-2+Math.round(Math.sin(y*0.4)*2),y,4,1)}
+  ctx.fillStyle='#e0d0f0';for(let j=0;j<6;j++)ctx.fillRect(cx-8+hh(j,Math.floor(ct*5))%16,gy-56+hh(j,9)%60,1,1);
+  let px,al=1;if(dir>0){px=10+(cx-18)*Math.min(1,k/0.75);al=k>0.75?Math.max(0,1-(k-0.75)*4):1}else{px=cx-8-(cx-18)*Math.max(0,(k-0.25)/0.75);al=k<0.25?k*4:1}
+  ctx.globalAlpha=al;P(px,gy-14,dir>0?'right':'left',fr);ctx.globalAlpha=1}
+ else{const up=dir>0,off=ct*40*(up?1:-1);band(0,LH,up?['#1a2a5a','#2a4a8a','#4a7ab8','#7aa8e0','#a8d0f0']:['#7aa8e0','#8a8a90','#6a6c74','#5e6068','#4a4440']);
+  for(let j=0;j<10;j++){const x=hh(j,13)%LW,y=((hh(j,17)%LH)+off*0.6+LH*50)%(LH+20)-10;ctx.fillStyle='rgba(238,242,248,.85)';ctx.fillRect(x,y,28,6);ctx.fillRect(x+6,y-4,14,4)}
+  const cx=Math.round(LW/2);ctx.fillStyle='rgba(255,246,192,.28)';ctx.fillRect(cx-14,0,28,LH);ctx.fillStyle='rgba(255,246,192,.45)';ctx.fillRect(cx-9,0,18,LH);
+  ctx.fillStyle='#fff6c0';ctx.fillRect(cx-9,0,1,LH);ctx.fillRect(cx+8,0,1,LH);for(let y=((off%10)+10)%10;y<LH;y+=10)ctx.fillRect(cx-9,Math.round(y),18,1);
+  P(cx-8,LH/2-8,'up',[1,0,2,0][Math.floor(ct*6)%4])}
+ const fa=Math.max(0,1-k*6,(k-0.86)*7);if(fa>0){ctx.fillStyle=`rgba(0,0,0,${Math.min(1,fa)})`;ctx.fillRect(0,0,LW,LH)}
+ cap(`${LEGTXT[type][dir>0?0:1]}<span class="small">Space to skip</span>`)}
+function passEnd(ch,from){const a=AREAS[REALMS[ch].id];if(!a||!a.passKind)return null;for(const k in a.passKind)if(a.passKind[k].to===from){const[x,y]=k.split(',').map(Number);return[x,y]}return null}
+function usePassage(pk){const to=pk.to,from=S.chapter;
+ if(S.maxChapter>=to&&AREAS[REALMS[to].id]){travelCut(legsBetween(from,to),()=>{const e=passEnd(to,from);travelTo(to,e?e[0]:4);if(e){S.x=S.dx=e[0];S.y=S.dy=e[1]+1;S.dir='down';updHud();look()}banner(zname(S.x))});return}
+ if(to===4&&S.chapter===3&&S.wins>=5){startChapter4();return}
+ if(to===5&&S.chapter===4&&S.wins>=5){startChapter5();return}
+ toast(pk.kind==='ladder'?'A faint shimmer of light hangs in the air. It will not hold your weight. Not yet.':'A thin crack in the rock. Cold air breathes out of it. It is far too narrow to squeeze through… for now.')}
+{const w=(f,ch)=>function(dev){if(dev||CUT||!S||S.chapter===ch)return f(dev);travelCut(legsBetween(S.chapter,ch),()=>f(dev))};
+ startChapter2=w(startChapter2,2);startChapter3=w(startChapter3,3);startChapter4=w(startChapter4,4);startChapter5=w(startChapter5,5)}
 /* ================= RARE MONSTERS ================= */
 function wanderRares(){for(const r of A.rares){if(!r.alive||rnd()<.35)continue;const[dx,dy]=pick([[1,0],[-1,0],[0,1],[0,-1]]),nx=r.x+dx,ny=r.y+dy;
  if(solidAt(nx,ny)||(nx===S.x&&ny===S.y)||MONSTERS.some(m=>m.alive&&Math.abs(m.x-nx)<4&&Math.abs(m.y-ny)<4)||A.rares.some(o=>o!==r&&o.alive&&o.x===nx&&o.y===ny))continue;
- if(A.kind==='out'&&r.zone!=null&&zoneIn(A,nx)!==r.zone)continue;const o=MAP[ny][nx].o;if(o==='door'||o==='secret'||o==='exit')continue;r.x=nx;r.y=ny}}
+ if(A.kind==='out'&&r.zone!=null&&zoneIn(A,nx)!==r.zone)continue;const o=MAP[ny][nx].o;if(o==='door'||o==='secret'||o==='exit'||o==='passage')continue;r.x=nx;r.y=ny}}
 function rareWin(){busy=true;const mon=B.mon,M=MONS[B.key],key=B.key;log(`${M.name} is defeated!`,'good');renderBattle();
  setTimeout(()=>{const extra=endSpecialBattle();mon.alive=false;S.coins+=M.coins;S.potions++;addCodex(key);addCodex(M.drop);S.rareKills=(S.rareKills||0)+1;updHud();
   dialog('Rare Creature Defeated!',`<div class="speaker"><img class="pix" src="${iconImg(M.drop)}" alt=""><div><p>You beat the rare <b>${M.name}</b>!</p><ul class="rules"><li><b>${THINGS[M.drop].name}</b>, a rare Codex entry (power ${THINGS[M.drop].power})</li><li>The ${M.name} itself joins your Codex</li><li>${M.coins} coins and a potion</li></ul></div></div>${extra}<p>Your wounds close.</p>`,[{label:'Onward',primary:true,fn:toMap}])},900)}
+function dragonDown(){busy=true;log('The Clockwork Dragon grinds to a stop…','good');renderBattle();
+ setTimeout(()=>{const mon=B.mon,M=MONS.clockdragon;const extra=endSpecialBattle();S.flags.cdragonDown=true;normCD();addCodex('clockdragon');S.coins+=M.coins;updHud();buildLabels();
+  dialog('The Dragon Falls… but',`<div class="speaker"><img class="pix" src="${iconImg('tinkerer')}" alt=""><div><p>${M.story}</p><p>Then a hatch on its back pops open. Out climbs a tiny old gnome in goggles, shaking a wrench at you.</p><p><b>“You BROKE her!”</b></p></div></div>${extra}<p class="sub">The Clockwork Dragon is now in your Codex. You pick up ${M.coins} coins. Your wounds close.</p>`,
+   [{label:'Fight the Tinkerer',primary:true,fn:()=>{hide('dialog');startBattle(mon)}},{label:'Back away (fight him later)',fn:toMap}])},900)}
 function rareEscape(){busy=true;const mon=B.mon,M=MONS[B.key];log(`The ${M.name} slips away!`,'foe-l');renderBattle();
  setTimeout(()=>{const extra=endSpecialBattle();const a=AREAS[S.area];if(a.kind==='out'&&mon.zone!=null){const zb=a.zb,x0=mon.zone===0?6:zb[mon.zone-1]+8,x1=(zb[mon.zone]||a.W-4)-8;for(let i=0;i<100;i++){const x=x0+Math.floor(rnd()*(x1-x0)),y=a.PATHC[x];if(!solidAt(x,y)){mon.x=mon.rx=x;mon.y=mon.ry=y;break}}}
   dialog('It Got Away!',`<p>The rare <b>${M.name}</b> vanishes in a flash. It is still out there somewhere${a.kind==='out'?' in this land':''}. Be quicker next time: rare creatures escape after 8 turns.</p>${extra}<p>Your wounds close.</p>`,[{label:'Onward',primary:true,fn:toMap}])},900)}
@@ -2596,11 +2704,12 @@ function rareEscape(){busy=true;const mon=B.mon,M=MONS[B.key];log(`The ${M.name}
 const REALMS={1:{id:'world',name:'The Kingdom of Brightmeadow',zn:ZNAMES,zb:ZB},2:{id:'coast',name:'The Saltmarsh Coast',zn:ZN2,zb:ZB2},3:{id:'peaks',name:'The Frostspire Peaks',zn:ZN3,zb:ZB3},4:{id:'vale',name:'The Shattered Vale',zn:ZN4,zb:ZB4},5:{id:'sky',name:'The Celestial Reaches',zn:ZN5,zb:ZB5}};
 function landX(ch,z){const zb=REALMS[ch].zb;return z===0?4:zb[z-1]+(z===2?9:6)}
 function travelTo(ch,x){S.winsBy[S.chapter]=S.wins;S.chapter=ch;S.wins=S.winsBy[ch]||0;['dialog','god'].forEach(hide);mode='map';tp(x,CW().PATHC[x]);updHud()}
-function openTravel(){if(mode!=='map'||S.maxChapter<2)return;if(S.flags.exiled){toast('No ship will carry an exile.');return}mode='menu';
- let h='<p>Ships and mountain roads link the towns of every realm you have reached. Monsters you beat stay beaten, and each realm keeps its own quests.</p>';const btns=[];
+function openTravel(){if(mode!=='map'||S.maxChapter<2)return;if(S.flags.exiled){toast('No ship will carry an exile.');return}
+ if(A.kind!=='out'||zoneOf(S.x)!==0){toast(`You can only travel from a town. Walk back to <b>${REALMS[S.chapter].zn[0]}</b> first.`);return}mode='menu';
+ let h='<p>Ships, the crack in the world and the ladder of light link the towns of every realm you have reached. You can travel only from a town. You can also walk: the crack is in the far east of the Frostspire Peaks and near Ashfall Camp, and the ladder stands in Ashfall Camp and Cloudhaven.</p>';const btns=[];
  for(let ch=1;ch<=S.maxChapter;ch++){const R0=REALMS[ch];const lands=R0.zn.map((n,z)=>({n,z})).filter(o=>o.z===0&&S.visited.has(ch+':'+o.z));if(!lands.length)continue;
   btns.push({cls:'gemopt',html:`<span><b>${R0.name}</b><br><span class="sub">Chapter ${['I','II','III','IV','V'][ch-1]}</span></span>`,fn:()=>{}});
-  lands.forEach(o=>btns.push({label:`${o.n}${ch===S.chapter&&zoneOf(S.x)===o.z&&A.kind==='out'?' (you are here)':''}`,fn:()=>{travelTo(ch,landX(ch,o.z));banner(o.n);toast(`You travel to <b>${o.n}</b>.`)}}))}
+  lands.forEach(o=>btns.push({label:`${o.n}${ch===S.chapter&&zoneOf(S.x)===o.z&&A.kind==='out'?' (you are here)':''}`,fn:()=>{hide('dialog');const go=()=>{travelTo(ch,landX(ch,o.z));banner(o.n);toast(`You arrive in <b>${o.n}</b>.`)};if(ch===S.chapter){mode='map';go()}else travelCut(legsBetween(S.chapter,ch),go)}}))}
  btns.push({label:'Stay here',primary:true,fn:toMap});
  dialog('Travel',h,btns);
  [...$('dBtns').querySelectorAll('.gemopt')].forEach(b=>{b.disabled=true;b.style.cursor='default';b.style.flexBasis='100%';b.style.marginTop='6px'})}
