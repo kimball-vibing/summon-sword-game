@@ -1334,7 +1334,7 @@ function look(){
   if(y<0||x<0||y>=H||x>=W)continue;const t=MAP[y][x];
   if(t.ter==='w')add('water');if(t.ter==='b')add('bridge');if(t.ter==='l')add('lava');
   const o=baseKey(t.o);if(!o)continue;
-  if(t.o==='uplot'&&A.plotKind){const pk=A.plotKind[x+','+y];if(pk&&S.q[pk.q]==='active'){t.o=pk.item;delete A.plotKind[x+','+y];S.uprog[pk.q]=(S.uprog[pk.q]||0)+1;toast(`You plant the <b>${THINGS[pk.item].name}</b> (${S.uprog[pk.q]}/${UQ[pk.q].spots.length}).`);checkQuests()}}
+  if(t.o==='uplot'&&A.plotKind){const pk=A.plotKind[x+','+y];if(pk&&S.q[pk.q]!=='active'&&!look.hinted?.[A.id+x+','+y]){(look.hinted=look.hinted||{})[A.id+x+','+y]=1;const Q=QUESTS[pk.q];toast(S.q[pk.q]==='done'?'This mound is already settled.':`This glowing mound is waiting for a <b>${THINGS[pk.item].name}</b>. That is for “${Q.title}”, from ${pk.q.endsWith('board')?'the quest board':THINGS[Q.giver].name}.`)}if(pk&&S.q[pk.q]==='active'){t.o=pk.item;delete A.plotKind[x+','+y];S.uprog[pk.q]=(S.uprog[pk.q]||0)+1;toast(`You plant the <b>${THINGS[pk.item].name}</b> (${S.uprog[pk.q]}/${UQ[pk.q].spots.length}).`);checkQuests()}}
   if(o==='menhir'&&!S.stones.has(x+','+y)){S.stones.add(x+','+y);toast(`The standing stone hums under your hand (${S.stones.size}/3).`)}
   if(o==='candle'&&S.area==='world'&&S.q.candles==='active'&&!S.lit.has(x+','+y)){S.lit.add(x+','+y);toast(`A grave candle flickers back to life (${S.lit.size}/${CANDLE_TOTAL}).`)}
   if(o==='greatoak'&&!S.flags.oakFound){S.flags.oakFound=true;toast('The Great Oak shudders. <b>Golden acorns</b> rain down across Whisperwood!')}
@@ -2818,7 +2818,7 @@ function invertCtx(g){const c=g.canvas;const im=g.getImageData(0,0,c.width,c.hei
 {const _mk=marker;marker=function(n){if(!inU())return _mk(n);const q=curQ(n.id);if(q&&(!S.q[q]||QUESTS[q].check()))return '!';if(ALLY[n.id])return S.uHelp[n.id]!==S.uWT?'?':null;return null}}
 {const _ng=newGame;newGame=function(){if(LASTEND){REWRITES++;LASTEND=null;try{localStorage.setItem('sb_rewrites',String(REWRITES))}catch(e){}}const r=_ng.apply(this,arguments);Object.keys(AREAS).forEach(k=>{if(k.startsWith('u_'))delete AREAS[k]});if(REWRITES>0)setTimeout(()=>toast('You have the strangest feeling that you have done all of this before.'),1800);return r}}
 {const _tt=travelTo;travelTo=function(ch,x){_tt(ch,x);if(ch>=6)uArrive(ch)}}
-function invertOverlay(al){if(al<=0)return;ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=Math.min(1,al);ctx.filter='invert(1) saturate(1.25)';ctx.drawImage(cv,0,0);ctx.restore()}
+function invertOverlay(al){if(al<=0)return;ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=Math.min(1,al);ctx.globalCompositeOperation='difference';ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
 function twistKey(o){if(!o)return null;if(o[0]==='_'||['door','exit','chest','sign','secret','passage'].includes(o))return o;const th=THINGS[o];if(!th||th.npc||th.monster||th.item)return null;if(th.big)return o;
  const k='u_'+o;if(!THINGS[k]){const adj=UADJ[(o.length*7+o.charCodeAt(0)*3+o.charCodeAt(o.length-1))%UADJ.length];THINGS[k]=T(adj+' '+th.name,adj.replace(/[^A-Za-z]/g,'')+(th.short||''),Math.max(55,th.power+45),th.el,th.color,{solid:th.solid,twisted:1});UBASE[k]=o}return k}
 const U_SIGNS=['Someone has scratched out every word and written TURN BACK in purple ink.','The sign is upside down. So is the writing. It says: YOU ARE NOT WELCOME.','It used to say WELCOME. Now it says EMOCLEW.','The arrow points at you.','GO HOME, it says. Then, in smaller letters: oh wait. you can’t.'];
