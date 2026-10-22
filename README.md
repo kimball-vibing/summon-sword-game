@@ -11,7 +11,7 @@ Open `index.html` in a web browser. No install needed.
 - Move: arrow keys or WASD (on-screen pad on touch screens)
 - Talk, read signs, open chests: walk into them
 - Enter buildings: walk through the door
-- C: Codex · B: Kept blades (destroy them here) · Q: Quest log · T: Travel to any land you have reached
+- C: Codex · B: Kept blades (destroy them here) · Q: Quest log · T: Travel between the towns of every realm you have reached
 - Battle: 1–4 strike, S summon, G guard, P potion, F fists, Break a blade (free action)
 
 ## What's in Chapter I
@@ -41,3 +41,20 @@ Reached by finishing Chapter II and sailing north with Captain Brine.
 - 5 new battles: Winter Wolf, Yeti, Stone Golem, Beholder, and the Frost Lich (strike it down 3 times to crack its soul gem, break the gem in battle in the Crystal Grotto, then kill the Lich for real)
 - 9 new characters, 6 side quests, 8 enterable buildings, Brunhild's forge shop
 - Vesper's Mirror Shards: summon something a second time, at a cost. Take 5 and your reflection walks away with your life (the Mirror's Ending). Sister Ysolde's Dawn Bell can ring the glass out of you, once
+
+## Chapter IV: The Shattered Vale
+
+Reached by finishing Chapter III and following the falling blades south.
+
+- The blades you let crumble never turned to dust. The Hollow King collected and corrupted them.
+- 5 new lands: Ashfall Camp, Rustwood, the Field of a Thousand Swords, the Hollow Mines, the Blade Spire
+- 5 new battles: Rust Knight, Blade Swarm, Shadow Summoner, Iron Hydra, and the Hollow King, who calls up corrupted copies of the people and creatures you have summoned (at half health) that you must defeat to reach him
+- Corrupted copies of your own old swords wait on the Field. Free them and they come back Redeemed (summonable again, 25% stronger)
+- Kept blades with 3 or more curses can turn on you in battle
+- The Whispering Blade's pacts make your swords sharper. Make 5 and you become a sword (the Blade's Ending). Osric the Blind Monk can unmake them, once
+- Garret's wagon shop, 5 side quests
+
+## Linked realms
+
+- Some side quests are given in one realm and finished in another (earlier or later chapters)
+- Travel only links the towns: Brightmeadow Village, Saltmarsh Harbor, Hearthhold and Ashfall Camp
