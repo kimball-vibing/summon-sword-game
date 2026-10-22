@@ -38,6 +38,6 @@ Reached by finishing Chapter I with the hero's ending and setting sail from Elde
 Reached by finishing Chapter II and sailing north with Captain Brine.
 
 - 5 new lands: Hearthhold, Frostpine Wood, Glimmerdeep Caverns, Emberforge Ruins, Skyspire Citadel
-- 5 new battles: Winter Wolf, Yeti, Stone Golem, Beholder, and the Frost Lich (who cannot die until you find and smash the gem holding its soul)
+- 5 new battles: Winter Wolf, Yeti, Stone Golem, Beholder, and the Frost Lich (strike it down 3 times to crack its soul gem, break the gem in battle in the Crystal Grotto, then kill the Lich for real)
 - 9 new characters, 6 side quests, 8 enterable buildings, Brunhild's forge shop
 - Vesper's Mirror Shards: summon something a second time, at a cost. Take 5 and your reflection walks away with your life (the Mirror's Ending). Sister Ysolde's Dawn Bell can ring the glass out of you, once
