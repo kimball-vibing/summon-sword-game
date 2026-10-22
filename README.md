@@ -54,6 +54,28 @@ Reached by finishing Chapter III and following the falling blades south.
 - The Whispering Blade's pacts make your swords sharper. Make 5 and you become a sword (the Blade's Ending). Osric the Blind Monk can unmake them, once
 - Garret's wagon shop, 5 side quests
 
+## Chapter V: The Celestial Reaches
+
+- Climb the ladder of light from Ashfall Camp to a realm of floating islands: Cloudhaven, the Windmill Isles, Starfall Crater, the Clockwork Archive and the Throne of First Light.
+- Five battles: Storm Giant (thunderclap), Couatl (heals), Djinni (wishes), Clockwork Dragon, and **The Unwritten**, which erases a sword every 3 turns and rewrites the dragon, wyvern, lich and Hollow King as echoes you must beat again.
+- Temptation: **Twinkle the fallen star** grants wishes (next foe starts at half health, all summons free) for 15 max HP each. Five wishes: the Star ending, where you become a constellation. Vela the Astronomer can cure you once.
+- New side quests: turn 4 windmills, gather 5 stardust, return 5 lost books. Nimbus runs the cloud shop.
+
+## Hidden places and rare creatures
+
+- Every realm hides **2 secret places** (a hollow tree, a cracked rock, a wooden hatch, an ice cave, a rift, a swirl in the clouds). Walk into them.
+- Every realm has **2 rare creatures** (marked ★) that wander their land, plus one guarding a secret place. 15 in all. They escape after 8 turns. Beat one for coins, a potion, a rare Codex entry, and the creature itself.
+
+## Quest chains
+
+Each realm has a 3-part chain where one reward unlocks the next part:
+
+- I: Rowan → Bram → Elder Maren: the Old King's Sword
+- II: Nella → Quill → Admiral Vane: the Golden Cutlass
+- III: Kael → Tink → Thane Durin: the Frost Bow
+- IV: Tamsin → Lyra → Osric: Lyra's Blade
+- V: Auren → Gears → Auren: the Star Quill, which also weakens the Unwritten by 25%
+
 ## Linked realms
 
 - Some side quests are given in one realm and finished in another (earlier or later chapters)
