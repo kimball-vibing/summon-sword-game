@@ -1301,7 +1301,7 @@ const UQ={
  uw_board:{ch:6,giver:'qboard',type:'collect',spots:[['u_snuffedcandle',3],['u_snuffedcandle',3],['u_snuffedcandle',3],['u_snuffedcandle',3],['u_snuffedcandle',2]],unit:'candles',title:'Snuff the Candles',desc:'A note asks you to snuff out five candles in {z3} and {z2}.',truth:'The note is honest. The candles keep the dead awake here.',
   offer:['A note is pinned to the board. Auren reads it aloud:','“Somebody lit every candle in the graves, and now the dead cannot sleep. Snuff out <b>five</b> of them, in {z3} and {z2}. Just walk over them.”'],remind:'Five candles, in {z3} and {z2}.',done:['The note now just says “zzz”.'],rew:{potions:2,coins:300}}
 };
-function uf(c,str){const zn=[ZNAMES,ZN2,ZN3,ZN4,ZN5][c-6];return String(str).replace(/\{z(\d)\}/g,(_,i)=>zn[+i])}
+function uf(c,str){const zn=[ZNAMES,ZN2,ZN3,ZN4,ZN5][c-6];return String(str).replace(/\{z(\d)\}/g,(_,i)=>`${REV(zn[+i])} (${zn[+i]})`)}
 function applyRew(r){if(r.hp){S.hpBonus+=r.hp;S.hp+=r.hp}if(r.potions)S.potions+=r.potions;if(r.coins)S.coins+=r.coins;if(r.whet)S.whet+=r.whet;if(r.slots)S.slots+=r.slots;if(r.codex)addCodex(r.codex)}
 function rewText(r){const p=[];if(r.hp)p.push(`+${r.hp} max HP`);if(r.potions)p.push(`${r.potions} potion${r.potions>1?'s':''}`);if(r.coins)p.push(`${r.coins} coins`);if(r.whet)p.push(`every new sword +${r.whet} damage`);if(r.slots)p.push('one more sword slot');if(r.codex)p.push(`a new Codex entry: ${THINGS[r.codex].name}`);return p.join(', ')}
 Object.entries(UQ).forEach(([id,u])=>{const n=u.spots.length;QUESTS[id]={ch:u.ch,title:u.title,giver:u.giver,get desc(){return uf(u.ch,u.desc)},prog:()=>`${Math.min(n,S.uprog[id]||0)}/${n} ${u.unit}`,check:()=>(S.uprog[id]||0)>=n,reward:()=>applyRew(u.rew),rewardText:rewText(u.rew),trap:u.trap,truth:u.truth}});
@@ -2817,7 +2817,7 @@ Object.entries(UQ).forEach(([id,u])=>{XL[id]={offer:()=>u.offer.map(x=>uf(u.ch,x
 function invertCtx(g){const c=g.canvas;const im=g.getImageData(0,0,c.width,c.height),d=im.data;for(let i=0;i<d.length;i+=4){if(!d[i+3])continue;d[i]=255-d[i];d[i+1]=255-d[i+1];d[i+2]=255-d[i+2]}g.putImageData(im,0,0)}
 {const _ps=paintSword;paintSword=function(g,key,seed){if(UBASE[key]){_ps(g,UBASE[key],seed);invertCtx(g)}else _ps(g,key,seed)}}
 {const _di=drawIcon;drawIcon=function(c,k,t){_di(c,k,t);if(UBASE[k]&&!(THINGS[k]&&THINGS[k].monster))invertCtx(c)}}
-{const _mk=marker;marker=function(n){if(!inU())return _mk(n);const q=curQ(n.id);if(q&&(!S.q[q]||QUESTS[q].check()))return '!';if(ALLY[n.id])return S.uHelp[n.id]!==S.uWT?'?':null;return null}}
+{const _mk=marker;marker=function(n){if(!inU())return _mk(n);if(S.trapPending&&Object.values(UQ).some(u=>u.giver===n.id&&u.trap&&S.trapPending[u.trap]))return '!';const q=curQ(n.id);if(q&&(!S.q[q]||QUESTS[q].check()))return '!';if(ALLY[n.id])return S.uHelp[n.id]!==S.uWT?'?':null;return null}}
 {const _ng=newGame;newGame=function(){if(LASTEND){REWRITES++;LASTEND=null;try{localStorage.setItem('sb_rewrites',String(REWRITES))}catch(e){}}const r=_ng.apply(this,arguments);Object.keys(AREAS).forEach(k=>{if(k.startsWith('u_'))delete AREAS[k]});if(REWRITES>0)setTimeout(()=>toast('You have the strangest feeling that you have done all of this before.'),1800);return r}}
 {const _tt=travelTo;travelTo=function(ch,x){_tt(ch,x);if(ch>=6)uArrive(ch)}}
 function invertOverlay(al){if(al<=0)return;ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=Math.min(1,al);ctx.globalCompositeOperation='difference';ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
@@ -2832,6 +2832,10 @@ function uInterior(oid,nid,ret,par){const s0=AREAS[oid];const map=s0.map.map(r=>
  AREAS[nid]={id:nid,name:REV(s0.name),kind:'in',style:s0.style,W:s0.W,H:s0.H,map,npcs:s0.npcs.filter(n=>!['twinkle','auren','aurenreal'].includes(n.id)).map(n=>({...n,gone:false})),monsters:[],signs:{},doors:{},exit:s0.exit,ret,retArea:par,rares:[],shadows:[],unr:true,secret:s0.secret}}
 function uCarve(a,x,y){let seen=reach(a);for(let i=0;i<60;i++){if(seen[y*a.W+x])return;const t=a.map[y]&&a.map[y][x];if(!t||(t.o&&t.o[0]==='_'))return;
   if(t.o&&!['door','secret','passage','chest','sign','qboard'].includes(t.o))t.o=null;if(t.ter==='w'||t.ter==='l')t.ter='b';else if(t.ter==='g')t.ter='p';const ty=a.PATHC[x];if(y===ty)return;y+=Math.sign(ty-y);seen=reach(a)}}
+function spotFree(a,tx,ty,seen,taken){let best=null,bd=1e9;for(let y=3;y<a.H-3;y++)for(let x=3;x<a.W-3;x++){const t=a.map[y][x];if(t.ter!=='g'||t.o)continue;if(!seen[(y+1)*a.W+x])continue;
+  if(taken.some(([px,py])=>Math.abs(px-x)+Math.abs(py-y)<5))continue;if(a.npcs.some(n=>Math.abs(n.x-x)+Math.abs(n.y-y)<4))continue;
+  let open=0;for(const[dx,dy]of[[0,1],[0,-1],[1,0],[-1,0]])if(!aSolid(a,x+dx,y+dy)&&!a.map[y+dy][x+dx].o)open++;if(open<2)continue;
+  const d=Math.abs(x-tx)+Math.abs(y-ty);if(d<bd){bd=d;best=[x,y]}}return best}
 function makeU(bid,c){const a=AREAS[bid],W0=a.W,H0=a.H,F=y=>H0-1-y,uid='u_'+bid;
  const map=[];for(let y=0;y<H0;y++){const row=[];for(let x=0;x<W0;x++){const t=a.map[F(y)][x];row.push({ter:t.ter,o:null})}map.push(row)}
  const bigs=[];for(let oy=0;oy<H0;oy++)for(let x=0;x<W0;x++){const o=a.map[oy][x].o;if(!o||o[0]==='_'||o==='door')continue;const th=THINGS[o];if(th&&th.big){bigs.push([o,x,oy]);continue}map[F(oy)][x].o=twistKey(o)}
@@ -2849,9 +2853,9 @@ function makeU(bid,c){const a=AREAS[bid],W0=a.W,H0=a.H,F=y=>H0-1-y,uid='u_'+bid;
  AREAS[uid]=U;
  doorMap.forEach(([k,x,y,rx,ry])=>{const oid=a.doors[k];if(!oid||!AREAS[oid])return;const nid='u_'+oid;uInterior(oid,nid,[rx,ry],uid);U.doors[x+','+y]=nid;uCarve(U,rx,ry)});
  let seen=reach(U);const zx=z=>{const zb=U.zb||ZB;return [z===0?8:zb[z-1]+6,(zb[z]||U.W-4)-6]};
- {const st=U.start,x=Math.min(U.W-3,st[0]+7),p=spotNear(U,x,U.PATHC[x]-2,seen);if(p){U.map[p[1]][p[0]].o='qboard';seen=reach(U)}}
+ const taken=[];{const st=U.start,x=Math.min(U.W-3,st[0]+7),p=spotNear(U,x,U.PATHC[x]-2,seen);if(p){U.map[p[1]][p[0]].o='qboard';taken.push(p);seen=reach(U)}}
  for(const[id,q]of Object.entries(UQ)){if(q.ch!==c)continue;const per={};q.spots.forEach(([,z])=>per[z]=(per[z]||0)+1);const idx={};
-  q.spots.forEach(([item,z],i)=>{idx[z]=(idx[z]||0)+1;const[x0,x1]=zx(z),x=Math.round(x0+(x1-x0)*idx[z]/(per[z]+1)),y=U.PATHC[x]+(i%2?4:-4);const p2=spotNear(U,x,y,seen);if(!p2)return;
+  q.spots.forEach(([item,z],i)=>{idx[z]=(idx[z]||0)+1;const[x0,x1]=zx(z),x=Math.round(x0+(x1-x0)*idx[z]/(per[z]+1)),y=U.PATHC[x]+(i%2?4:-4);const p2=spotFree(U,x,y,seen,taken);if(!p2)return;taken.push(p2);
    const key=p2[0]+','+p2[1];if(q.type==='plant'){U.map[p2[1]][p2[0]].o='uplot';U.plotKind[key]={q:id,item}}else{U.map[p2[1]][p2[0]].o=item;U.collKind[key]=id}seen=reach(U)})}
  const R3=seeded(c*911+7);[1,2,3].forEach(z=>{const[x0,x1]=zx(z);for(let i=0;i<60;i++){const x=x0+Math.floor(R3()*(x1-x0)),y=U.PATHC[x];if(!aSolid(U,x,y)&&!U.map[y][x].o){U.shadows.push({x,y,rx:x,ry:y,zone:z});break}}})}
 function makeAllU(){if(AREAS.u_sky)return;makeUBosses();[['world',6],['coast',7],['peaks',8],['vale',9],['sky',10]].forEach(([b,c])=>makeU(b,c))}
@@ -2913,10 +2917,11 @@ function allyTalk(n){const id=n.id,A0=ALLY[id],q=curQ(id),first=!S.flags['ua_'+i
  const btns=[{label:A0.help,primary:true,fn:()=>{if(!can){dialog(n.name,`<p>${A0.wait}</p>`,[{label:'All right',primary:true,fn:toMap}]);return}A0.fn(n)}}];
  if(q)btns.push({label:!S.q[q]?'Is there anything I can do?':QUESTS[q].check()?`Turn in: ${QUESTS[q].title}`:`About: ${QUESTS[q].title}`,fn:()=>{hide('dialog');questTalk(id,n.name)}});
  btns.push({label:'Leave',fn:toMap});say(n.name,first?A0.intro:[pick(A0.idle)],btns)}
-function uTalk(n){if(n.id==='whiskers'){say(n.name,['The cat hisses at you. Its eyes are the wrong color.']);return}if(ALLY[n.id])return allyTalk(n);const q=curQ(n.id);if(q)return questTalk(n.id,n.name);
+function uTalk(n){const tp=Object.values(UQ).find(u=>u.giver===n.id&&u.trap&&S.trapPending&&S.trapPending[u.trap]);if(tp){say(n.name,['Oh, you came back. Good. Let’s finish this.'],[{label:'Fight',primary:true,fn:()=>trapFight(tp.trap)},{label:'Not yet',fn:toMap}]);return}
+ if(n.id==='whiskers'){say(n.name,['The cat hisses at you. Its eyes are the wrong color.']);return}if(ALLY[n.id])return allyTalk(n);const q=curQ(n.id);if(q)return questTalk(n.id,n.name);
  const L=pick(ULIES);say(n.name,rnd()<.55?[L,`<p><i>Auren whispers: “${pick(AUREN_WHISPER)}”</i></p>`]:[L])}
 function boardTalk(){const q=curQ('qboard');if(!q){say('Quest Board',['The board is empty. Someone has scratched GO HOME into the wood.']);return}questTalk('qboard','Quest Board')}
-function trapFight(key){hide('dialog');startBattle({key,x:S.x,y:S.y,alive:true})}
+function trapFight(key){(S.trapPending=S.trapPending||{})[key]=1;hide('dialog');startBattle({key,x:S.x,y:S.y,alive:true})}
 function aurenGuide(){if(!inU()||mode!=='map')return;const c=S.chapter;const act=Object.entries(QUESTS).filter(([id,q])=>q.ch===c&&S.q[id]==='active'&&!q.check()&&q.truth);
  const pages=[`<p><b>${REALMS[c].name}</b> · part ${11-c} of 5</p><p>${mainU()}</p>`];
  if(act.length)pages.push('<p>About what people have told you:</p><ul class="rules">'+act.map(([id,q])=>`<li><b>${q.title}:</b> ${uf(c,q.truth)}</li>`).join('')+'</ul>');else pages.push(pick(AUREN_IDLE));
@@ -2971,7 +2976,7 @@ function endTrue(){S.flags.trueEnd=true;S.flags.unravelerOut=false;hide('dialog'
 function wanderRares(){for(const r of A.rares){if(!r.alive||MONS[r.key].stay||rnd()<.35)continue;const[dx,dy]=pick([[1,0],[-1,0],[0,1],[0,-1]]),nx=r.x+dx,ny=r.y+dy;
  if(solidAt(nx,ny)||(nx===S.x&&ny===S.y)||MONSTERS.some(m=>m.alive&&Math.abs(m.x-nx)<4&&Math.abs(m.y-ny)<4)||A.rares.some(o=>o!==r&&o.alive&&o.x===nx&&o.y===ny))continue;
  if(A.kind==='out'&&r.zone!=null&&zoneIn(A,nx)!==r.zone)continue;const o=MAP[ny][nx].o;if(o==='door'||o==='secret'||o==='exit'||o==='passage')continue;r.x=nx;r.y=ny}}
-function rareWin(){busy=true;const mon=B.mon,M=MONS[B.key],key=B.key;log(`${M.name} is defeated!`,'good');renderBattle();
+function rareWin(){busy=true;const mon=B.mon,M=MONS[B.key],key=B.key;if(S.trapPending)delete S.trapPending[key];log(`${M.name} is defeated!`,'good');renderBattle();
  setTimeout(()=>{const extra=endSpecialBattle();mon.alive=false;S.coins+=M.coins;S.potions++;addCodex(key);addCodex(M.drop);S.rareKills=(S.rareKills||0)+1;updHud();
   dialog(M.person?'Hollow Villager Defeated!':'Rare Creature Defeated!',`<div class="speaker"><img class="pix" src="${iconImg(M.drop)}" alt=""><div><p>You beat the rare <b>${M.name}</b>!</p><ul class="rules"><li><b>${THINGS[M.drop].name}</b>, a rare Codex entry (power ${THINGS[M.drop].power})</li><li>The ${M.name} itself joins your Codex</li><li>${M.coins} coins and a potion</li></ul></div></div>${extra}<p>Your wounds close.</p>`,[{label:'Onward',primary:true,fn:toMap}])},900)}
 function dragonDown(){busy=true;log('The Clockwork Dragon grinds to a stop…','good');renderBattle();
