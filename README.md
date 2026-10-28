@@ -90,7 +90,7 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 
 ## Arena battles
 
-Battles happen right on the landscape where they started. The monster stands large at the top of the screen and your knight (or both knights) stand at the bottom, each with a health bar. Monsters lunge when they attack and shake when hit; knights step forward when they strike. On a knight's turn a pop-up menu shows their swords, potions and actions (on wide screens it sits on the right; on phones at the bottom). During the monster's turn the menu hides so you can watch.
+Battles happen right on the landscape where they started. The monster stands large at the top of the screen and your knight (or both knights) stand at the bottom, each with a health bar. Every attack is animated: your summoned sword spins through the air and slashes the monster (fists throw a punch), with a damage number. Monsters attack by element: fire breath, ice shards, magic or holy beams, shadow orbs, water splashes, lashing vines, or claw marks. Guarding shows a shield glow and potions show healing sparkles. On a knight's turn a pop-up menu shows their swords, potions and actions (on wide screens it sits on the right; on phones at the bottom). During the monster's turn the menu hides so you can watch.
 
 ## Two players
 
