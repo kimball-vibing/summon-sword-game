@@ -88,6 +88,10 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 - You can't leave the Unraveled World. You can only travel between its towns you have freed.
 - **Final battle:** the Unraveler unravels a sword every 4 turns, and it pulls a Twisted Dragon, a Twisted Hollow King and Your Own Shadow out of your past. Auren's light heals you every 5 turns. Beat it for the **True Ending** cutscene, then go home to Brightmeadow, where the real Auren is waiting.
 
+## Arena battles
+
+Battles happen right on the landscape where they started. The monster stands large at the top of the screen and your knight (or both knights) stand at the bottom, each with a health bar. Monsters lunge when they attack and shake when hit; knights step forward when they strike. On a knight's turn a pop-up menu shows their swords, potions and actions (on wide screens it sits on the right; on phones at the bottom). During the monster's turn the menu hides so you can watch.
+
 ## Two players
 
 - Press **2 Players** in the top bar to add a second player on the same screen. Player 1 (red) uses the **arrow keys**; Player 2 (blue) uses **W A S D**. Press **1 Player** to go back.

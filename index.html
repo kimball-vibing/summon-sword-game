@@ -72,6 +72,19 @@ p{line-height:1.5;margin:0 0 10px;max-width:65ch}
 .you-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-variant-numeric:tabular-nums;font-weight:700}
 #yBar{background:var(--heal)}
 .swords{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:12px}
+#battle.overlay{background:transparent;pointer-events:none;padding:0;overflow:hidden;align-items:stretch}
+#battle .battle-frame{background:transparent;border:0;box-shadow:none;padding:8px max(8px,env(safe-area-inset-left,0px));max-width:none;width:100%;height:100%;margin:0;gap:6px;pointer-events:none;box-sizing:border-box}
+#battle .foe{display:block;pointer-events:auto;background:rgba(22,18,14,.86);border:2px solid var(--line);padding:6px 12px;width:min(560px,100%);margin:0 auto;box-sizing:border-box}
+#battle #foeCv{display:none}#battle .foe h2{font-size:20px;margin:0}#battle .trait{font-size:12.5px}
+#battle .warn{pointer-events:auto;width:min(560px,100%);margin:0 auto;box-sizing:border-box;padding:5px 10px}
+#battle .log{pointer-events:auto;height:auto;min-height:0;max-height:78px;width:min(560px,100%);margin:0 auto;box-sizing:border-box;background:rgba(13,11,9,.72);font-size:13px;padding:6px 10px}
+#battle .bpop{pointer-events:auto;margin:auto auto 0;width:min(780px,100%);background:var(--panel);border:3px solid var(--line);box-shadow:inset 0 0 0 3px var(--panel),inset 0 0 0 5px #6b5438,0 -10px 40px rgba(0,0,0,.6);padding:12px;box-sizing:border-box;max-height:50%;overflow-y:auto;animation:popUp .18s ease-out}
+#battle .bpop .swords{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:10px}
+@keyframes popUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+#battle.foe-turn .bpop{display:none}
+#battle .bwait{display:none;pointer-events:none;margin:auto auto 18px;text-align:center;font-family:var(--display);font-size:20px;color:#ffd9c2;text-shadow:0 2px 0 #000,0 0 8px #000}
+#battle.foe-turn .bwait{display:block}
+@media (min-width:900px){#battle .battle-frame{padding-right:410px}#battle .bpop{position:absolute;right:10px;top:10px;bottom:10px;width:390px;max-height:none;margin:0}#battle .bpop .swords{grid-template-columns:1fr}}
 .other-p{margin:8px 0;padding:8px;border:2px dashed var(--line);background:rgba(0,0,0,.18);opacity:.9}.other-p .ohead{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.other-p .ohead b{color:#7ab0ff;white-space:nowrap}.other-p .ohead b.p1{color:#ff8a7a}.other-p .bar{flex:1}.other-p .oswords{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}.other-p .osw{display:flex;gap:6px;align-items:center;background:var(--panel-2);border:2px solid var(--line);padding:4px 6px;font-size:13px;min-width:0}.other-p .osw img{width:28px;height:28px;flex:none}.other-p .osw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.other-p .oempty{font-size:12px;color:var(--dim);padding:6px;border:2px dashed var(--line);text-align:center}.other-p.down{opacity:.5}
 .sw{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;font:inherit;color:var(--parch);background:var(--panel-2);border:2px solid var(--line);padding:8px;cursor:pointer}
 .sw:hover:not(:disabled){border-color:var(--gold);background:#3e3124}
@@ -203,7 +216,8 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
         </div>
         <div class="warn" id="fWarn" hidden></div>
         <ol class="log" id="bLog"></ol>
-        <div>
+        <div class="bwait" id="bWait">The monster is acting…</div>
+        <div class="bpop" id="bPop">
           <div class="other-p" id="oTop" hidden></div>
           <div class="you-head"><span class="lbl" id="yWho">You</span><span id="yRank"></span><div class="bar big"><i id="yBar"></i></div><span id="yHp"></span></div>
           <div class="swords" id="swords"></div>
@@ -2048,9 +2062,9 @@ function drawMap(t){
  const ents=[];
  NPCS.forEach(n=>{if(!n.gone&&!(CUT&&CUT.hideNPC)&&n.x>=x0&&n.x<=x1&&n.y>=y0&&n.y<=y1)ents.push({y:n.y,f:()=>{const px=n.x*16-cx,py=n.y*16-cy;pen(ctx,px,py,1);drawPerson(n.look,t,n.x);
   if(n.caged){pen(ctx,px,py,1);[1,4,11,14].forEach(x=>R(x,0,1,16,'#4f5559'));R(0,0,16,1,'#6c7378');R(0,15,16,1,'#6c7378')}const m=marker(n);if(m)drawMarker(m,px,py,t)}})});
- (A.rares||[]).forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1&&m.y>=y0-1&&m.y<=y1+1)ents.push({y:m.ry,f:()=>{const px=Math.round(m.rx*16-cx),py=Math.round(m.ry*16-cy),bob=Math.floor(t*4+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false);const sp=Math.floor(t*5)%4;ctx.fillStyle='#fff6c0';ctx.fillRect(px+[2,13,4,11][sp],py+[1,3,12,9][sp],1,1)}})});
- MONSTERS.forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
- if(TWO()&&(!CUT||CUT.type==='rush')&&S.p2.area===S.area)ents.push({y:S.p2.dy,f:()=>drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))});
+ (A.rares||[]).forEach(m=>{if(m.alive&&!(ARENA&&B&&m===B.mon)&&m.x>=x0-1&&m.x<=x1+1&&m.y>=y0-1&&m.y<=y1+1)ents.push({y:m.ry,f:()=>{const px=Math.round(m.rx*16-cx),py=Math.round(m.ry*16-cy),bob=Math.floor(t*4+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false);const sp=Math.floor(t*5)%4;ctx.fillStyle='#fff6c0';ctx.fillRect(px+[2,13,4,11][sp],py+[1,3,12,9][sp],1,1)}})});
+ MONSTERS.forEach(m=>{if(m.alive&&!(ARENA&&B&&m===B.mon)&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
+ if(TWO()&&!ARENA&&(!CUT||CUT.type==='rush')&&S.p2.area===S.area)ents.push({y:S.p2.dy,f:()=>drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))});
  if(!(CUT&&CUT.hidePlayer)&&!HIDEP1)ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}});
  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
  if(inU()&&!(CUT&&CUT.noFilter))uPost(t,cx,cy);
@@ -2942,7 +2956,7 @@ function uPost(t,cx,cy){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.f
  for(const h of (A.shadows||[])){h.rx+=(h.x-h.rx)*.12;h.ry+=(h.y-h.ry)*.12;const px=Math.round(h.rx*16-cx),py=Math.round(h.ry*16-cy);if(px<-16||py<-16||px>LW||py>LH)continue;const w=Math.floor(t*3+h.x)%2,c='rgba(24,6,36,.82)';pen(ctx,px,py,1);
   R(5,1,6,6,c);R(4,7,8,6,c);R(3+w,13,3,2,c);R(9-w,13,3,2,c);R(6,3,1,1,'#ff4060');R(9,3,1,1,'#ff4060');R(2,8,2,3,'rgba(24,6,36,.5)');R(12,8,2,3,'rgba(24,6,36,.5)')}
  if(!(CUT&&CUT.hidePlayer)&&!HIDEP1){AU.x+=(S.dx-0.9-AU.x)*.05;AU.y+=(S.dy-0.5-AU.y)*.05;const ax=Math.round(AU.x*16-cx),ay=Math.round(AU.y*16-cy+Math.sin(t*2)*2);ctx.globalAlpha=.85;D2(ax+8,ay+8,9,'rgba(244,226,122,.18)');pen(ctx,ax,ay,1);drawPerson(LOOKS.aurenreal,t,0);ctx.globalAlpha=1;
-  const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}if(TWO()&&S.p2.area===S.area)drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))}
+  const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}if(TWO()&&!ARENA&&S.p2.area===S.area)drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))}
 function D2(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 function unravCheck(){const th=[.75,.5,.25];if(B.kingNext<3&&!B.sub&&B.hp<=B.max*th[B.kingNext]){B.hp=Math.max(B.hp,Math.round(B.max*th[B.kingNext]));B.kingNext++;
  const e=[['u_dragon','Twisted Dragon'],['u_hollowking','Twisted Hollow King'],['shadowself','Your Own Shadow']][B.kingNext-1];B.sub={key:MONS[e[0]]?e[0]:'shadowself',name:e[1],hp:7000,max:7000,atk:68,kind:'echo'};
@@ -2981,7 +2995,7 @@ function drawTrueEnd(t,ct){CUT.noFilter=true;CUT.cam=null;drawMap(t);const px=Ma
  if(ct>14&&CUT.step<0){CUT.step=1;dialog('The True Ending',trueSummary(),[{label:'Go home to Brightmeadow',primary:true,fn:()=>{CUT=null;cap('');endTrue()}},{label:'Start a new game',fn:()=>{CUT=null;cap('');newGame()}}]);mode='cut'}}
 function endTrue(){S.flags.trueEnd=true;S.flags.unravelerOut=false;hide('dialog');S.winsBy[S.chapter]=S.wins;S.uOpen=[];const st=AREAS.world.start||[4,AREAS.world.PATHC[4]];travelTo(1,st[0]);ensureWorldAuren();buildLabels();mode='map';banner(zname(S.x));toast('You are home. The real Auren is waiting by the village green.')}
 /* ================= TWO PLAYERS ================= */
-let P2DRAW=false,held2=[],P2NAG=0,VIEWF=null,SPLIT=false,LASTMOVER=1,HIDEP1=false;
+let ARENA=false,P2DRAW=false,held2=[],P2NAG=0,VIEWF=null,SPLIT=false,LASTMOVER=1,HIDEP1=false;
 function drawWorld(t){if(!TWO()||!AREAS[S.p2.area]){SPLIT=false;return drawMap(t)}
  if(S.p2.area!==S.area){SPLIT=true;const W0=LW,H0=LH,hw=Math.round(W0/2);
   ctx.save();ctx.beginPath();ctx.rect(0,0,hw,H0);ctx.clip();LW=hw;VIEWF={x:S.dx,y:S.dy};try{drawMap(t)}finally{VIEWF=null;LW=W0;ctx.restore()}
@@ -3070,6 +3084,36 @@ function drawRush(t,ct){const R=CUT.r;ct=Math.max(0,ct);let el=ct,li=0;while(li<
  const px=Math.round(x*16-CUT.cam.x),py=Math.round(y*16-CUT.cam.y);ctx.fillStyle='rgba(255,255,255,.55)';for(let j=0;j<4;j++){const ox=dir==='right'?-6-j*4:dir==='left'?22+j*4:4+j*3,oy=dir==='down'?-4-j*3:dir==='up'?20+j*3:4+j*3;ctx.fillRect(px+ox,py+oy,dir==='left'||dir==='right'?3:1,dir==='left'||dir==='right'?1:3)}
  cap(R.after?`Player ${R.who} runs to join Player ${R.starter}.<span class="small">You travel together</span>`:`Player ${R.who} rushes to help!<span class="small">Player ${R.starter} has started a fight</span>`)}
 {const _tc=travelCut;travelCut=function(legs,done){if(TWO()&&legs.length&&!CUT){const r=planRush(null,1);if(r){r.after=()=>_tc(legs,done);startRush(r);return}}return _tc(legs,done)}}
+{const _df=dealFoe;dealFoe=function(){if(B)B.hitT=performance.now()/1000;return _df.apply(this,arguments)}}
+{const _hy=hitYou;hitYou=function(){if(B){B.atkT=performance.now()/1000;B.atkWho=B.two?B.two.cur:1}return _hy.apply(this,arguments)}}
+{const _st=strike;strike=function(){if(B){B.pAtkT=performance.now()/1000;B.pWho=B.two?B.two.cur:1}return _st.apply(this,arguments)}}
+{const _fi=fists;fists=function(){if(B){B.pAtkT=performance.now()/1000;B.pWho=B.two?B.two.cur:1}return _fi.apply(this,arguments)}}
+function arenaBox(){const vr=cv.getBoundingClientRect();if(!vr.width||!vr.height)return {l:0,r:LW,t:0,b:LH};const sx=LW/vr.width,sy=LH/vr.height;let l=0,r=LW,tp=0,bt=LH;
+ const lg=$('bLog').getBoundingClientRect();if(lg.height)tp=Math.max(0,(lg.bottom-vr.top)*sy);
+ if(window.matchMedia('(min-width:900px)').matches)r=LW-410*sx;
+ const wt=$('bWait');if(wt&&wt.offsetParent){const wr=wt.getBoundingClientRect();if(wr.height)bt=Math.min(bt,(wr.top-vr.top)*sy)}
+ if(bt-tp<60)tp=Math.max(0,bt-60);return {l,r,t:tp,b:bt}}
+function drawArena(t){const mon=B.mon;let fx=S.x,fy=S.y;if(mon&&typeof mon.x==='number'&&(MONSTERS.includes(mon)||(A.rares||[]).includes(mon))){fx=mon.x;fy=mon.y}
+ const AB=arenaBox(),CX=(AB.l+AB.r)/2,AH=AB.b-AB.t;
+ ARENA=true;HIDEP1=true;VIEWF={x:fx+(LW/2-CX)/16,y:fy+0.5};try{drawMap(t)}finally{ARENA=false;HIDEP1=false;VIEWF=null}
+ ctx.fillStyle='rgba(10,8,6,.28)';ctx.fillRect(0,0,LW,LH);const g=ctx.createRadialGradient(LW/2,LH*0.45,LH*0.2,LW/2,LH*0.45,LW*0.7);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=g;ctx.fillRect(0,0,LW,LH);
+ const now=performance.now()/1000,key=B.sub?B.sub.key:B.key,big=BIGMON.has(key),sc=Math.max(1,Math.min(big?Math.min(3,(AB.r-AB.l)/105):Math.min(4.2,(AB.r-AB.l)/72),AH*0.42/(big?24:16))),w=(big?32:16)*sc,h=(big?24:16)*sc;
+ const lunge=B.atkT&&now-B.atkT<0.35?Math.sin((now-B.atkT)/0.35*Math.PI)*16:0,shake=B.hitT&&now-B.hitT<0.3?Math.round(Math.sin(now*80)*3):0,bob=Math.sin(t*2)*2,cyM=AB.t+AH*0.30;
+ const mx=Math.round(CX-w/2+shake),my=Math.round(cyM-h/2+bob+lunge);
+ if(B.sub){const bk=BIGMON.has(B.key),ksc=sc*0.55,kw=(bk?32:16)*ksc;ctx.globalAlpha=.5;pen(ctx,Math.round(CX+(AB.r-AB.l)*0.30-kw/2),Math.round(cyM-kw*0.9),ksc);drawMonster(B.key,t,false);ctx.globalAlpha=1}
+ ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(CX,Math.round(cyM-h/2+bob)+h-1,w*0.42,Math.max(3,h*0.08),0,0,Math.PI*2);ctx.fill();
+ pen(ctx,mx,my,sc);drawMonster(key,t,!!B.tele);
+ if(B.hitT&&now-B.hitT<0.3){ctx.fillStyle='#fff6c0';for(let i=0;i<7;i++){const a=i*0.9+now*18;ctx.fillRect(Math.round(CX+Math.cos(a)*w*0.35),Math.round(my+h/2+Math.sin(a)*h*0.32),2,2)}}
+ const two=B.two,list=two?[1,2]:[1],ks=Math.max(1,Math.min(3,(AB.r-AB.l)/95,AH*0.26/16)),kw=16*ks,AW=AB.r-AB.l;
+ list.forEach((n,i)=>{const cxk=two?(i===0?CX-AW*0.14:CX+AW*0.14):CX,hp=two?seatHp(n):S.hp,down=hp<=0,active=!busy&&(two?two.cur===n:true);
+  const pl=B.pAtkT&&now-B.pAtkT<0.35&&(B.pWho||1)===n?Math.sin((now-B.pAtkT)/0.35*Math.PI)*14:0,hurt=B.atkT&&now-B.atkT<0.3&&(B.atkWho||1)===n?Math.round(Math.sin(now*80)*2):0;
+  const kx=Math.round(cxk-kw/2+hurt),ky=Math.round(AB.t+AH*0.66-kw/2-pl);
+  ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(cxk,ky+kw-2,kw*0.38,kw*0.1,0,0,Math.PI*2);ctx.fill();
+  if(active){ctx.strokeStyle='rgba(244,226,122,.95)';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(cxk,ky+kw-2,kw*0.55,kw*0.16,0,0,Math.PI*2);ctx.stroke()}
+  ctx.save();ctx.globalAlpha=down?.35:1;ctx.translate(kx,ky);ctx.scale(ks,ks);if(n===2){PCTX=ctx;P2DRAW=true;try{drawPlayer(0,0,'up',0)}finally{P2DRAW=false}}else drawPlayerFx(0,0,'up',0,S.glass||0,S.pacts||0,S.wishes||0);ctx.restore();
+  if(B.atkT&&now-B.atkT<0.3&&(B.atkWho||1)===n){ctx.fillStyle='rgba(194,65,47,.35)';ctx.fillRect(kx,ky,kw,kw)}
+  const bw=Math.round(kw*0.9),bx=Math.round(cxk-bw/2),by=Math.round(ky+kw+3);ctx.fillStyle='rgba(0,0,0,.65)';ctx.fillRect(bx-1,by-1,bw+2,6);ctx.fillStyle=down?'#555':(n===2?'#5a8ad8':'#c2412f');ctx.fillRect(bx,by,Math.round(bw*Math.max(0,Math.min(1,hp/maxHp()))),4);
+  if(two){ctx.fillStyle=n===2?'#9ac0ff':'#ffb0a0';ctx.font='bold 7px monospace';ctx.textAlign='center';ctx.fillText(`P${n}${down?' down':''}`,cxk,by+13);ctx.textAlign='left'}})}
 function twoSetup(){B.hp*=4;B.max*=4;const s1=[],s2=[];B.swords.forEach((sw,i)=>(i%2?s2:s1).push(sw));B.swords=s1;
  B.two={cur:1,order:LASTMOVER===2?[2,1]:[1,2],seat:{1:null,2:{hp:S.p2.hp,swords:s2,guard:false,freeLeft:B_FREE()}}};swapTo(B.two.order[0]);
  log('Two Summoners stand together. The foe is four times as tough.','info');log(`Player ${B.two.order[0]} started this fight, so they go first.`,'good');renderBattle()}
@@ -3078,7 +3122,7 @@ function seatHp(n){const T=B.two;return T.cur===n?S.hp:T.seat[n].hp}
 function twoTarget(){const alive=[1,2].filter(n=>seatHp(n)>0);const t=alive.length>1?pick(alive):alive[0];swapTo(t);if(alive.length>1)log(`The foe turns on Player ${t}.`,'foe-l')}
 function twoDown(){const T=B.two,cur=T.cur,o=cur===1?2:1;if(seatHp(o)>0){S.hp=0;log(`Player ${cur} is down! Player ${o} fights on alone.`,'foe-l');return true}return false}
 function twoNextRound(){const T=B.two,first=seatHp(T.order[0])>0?T.order[0]:T.order[1];swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
-{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
+{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B){const bn=$('banner');if(bn)bn.classList.remove('show');$('battle').classList.toggle('foe-turn',!!busy);$('bWait').textContent=`${B.sub?B.sub.name:MONS[B.key].name} is acting…`}if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
   const os=T.seat[o]||{swords:[],hp:0},hp=Math.max(0,seatHp(o)),el=o===1?$('oTop'):$('oBot'),other=o===1?$('oBot'):$('oTop');other.hidden=true;other.innerHTML='';el.hidden=false;el.classList.toggle('down',hp<=0);
   el.innerHTML=`<div class="ohead"><b class="${o===1?'p1':''}">Player ${o}${hp<=0?' · down':' · waiting'}</b><div class="bar"><i style="width:${hp/maxHp()*100}%"></i></div><span>${hp} / ${maxHp()}</span></div><div class="oswords">`+Array.from({length:S.slots},(_,i)=>{const sw=os.swords[i];return sw?`<div class="osw"><img class="pix" src="${swordImg(sw)}" alt=""><span><b>${sw.name}</b> · ${sw.dmg} dmg</span></div>`:'<div class="oempty">Empty slot</div>'}).join('')+'</div>';updHud()}
  else{['oTop','oBot'].forEach(id=>{const e=$(id);if(e){e.hidden=true;e.innerHTML=''}});if($('yWho')){$('yWho').textContent='You';$('yWho').style.color=''}}}}
@@ -3118,7 +3162,7 @@ function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=no
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
   if(mode==='map'&&A&&A.rares){(A.rares||[]).forEach(r=>{if(r.rx==null){r.rx=r.x;r.ry=r.y}r.rx=approach(r.rx,r.x,dt/0.3);r.ry=approach(r.ry,r.y,dt/0.3)});if(now-(A.rareT||0)>900){A.rareT=now;wanderRares()}}
   if(TWO())p2Frame(dt);
-  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else drawWorld(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
+  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else if(B&&!$('battle').hidden)drawArena(t);else drawWorld(t);updLabels()}
  requestAnimationFrame(frame)}
 resize();
 setTimeout(()=>{S={flags:{}};newGame();$('loading').hidden=true;requestAnimationFrame(frame)},30);
