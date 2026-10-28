@@ -88,6 +88,14 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 - You can't leave the Unraveled World. You can only travel between its towns you have freed.
 - **Final battle:** the Unraveler unravels a sword every 4 turns, and it pulls a Twisted Dragon, a Twisted Hollow King and Your Own Shadow out of your past. Auren's light heals you every 5 turns. Beat it for the **True Ending** cutscene, then go home to Brightmeadow, where the real Auren is waiting.
 
+## Two players
+
+- Press **2 Players** in the top bar to add a second player on the same screen. Player 1 (red) uses the **arrow keys**; Player 2 (blue) uses **W A S D**. Press **1 Player** to go back.
+- The camera stays between you, and neither player can wander off and leave the other behind. Doors take you both through. Player 2 can talk to people, open chests, read signs and start fights.
+- In battle you take turns: Player 1, then Player 2, then the monster attacks one of you at random. Each player has their own health, sword slots, guard and free summon. Kept blades are split between you. The Codex is shared, so each thing can still be summoned only once.
+- Monsters have **4× health** in two-player battles.
+- If one of you falls, the other fights on alone. If both fall, you lose the battle.
+
 ## Getting around
 
 - **Walking:** the crack in the world joins the far east of the Frostspire Peaks to Ashfall Camp. The ladder of light joins Ashfall Camp to Cloudhaven.

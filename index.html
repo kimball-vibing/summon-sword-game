@@ -155,6 +155,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
     <div class="stat"><span class="lbl">HP <span id="hHp">40/40</span></span><div class="bar"><i id="hBar"></i></div></div>
     <div class="stat"><span class="lbl">Potions</span><span class="val" id="hPot">0</span></div>
     <div class="stat"><span class="lbl">Battles</span><span class="val" id="hWins">0 / 5</span></div>
+    <div class="stat" id="hP2Wrap" hidden><span class="lbl">Player 2 HP</span><span class="val" id="hP2" style="color:#7ab0ff">0</span></div>
     <div class="stat" id="hCoinWrap" hidden><span class="lbl">Coins</span><span class="val" id="hCoin" style="color:#e6bf4a">0</span></div>
     <div class="stat" id="hHexWrap" hidden><span class="lbl">Hexbrews</span><span class="val" id="hHex" style="color:#9acd32">0</span></div>
     <div class="stat" id="hGlassWrap" hidden><span class="lbl">Mirror shards</span><span class="val" id="hGlass" style="color:#bfd8f0">0</span></div>
@@ -167,6 +168,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
       <button class="btn" id="bArmory">Blades · <span id="hBlades">0</span></button>
       <button class="btn" id="bTravel" hidden>Travel</button>
       <button class="btn" id="bAuren" hidden>Auren</button>
+      <button class="btn" id="bTwo">2 Players</button>
       <button class="btn" id="bQuests">Quests</button>
       <button class="btn godbadge" id="bGod" hidden>God mode</button>
       <button class="btn" id="bHelp">Rules</button>
@@ -1646,13 +1648,13 @@ function drawPlayerFx(px,py,dir,fr,g,st,wk){PCTX=ctx;st=st||0;wk=wk||0;if(!g&&!s
  if(g>=3){const f=Math.floor(performance.now()/180)%6;OCX.fillStyle='#fff';OCX.fillRect(14+f*2,13+((f*5)%10),1,1)}OCX.globalCompositeOperation='source-over';
  if(wk&&!g&&!st){const f=Math.floor(performance.now()/150)%8;OCX.fillStyle='#fff';OCX.fillRect(13+f*2,12+((f*3)%12),1,1);OCX.fillRect(26-f,26-((f*5)%12),1,1)}if(st>=3&&!g){OCX.fillStyle='#c4c9cd';OCX.fillRect(dir==='left'?9:25,18,1,6);OCX.fillStyle='#8a6aa8';OCX.fillRect(dir==='left'?9:25,23,1,1)}ctx.globalAlpha=g?GLASS_A[Math.min(5,g)]:1;ctx.drawImage(OC,px-12,py-12);ctx.globalAlpha=1}
 function drawPlayer(px,py,dir,fr){
- const gx=S.hexes?S.hexes.length:0;
+ const gx=P2DRAW?0:S.hexes?S.hexes.length:0;
  if(gx>=6){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(PCTX,px+16,py-f,-1,1);else pen(PCTX,px,py-f,1,1);drawMonster('goblin',performance.now()/1000,false);R(5,0,6,2,'#e6bf4a');R(5,-1,1,1,'#e6bf4a');R(10,-1,1,1,'#e6bf4a');return}
  if(gx>=4)py+=1;
- const c=S.corrupt||0;
+ const c=P2DRAW?0:S.corrupt||0;
  if(c>=8){const f=Math.floor(performance.now()/250)%2;if(dir==='left')pen(PCTX,px+20,py-4-f,-0.625,0.625);else pen(PCTX,px-4,py-4-f,0.625,0.625);drawMonster('dragon',performance.now()/1000,false);return}
  const side=dir==='left'||dir==='right';if(dir==='left')pen(PCTX,px+16,py,-1,1);else pen(PCTX,px,py,1,1);
- const b=fr?1:0,Ac=c>=5?'#a32b22':gx>=5?'#6b8a3a':'#9cb0c0',A2=c>=5?'#7d1f1a':gx>=5?'#4f6a2a':'#7d93a5',L='#3a3f48',L2='#2a2e36',HEL=c>=5?'#c0392b':gx>=2?'#7aa34a':'#b8c8d4',RED='#a83a2c',WG='#5e1612',WG2='#7d1f1a';
+ const b=fr?1:0,Ac=c>=5?'#a32b22':gx>=5?'#6b8a3a':'#9cb0c0',A2=c>=5?'#7d1f1a':gx>=5?'#4f6a2a':'#7d93a5',L='#3a3f48',L2='#2a2e36',HEL=c>=5?'#c0392b':gx>=2?'#7aa34a':'#b8c8d4',RED=P2DRAW?'#3a6ac8':'#a83a2c',WG='#5e1612',WG2='#7d1f1a';
  R(4,15,8,1,'rgba(0,0,0,.3)');
  if(c>=2){const big=c>=3?1:0,flap=Math.floor(performance.now()/300)%2;
   if(side){R(0,3-flap,3+big,1,WG2);R(0,4,4+big,3,WG);R(1,7,2+big,2,WG);if(big)R(0,2-flap,1,1,WG2)}
@@ -2031,7 +2033,7 @@ function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6||
 function drawMarker(m,px,py,t){pen(ctx,px,py-9+(Math.floor(t*3)%2),1);const c=m==='…'?'#b3a081':'#f4d27a';if(m==='!'){R(7,0,2,4,c);R(7,5,2,1,c)}else if(m==='?'){R(6,0,4,1,c);R(9,1,1,2,c);R(7,3,2,1,c);R(7,5,1,1,c)}else{R(5,4,1,1,c);R(7,4,1,1,c);R(9,4,1,1,c)}}
 function drawMap(t){
  ctx.fillStyle='#0d0b09';ctx.fillRect(0,0,LW,LH);
- const mw=W*16,mh=H*16;let cx=Math.round(S.dx*16+8-LW/2),cy=Math.round(S.dy*16+8-LH/2);
+ const mw=W*16,mh=H*16;const two=TWO()&&S.p2.area===S.area&&!CUT,fx=two?(S.dx+S.p2.dx)/2:S.dx,fy=two?(S.dy+S.p2.dy)/2:S.dy;let cx=Math.round(fx*16+8-LW/2),cy=Math.round(fy*16+8-LH/2);
  cx=mw<=LW?Math.round((mw-LW)/2):Math.max(0,Math.min(mw-LW,cx));cy=mh<=LH?Math.round((mh-LH)/2):Math.max(0,Math.min(mh-LH,cy));if(CUT&&CUT.cam){cx=Math.round(CUT.cam.x);cy=Math.round(CUT.cam.y)}CAM={x:cx,y:cy};
  ctx.drawImage(A.ground,Math.max(0,cx),Math.max(0,cy),Math.min(mw,LW),Math.min(mh,LH),Math.max(0,-cx),Math.max(0,-cy),Math.min(mw,LW),Math.min(mh,LH));
  const x0=Math.max(0,Math.floor(cx/16)-6),x1=Math.min(W-1,Math.ceil((cx+LW)/16)+1),y0=Math.max(0,Math.floor(cy/16)-4),y1=Math.min(H-1,Math.ceil((cy+LH)/16)+1);
@@ -2045,6 +2047,7 @@ function drawMap(t){
   if(n.caged){pen(ctx,px,py,1);[1,4,11,14].forEach(x=>R(x,0,1,16,'#4f5559'));R(0,0,16,1,'#6c7378');R(0,15,16,1,'#6c7378')}const m=marker(n);if(m)drawMarker(m,px,py,t)}})});
  (A.rares||[]).forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1&&m.y>=y0-1&&m.y<=y1+1)ents.push({y:m.ry,f:()=>{const px=Math.round(m.rx*16-cx),py=Math.round(m.ry*16-cy),bob=Math.floor(t*4+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false);const sp=Math.floor(t*5)%4;ctx.fillStyle='#fff6c0';ctx.fillRect(px+[2,13,4,11][sp],py+[1,3,12,9][sp],1,1)}})});
  MONSTERS.forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
+ if(TWO()&&!CUT&&S.p2.area===S.area)ents.push({y:S.p2.dy,f:()=>drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,Math.round(S.dx*16-cx),Math.round(S.dy*16-cy))});
  if(!(CUT&&CUT.hidePlayer))ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}});
  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
  if(inU()&&!(CUT&&CUT.noFilter))uPost(t,cx,cy);
@@ -2073,7 +2076,7 @@ const toMap=()=>{hide('dialog');mode='map';updHud()};
 function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).find(key=>THINGS[key].name===who);const face=k?`<img class="pix" src="${iconImg(k)}" alt="">`:'';
  const render=()=>{const last=i===pages.length-1;dialog(who,`<div class="speaker">${face}<div>${pages[i]}</div></div>`,last?(endBtns||[{label:'Goodbye',primary:true,fn:toMap}]):[{label:'Next',primary:true,fn:()=>{i++;render()}}])};render()}
 function updHud(){const r=RANKS[S.rank];$('hRank').textContent=S.corrupt>=8?'Dragon':r.name;$('hMat').textContent=`×${r.mult.toFixed(1)}`;$('hHp').textContent=`${Math.max(0,S.hp)}/${maxHp()}`;$('hBar').style.width=Math.max(0,S.hp/maxHp()*100)+'%';$('hWins').textContent=`${S.wins} / 5`;$('hCodex').textContent=S.seen.length;$('bTravel').hidden=!(S.maxChapter>1);$('hBlades').textContent=S.relics?S.relics.length:0;$('hPot').textContent=S.potions;
- $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter>=2||S.coins);$('hCoin').textContent=S.coins||0;if($('bAuren'))$('bAuren').hidden=!inU();$('hWishWrap').hidden=!S.wishes;$('hWish').textContent=`${S.wishes||0} / 5`;$('hPactWrap').hidden=!S.pacts;$('hPact').textContent=`${S.pacts||0} / 5`;$('hGlassWrap').hidden=!S.glass;$('hGlass').textContent=`${S.glass||0} / 5`;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
+ $('hCorWrap').hidden=!S.corrupt;$('hCor').textContent=`${S.corrupt} / 8`;$('hCoinWrap').hidden=!(S.chapter>=2||S.coins);$('hCoin').textContent=S.coins||0;if($('bAuren'))$('bAuren').hidden=!inU();if($('hP2Wrap')){$('hP2Wrap').hidden=!TWO();if(TWO()){const h1=B&&B.two?seatHp(1):S.hp,h2=B&&B.two?seatHp(2):S.p2.hp;$('hP2').textContent=`${Math.max(0,h2)}/${maxHp()}`;$('hHp').textContent=`${Math.max(0,h1)}/${maxHp()}`}$('bTwo').textContent=TWO()?'1 Player':'2 Players'}$('hWishWrap').hidden=!S.wishes;$('hWish').textContent=`${S.wishes||0} / 5`;$('hPactWrap').hidden=!S.pacts;$('hPact').textContent=`${S.pacts||0} / 5`;$('hGlassWrap').hidden=!S.glass;$('hGlass').textContent=`${S.glass||0} / 5`;$('hHexWrap').hidden=!(S.hexes&&S.hexes.length);$('hHex').textContent=`${S.hexes?S.hexes.length:0} / 6`;if(S.hexes&&S.hexes.length>=6)$('hRank').textContent='Goblin'}
 function showIntro(){mode='menu';
  dialog('The Sumunbléd Chronicles · Chapter I: The Summoner’s Road',`<p>You are a Summoner in the village of Brightmeadow. Anything you have <b>seen up close</b> can be called into battle as a sword made of that very thing.</p>
  <ul class="rules"><li>Walk <b>right next to</b> something to add it to your <b>Codex</b>. Monsters only join your Codex once you defeat them.</li>
@@ -2359,6 +2362,7 @@ function enterArea(id,x,y){S.area=id;useArea(id);S.x=S.dx=x;S.y=S.dy=y;held=[];b
 function step(dx,dy){
  if(mode!=='map')return;S.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
  const nx=S.x+dx,ny=S.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
+ if(TWO()&&S.p2.area===S.area){if(tooFar(nx,ny,S.p2.x,S.p2.y)){p2nag();return}if(nx===S.p2.x&&ny===S.p2.y&&!solidAt(nx,ny)){S.p2.x=S.p2.dx=S.x;S.p2.y=S.p2.dy=S.y}}
  const mon=MONSTERS.find(m=>m.alive&&m.x===nx&&m.y===ny)||(A.rares||[]).find(m=>m.alive&&m.x===nx&&m.y===ny);if(mon){startBattle(mon);return}
  if((A.shadows||[]).some(h=>h.x===nx&&h.y===ny)){shadowHurt();return}
  const n=npcAt(nx,ny);if(n){talk(n);return}
@@ -2426,7 +2430,7 @@ function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw||sw.grabbed)re
 function fists(){if(busy||!B)return;const dmg=S.corrupt>=8?20:S.corrupt>=4?8:3;if(!dodged(S.corrupt>=4?'claws':'fist'))dealFoe(dmg,S.corrupt>=4?`You rake it with your claws for ${dmg}.`:'You punch it for 3. It is not impressed.');afterYou(false)}
 function guard(){if(busy||!B)return;B.guard=true;log(S.shield?'You raise Aldric’s shield.':'You raise your guard.','info');if(S.flags.gearguard)heal(20,'Clockwork Bracer');afterYou(false)}
 function potion(){if(busy||!B||S.potions<=0||S.hp>=maxHp())return;S.potions--;B.potUsed++;heal(Math.round((hasHex('brittle')?15:25)*(S.chapter>=6?6:S.chapter===5?5:S.chapter===4?4:S.chapter===3?3:S.chapter===2?1.6:1))+(S.flags.blessedPot?30:0),'You drink a potion');afterYou(false)}
-function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;foeTurn()}
+function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;if(B.two&&B.two.cur===1&&seatHp(2)>0){swapTo(2);log('Player 2’s turn.','good');renderBattle();return}foeTurn()}
 function hitYou(d,what){let dmg=d*((B&&B.mult)||1);const parts=[];if(B.guard){dmg*=(S.shield?.25:.4)+(hasHex('shaky')?.15:0);parts.push('guarded')}if(B.buff==='iron'){dmg*=.5;parts.push('Ironbark')}if(B.swords.some(s=>s.ab.id==='bulwark')){dmg*=.75;parts.push('Bulwark')}
  dmg=Math.max(1,Math.round(dmg));if(GODF.inv){dmg=0;parts.push('God mode')}S.hp-=dmg;log(`${what}: you take ${dmg}${parts.length?' ('+parts.join(', ')+')':''}.`,'foe-l');
  const f=$('bframe');f.classList.remove('hurt');void f.offsetWidth;f.classList.add('hurt');
@@ -2473,10 +2477,10 @@ const AI={goblin(){foeAtk()},
  dragon(){if(B.tele==='breath'){B.tele=null;hitYou(32-B.weak,'FIRE BREATH washes over you')}else if(B.turn%4===3){B.tele='breath';log('The dragon rears back and inhales. Smoke curls from its jaws.','foe-l')}else foeAtk()}};
 function foeTurn(){busy=true;renderBattle();setTimeout(()=>{if(!B)return;const M=MONS[B.key];
  if(B.burn>0){B.burn--;dealFoe(3,`${M.name} burns for 3.`,'good')}if(B.poison>0)dealFoe(2*B.poison,`Poison eats at it for ${2*B.poison}.`,'good');
- if(B.hp<=0){renderBattle();return win()}if(B.frozen){B.frozen=false;log(`${M.name} is frozen and loses its turn.`,'good')}else{B.turn++;if(B.sub)subAttack();else if(!(S.chapter===4&&maybeTraitor()))(AI[B.key]||AI[MONS[B.key].ai]||AI[MONS[B.key].base]||(()=>foeAtk()))()}
+ if(B.hp<=0){renderBattle();return win()}if(B.frozen){B.frozen=false;log(`${M.name} is frozen and loses its turn.`,'good')}else{B.turn++;if(B.two)twoTarget();if(B.sub)subAttack();else if(!(S.chapter===4&&maybeTraitor()))(AI[B.key]||AI[MONS[B.key].ai]||AI[MONS[B.key].base]||(()=>foeAtk()))()}
  if(MONS[B.key].rare&&!MONS[B.key].stay&&B.turn>=8&&B.hp>0&&S.hp>0){B.guard=false;updHud();return rareEscape()}
  B.swords.forEach(sw=>{if(sw.grabbed){sw.grabbed--;if(!sw.grabbed)log(sw.grabWhy?`The ice on your ${sw.name} cracks away.`:`The tentacle lets go of your ${sw.name}.`,'good');if(!sw.grabbed)sw.grabWhy=null}});
- B.guard=false;if(B.anti>0)B.anti--;updHud();if(B.hp<=0){renderBattle();return win()}if(S.hp<=0){renderBattle();return lose()}if(B.sleep){B.sleep=false;log('You are fast asleep. The Beholder acts again.','foe-l');renderBattle();return foeTurn()}busy=false;renderBattle()},750)}
+ B.guard=false;if(B.anti>0)B.anti--;updHud();if(B.hp<=0){renderBattle();return win()}if(S.hp<=0&&!(B.two&&twoDown())){renderBattle();return lose()}if(B.sleep){B.sleep=false;log('You are fast asleep. The Beholder acts again.','foe-l');renderBattle();return foeTurn()}if(B.two)twoNextRound();busy=false;renderBattle()},750)}
 function openSummon(){if(busy||!B||B.swords.length>=S.slots)return;const r=RANKS[S.rank];
  $('sSub').textContent=`${B.freeLeft>0?'This summon is free.':'Summoning now uses your turn.'} Each blade is made of the thing you summon. Your rank multiplies its power (×${r.mult.toFixed(1)}). Defeated monsters become blades you keep.`;
  const list=[...S.seen].sort((a,b)=>(S.used.has(a)-S.used.has(b))||(THINGS[b].power-THINGS[a].power));$('sGrid').innerHTML=list.map(k=>entryHTML(k,true)).join('');show('summon')}
@@ -2754,7 +2758,7 @@ function gemBreak(){busy=true;log('The soul gem splits from end to end!','good')
  setTimeout(()=>{const extra=endSpecialBattle();S.flags.phyl=true;const g=AREAS.grottoin;if(g)g.map.forEach(r=>r.forEach(t=>{if(t.o==='phylactery')t.o=null}));checkQuests();
   dialog('The Soul Gem Shatters',`<p>The gem bursts into a thousand blue shards. A long scream echoes down from the top of the mountain, then silence.</p><p class="reward"><b>The Frost Lich can die now.</b> Climb Skyspire Citadel and finish it.</p>${extra}<p>Your wounds close.</p>`,[{label:'Onward',primary:true,fn:toMap}])},900)}
 function backAway(mon){if(mon.gem&&AREAS.grottoin){const g=AREAS.grottoin;if(S.area!=='grottoin'){S.area='grottoin';useArea('grottoin')}S.x=S.dx=g.exit[0];S.y=S.dy=g.exit[1]}else tp(mon.x-3,CW().PATHC[mon.x-3])}
-function flee(){if(busy||!B)return;const mon=B.mon;S.relics=B.relicSnap;B.used.forEach(k=>S.used.delete(k));S.forged.splice(B.forgedAt);S.potions+=B.potUsed;if(B.buff)S.brew=B.buff;S.buffNow=null;
+function flee(){if(busy||!B)return;if(B.two)swapTo(1);const mon=B.mon;S.relics=B.relicSnap;B.used.forEach(k=>S.used.delete(k));S.forged.splice(B.forgedAt);S.potions+=B.potUsed;if(B.buff)S.brew=B.buff;S.buffNow=null;
  hide('battle');B=null;mode='map';S.hp=maxHp();backAway(mon);updHud();toast(mon.gem?'You back away from the gem. Everything you used in that fight comes back to you.':'You escape the throne room. Everything you used in that fight comes back to you.')}
 $('aFlee').onclick=()=>flee();
 $('bArmory').onclick=()=>openArmory();$('aBreak').onclick=()=>battleBreak();
@@ -2934,7 +2938,7 @@ function uPost(t,cx,cy){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.f
  for(const h of (A.shadows||[])){h.rx+=(h.x-h.rx)*.12;h.ry+=(h.y-h.ry)*.12;const px=Math.round(h.rx*16-cx),py=Math.round(h.ry*16-cy);if(px<-16||py<-16||px>LW||py>LH)continue;const w=Math.floor(t*3+h.x)%2,c='rgba(24,6,36,.82)';pen(ctx,px,py,1);
   R(5,1,6,6,c);R(4,7,8,6,c);R(3+w,13,3,2,c);R(9-w,13,3,2,c);R(6,3,1,1,'#ff4060');R(9,3,1,1,'#ff4060');R(2,8,2,3,'rgba(24,6,36,.5)');R(12,8,2,3,'rgba(24,6,36,.5)')}
  if(!(CUT&&CUT.hidePlayer)){AU.x+=(S.dx-0.9-AU.x)*.05;AU.y+=(S.dy-0.5-AU.y)*.05;const ax=Math.round(AU.x*16-cx),ay=Math.round(AU.y*16-cy+Math.sin(t*2)*2);ctx.globalAlpha=.85;D2(ax+8,ay+8,9,'rgba(244,226,122,.18)');pen(ctx,ax,ay,1);drawPerson(LOOKS.aurenreal,t,0);ctx.globalAlpha=1;
-  const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}}
+  const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0);if(TWO()&&S.p2.area===S.area)drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,Math.round(S.dx*16-cx),Math.round(S.dy*16-cy))}}
 function D2(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 function unravCheck(){const th=[.75,.5,.25];if(B.kingNext<3&&!B.sub&&B.hp<=B.max*th[B.kingNext]){B.hp=Math.max(B.hp,Math.round(B.max*th[B.kingNext]));B.kingNext++;
  const e=[['u_dragon','Twisted Dragon'],['u_hollowking','Twisted Hollow King'],['shadowself','Your Own Shadow']][B.kingNext-1];B.sub={key:MONS[e[0]]?e[0]:'shadowself',name:e[1],hp:7000,max:7000,atk:68,kind:'echo'};
@@ -2972,6 +2976,50 @@ function drawTrueEnd(t,ct){CUT.noFilter=true;CUT.cam=null;drawMap(t);const px=Ma
  cap('THE END<span class="small">The True Ending</span>',true);
  if(ct>14&&CUT.step<0){CUT.step=1;dialog('The True Ending',trueSummary(),[{label:'Go home to Brightmeadow',primary:true,fn:()=>{CUT=null;cap('');endTrue()}},{label:'Start a new game',fn:()=>{CUT=null;cap('');newGame()}}]);mode='cut'}}
 function endTrue(){S.flags.trueEnd=true;S.flags.unravelerOut=false;hide('dialog');S.winsBy[S.chapter]=S.wins;S.uOpen=[];const st=AREAS.world.start||[4,AREAS.world.PATHC[4]];travelTo(1,st[0]);ensureWorldAuren();buildLabels();mode='map';banner(zname(S.x));toast('You are home. The real Auren is waiting by the village green.')}
+/* ================= TWO PLAYERS ================= */
+let P2DRAW=false,held2=[],P2NAG=0;
+function TWO(){return !!(S&&S.two&&S.p2)}
+function p2Place(){const p=S.p2;for(const[dx,dy]of[[-1,0],[1,0],[0,1],[0,-1],[-1,1],[1,1],[-1,-1],[1,-1]]){const x=S.x+dx,y=S.y+dy;if(x<0||y<0||x>=W||y>=H)continue;if(!solidAt(x,y)&&!MONSTERS.some(m=>m.alive&&m.x===x&&m.y===y)&&!MAP[y][x].o){p.x=p.dx=x;p.y=p.dy=y;p.area=S.area;return}}p.x=p.dx=S.x;p.y=p.dy=S.y;p.area=S.area}
+function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
+ if(S.two){S.p2=S.p2||{dir:'down',walk:0};S.p2.hp=maxHp();p2Place();updHud();
+  dialog('Player 2 joins!','<ul class="rules"><li><b>Player 1</b> (red) moves with the <b>arrow keys</b>. <b>Player 2</b> (blue) moves with <b>W A S D</b>.</li><li>Stay close. Neither of you can leave the other behind.</li><li>Player 2 can talk to people, open chests, read signs and start fights. Doors take you both through.</li><li>In battle you take turns: <b>Player 1</b>, then <b>Player 2</b>, then the monster attacks one of you. Each of you has your own health and sword slots. The Codex is shared, so each thing can still be summoned only once.</li><li>Monsters have <b>4× health</b>.</li><li>If one of you falls, the other fights on. If both fall, you lose the battle.</li></ul>',[{label:'Let’s go',primary:true,fn:toMap}])}
+ else{toast('Player 2 has left. Back to one player.');updHud()}}
+function tooFar(x1,y1,x2,y2){return Math.abs(x1-x2)>12||Math.abs(y1-y2)>8}
+function p2nag(){const n=performance.now();if(n-P2NAG>2500){P2NAG=n;toast('Stay together! You can’t leave each other behind.')}}
+function p2step(dx,dy){if(mode!=='map'||!TWO())return;const p=S.p2;if(p.area!==S.area)return;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';const nx=p.x+dx,ny=p.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
+ if(tooFar(nx,ny,S.x,S.y)){p2nag();return}
+ const mon=MONSTERS.find(m=>m.alive&&m.x===nx&&m.y===ny)||(A.rares||[]).find(m=>m.alive&&m.x===nx&&m.y===ny);if(mon){startBattle(mon);return}
+ if((A.shadows||[]).some(h=>h.x===nx&&h.y===ny)){shadowHurt();return}
+ const n=npcAt(nx,ny);if(n){talk(n);return}
+ const o=MAP[ny][nx].o;
+ if(['door','secret','passage','exit','sign','chest','qboard'].includes(o)){const ox=S.x,oy=S.y;S.x=S.dx=p.x;S.y=S.dy=p.y;S.dir=p.dir;p.x=p.dx=ox;p.y=p.dy=oy;step(dx,dy);return}
+ if(nx===S.x&&ny===S.y)return;
+ if(solidAt(nx,ny))return;
+ p.x=nx;p.y=ny;
+ const ox=S.x,oy=S.y;S.x=nx;S.y=ny;try{pickup(nx,ny);look()}finally{S.x=ox;S.y=oy}
+ if(mode!=='map')return;
+ const near=MONSTERS.find(m=>m.alive&&Math.abs(m.x-nx)<=1&&Math.abs(m.y-ny)<=1);if(near)startBattle(near)}
+function p2Frame(dt){const p=S.p2;if(p.area!==S.area&&mode!=='cut')p2Place();const sp=dt/0.15;p.dx=approach(p.dx,p.x,sp);p.dy=approach(p.dy,p.y,sp);
+ if(p.dx!==p.x||p.dy!==p.y)p.walk=(p.walk||0)+dt*11;else p.walk=0;
+ if(mode==='map'&&held2.length&&p.dx===p.x&&p.dy===p.y){const d=DIRS[held2[held2.length-1]];if(d)p2step(d[0],d[1])}
+ if(!B&&mode!=='battle'&&p.hp!==maxHp()){p.hp=maxHp();updHud()}}
+function drawP2(px,py,t,p1x,p1y){const p=S.p2,m=p.dx!==p.x||p.dy!==p.y;PCTX=ctx;P2DRAW=true;try{drawPlayer(px,py,p.dir,m?[1,0,2,0][Math.floor(p.walk)%4]:0)}finally{P2DRAW=false}
+ const b=Math.floor(t*3)%2;pen(ctx,px,py-6-b,1);R(6,0,4,1,'#7ab0ff');R(7,1,2,1,'#7ab0ff');if(p1x!=null){pen(ctx,p1x,p1y-6-b,1);R(6,0,4,1,'#ff7a6a');R(7,1,2,1,'#ff7a6a')}}
+addEventListener('keydown',e=>{if(!TWO()||mode!=='map')return;const k=e.key.toLowerCase();if(!['w','a','s','d'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
+ if(!held2.includes(k)){held2.push(k);const p=S.p2;if(p.dx===p.x&&p.dy===p.y){const d=DIRS[k];p2step(d[0],d[1])}}},true);
+addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(['w','a','s','d'].includes(k)){held2=held2.filter(x=>x!==k);if(TWO())e.stopImmediatePropagation()}},true);
+addEventListener('blur',()=>{held2=[]});
+// battle seats: each player has their own health, swords, guard and free summon
+{const _sb=startBattle;startBattle=function(mon){_sb(mon);if(B&&TWO())twoSetup()}}
+function twoSetup(){B.hp*=4;B.max*=4;const s1=[],s2=[];B.swords.forEach((sw,i)=>(i%2?s2:s1).push(sw));B.swords=s1;
+ B.two={cur:1,seat:{1:null,2:{hp:S.p2.hp,swords:s2,guard:false,freeLeft:B_FREE()}}};
+ log('Two Summoners stand together. The foe is four times as tough.','info');log('Player 1’s turn.','good');renderBattle()}
+function swapTo(n){const T=B&&B.two;if(!T||T.cur===n)return;T.seat[T.cur]={hp:S.hp,swords:B.swords,guard:B.guard,freeLeft:B.freeLeft};const o=T.seat[n];S.hp=o.hp;B.swords=o.swords;B.guard=o.guard;B.freeLeft=o.freeLeft;T.cur=n;S.p2.hp=T.cur===2?S.hp:T.seat[2].hp}
+function seatHp(n){const T=B.two;return T.cur===n?S.hp:T.seat[n].hp}
+function twoTarget(){const alive=[1,2].filter(n=>seatHp(n)>0);const t=alive.length>1?pick(alive):alive[0];swapTo(t);if(alive.length>1)log(`The foe turns on Player ${t}.`,'foe-l')}
+function twoDown(){const T=B.two,cur=T.cur,o=cur===1?2:1;if(seatHp(o)>0){S.hp=0;log(`Player ${cur} is down! Player ${o} fights on alone.`,'foe-l');return true}return false}
+function twoNextRound(){const T=B.two,first=seatHp(1)>0?1:2;swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
+{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yRank').textContent=`Player ${T.cur} · ${$('yRank').textContent} · Player ${o}: ${Math.max(0,seatHp(o))}/${maxHp()} HP`;updHud()}}}
 /* ================= RARE MONSTERS ================= */
 function wanderRares(){for(const r of A.rares){if(!r.alive||MONS[r.key].stay||rnd()<.35)continue;const[dx,dy]=pick([[1,0],[-1,0],[0,1],[0,-1]]),nx=r.x+dx,ny=r.y+dy;
  if(solidAt(nx,ny)||(nx===S.x&&ny===S.y)||MONSTERS.some(m=>m.alive&&Math.abs(m.x-nx)<4&&Math.abs(m.y-ny)<4)||A.rares.some(o=>o!==r&&o.alive&&o.x===nx&&o.y===ny))continue;
@@ -3000,13 +3048,14 @@ function openTravel(){if(mode!=='map'||S.maxChapter<2)return;if(S.flags.exiled){
  btns.push({label:'Stay here',primary:true,fn:toMap});
  dialog('Travel',h,btns);
  [...$('dBtns').querySelectorAll('.gemopt')].forEach(b=>{b.disabled=true;b.style.cursor='default';b.style.flexBasis='100%';b.style.marginTop='6px'})}
-$('bTravel').onclick=()=>openTravel();$('bAuren').onclick=()=>aurenGuide();
+$('bTravel').onclick=()=>openTravel();$('bTwo').onclick=()=>toggleTwo();$('bAuren').onclick=()=>aurenGuide();
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
 function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
   if(mode==='map'&&A&&A.rares){(A.rares||[]).forEach(r=>{if(r.rx==null){r.rx=r.x;r.ry=r.y}r.rx=approach(r.rx,r.x,dt/0.3);r.ry=approach(r.ry,r.y,dt/0.3)});if(now-(A.rareT||0)>900){A.rareT=now;wanderRares()}}
+  if(TWO())p2Frame(dt);
   if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else drawMap(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
  requestAnimationFrame(frame)}
 resize();
