@@ -2050,7 +2050,7 @@ function drawMap(t){
   if(n.caged){pen(ctx,px,py,1);[1,4,11,14].forEach(x=>R(x,0,1,16,'#4f5559'));R(0,0,16,1,'#6c7378');R(0,15,16,1,'#6c7378')}const m=marker(n);if(m)drawMarker(m,px,py,t)}})});
  (A.rares||[]).forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1&&m.y>=y0-1&&m.y<=y1+1)ents.push({y:m.ry,f:()=>{const px=Math.round(m.rx*16-cx),py=Math.round(m.ry*16-cy),bob=Math.floor(t*4+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false);const sp=Math.floor(t*5)%4;ctx.fillStyle='#fff6c0';ctx.fillRect(px+[2,13,4,11][sp],py+[1,3,12,9][sp],1,1)}})});
  MONSTERS.forEach(m=>{if(m.alive&&m.x>=x0-1&&m.x<=x1+1)ents.push({y:m.y,f:()=>{const px=m.x*16-cx,py=m.y*16-cy,bob=Math.floor(t*3+m.x)%2;if(BIGMON.has(m.key))pen(ctx,px-8,py-8-bob,1);else pen(ctx,px,py-bob,1);drawMonster(m.key,t,false)}})});
- if(TWO()&&!CUT&&S.p2.area===S.area)ents.push({y:S.p2.dy,f:()=>drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))});
+ if(TWO()&&(!CUT||CUT.type==='rush')&&S.p2.area===S.area)ents.push({y:S.p2.dy,f:()=>drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))});
  if(!(CUT&&CUT.hidePlayer)&&!HIDEP1)ents.push({y:S.dy,f:()=>{const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}});
  ents.sort((a,b)=>a.y-b.y).forEach(e=>e.f());
  if(inU()&&!(CUT&&CUT.noFilter))uPost(t,cx,cy);
@@ -2587,6 +2587,7 @@ function breathTop(nx,ny,t,len){for(let i=0;i<34;i++){const d=i*len/34,fr=Math.f
 function flameAt(px,py,t,seed){const f=Math.floor(t*10+seed)%3;pen(ctx,px,py,1);R(3,9-f,10,7+f,'rgba(194,65,47,.85)');R(5,6+f,6,8-f,'#e8823a');R(6,4+(f%2)*2,4,6,'#f4d27a');R(7,2+f,2,3,'#f4d27a');if(f===1)R(10,1,1,2,'#f4d27a')}
 function drawCut(t){const ct=t-CUT.t0;const fade=a=>{ctx.fillStyle=`rgba(0,0,0,${Math.max(0,Math.min(1,a))})`;ctx.fillRect(0,0,LW,LH)};
  if(CUT.type==='travel'){drawTravel(ct);return}
+ if(CUT.type==='rush'){drawRush(t,ct);return}
  if(CUT.type==='unravel'){drawUnravel(t,ct);return}
  if(CUT.type==='trueend'){drawTrueEnd(t,ct);return}
  if(CUT.type==='dragon'){
@@ -3004,9 +3005,10 @@ function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
 function tooFar(x1,y1,x2,y2){return Math.abs(x1-x2)>60||Math.abs(y1-y2)>40}
 function p2nag(){const n=performance.now();if(n-P2NAG>2500){P2NAG=n;toast('Stay together! You can’t leave each other behind.')}}
 function realmOf(id){const a=AREAS[id];return a?(a.kind==='out'?id:(a.retArea||id)):id}
-function withArea(id,fn){if(id===S.area)return fn();const sv=[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS,S.area,S.x,S.y,S.dx,S.dy,S.dir];const a=AREAS[id];if(!a)return;
+let WAREAL=null;
+function withArea(id,fn){if(id===S.area)return fn();const sv=[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS,S.area,S.x,S.y,S.dx,S.dy,S.dir];const a=AREAS[id];if(!a)return;const pr=WAREAL;WAREAL=WAREAL||{area:sv[8],x:sv[9],y:sv[10]};
  A=a;MAP=a.map;W=a.W;H=a.H;NPCS=a.npcs;MONSTERS=a.monsters;SIGNS=a.signs;DOORS=a.doors;S.area=id;if(!a.ground)buildGround(a);
- try{return fn()}finally{[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS]=sv;if(S.area===id){S.area=sv[8]}S.x=sv[9];S.y=sv[10];S.dx=sv[11];S.dy=sv[12];S.dir=sv[13]}}
+ try{return fn()}finally{WAREAL=pr;[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS]=sv;if(S.area===id){S.area=sv[8]}S.x=sv[9];S.y=sv[10];S.dx=sv[11];S.dy=sv[12];S.dir=sv[13]}}
 function p2step(dx,dy){if(mode!=='map'||!TWO())return;LASTMOVER=2;const p=S.p2;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
  const same=p.area===S.area;
  return withArea(p.area,()=>{const nx=p.x+dx,ny=p.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
@@ -3024,7 +3026,7 @@ function p2step(dx,dy){if(mode!=='map'||!TWO())return;LASTMOVER=2;const p=S.p2;p
   if(same&&nx===S.x&&ny===S.y)return;
   if(solidAt(nx,ny))return;
   p.x=nx;p.y=ny;
-  S.x=nx;S.y=ny;pickup(nx,ny);look();
+  {const ox=S.x,oy=S.y;S.x=nx;S.y=ny;try{pickup(nx,ny);look()}finally{S.x=ox;S.y=oy}}
   if(mode!=='map')return;
   const near=MONSTERS.find(m=>m.alive&&Math.abs(m.x-nx)<=1&&Math.abs(m.y-ny)<=1);if(near)startBattle(near)})}
 function p2Frame(dt){const p=S.p2;if(!AREAS[p.area]||(realmOf(p.area)!==realmOf(S.area)&&mode!=='cut'))p2Place();const sp=dt/0.15;p.dx=approach(p.dx,p.x,sp);p.dy=approach(p.dy,p.y,sp);
@@ -3039,6 +3041,35 @@ addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(['w','a','s','d'].in
 addEventListener('blur',()=>{held2=[]});
 // battle seats: each player has their own health, swords, guard and free summon
 {const _sb=startBattle;startBattle=function(mon){_sb(mon);if(B&&TWO())twoSetup()}}
+{const _sb2=startBattle;startBattle=function(mon){if(TWO()&&!CUT&&mode!=='cut'){const r=planRush(mon);if(r){startRush(r);return}}return _sb2(mon)}}
+function rushPath(area,from,to){const a=AREAS[area];if(!a)return null;const W0=a.W,H0=a.H,key=(x,y)=>y*W0+x,prev=new Int32Array(W0*H0).fill(-2),q=[key(from[0],from[1])];prev[q[0]]=-1;let qi=0;const goal=key(to[0],to[1]);
+ while(qi<q.length){const c=q[qi++];if(c===goal)break;const x=c%W0,y=(c/W0)|0;for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=W0||Y>=H0)continue;const k=key(X,Y);if(prev[k]!==-2)continue;
+  if(k!==goal&&(aSolid(a,X,Y)||a.monsters.some(m=>m.alive&&m.x===X&&m.y===Y)))continue;prev[k]=c;q.push(k)}}
+ if(prev[goal]===-2)return null;const path=[];for(let c=goal;c!==-1;c=prev[c])path.push([c%W0,(c/W0)|0]);return path.reverse()}
+function planRush(mon,stIn){const st=stIn||(LASTMOVER===2?2:1),p=S.p2,P1=WAREAL||{area:S.area,x:S.x,y:S.y},bArea=st===2?p.area:P1.area,sx=st===2?p.x:P1.x,sy=st===2?p.y:P1.y,rArea=st===2?P1.area:p.area,rx=st===2?P1.x:p.x,ry=st===2?P1.y:p.y;
+ if(rArea===bArea&&Math.max(Math.abs(rx-sx),Math.abs(ry-sy))<=1)return null;const ba=AREAS[bArea];if(!ba)return null;
+ const cand=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]].map(([dx,dy])=>[sx+dx,sy+dy]).filter(([x,y])=>x>=0&&y>=0&&x<ba.W&&y<ba.H&&!aSolid(ba,x,y)&&!(mon&&mon.x===x&&mon.y===y)&&!ba.monsters.some(m=>m.alive&&m.x===x&&m.y===y)&&!['door','exit','secret','passage'].includes(ba.map[y][x].o));
+ if(rArea===bArea)cand.sort((u,v)=>(Math.abs(u[0]-rx)+Math.abs(u[1]-ry))-(Math.abs(v[0]-rx)+Math.abs(v[1]-ry)));
+ const tgt=cand[0]||[sx,sy];const raw=[];let cur={area:rArea,x:rx,y:ry};
+ if(rArea!==bArea){const ra=AREAS[rArea];if(ra&&ra.kind!=='out'){raw.push([rArea,[rx,ry],ra.exit]);cur={area:ra.retArea||'world',x:ra.ret[0],y:ra.ret[1]}}
+  if(cur.area!==bArea){const oa=AREAS[cur.area],dk=oa&&Object.keys(oa.doors).find(k=>oa.doors[k]===bArea);if(dk){const[dx,dy]=dk.split(',').map(Number);raw.push([cur.area,[cur.x,cur.y],[dx,dy]]);cur={area:bArea,x:ba.exit[0],y:ba.exit[1]}}else cur={area:bArea,x:tgt[0],y:tgt[1]}}}
+ raw.push([bArea,[cur.x,cur.y],tgt]);
+ const legs=raw.map(([area,f,t])=>({area,path:rushPath(area,f,t)||[f,t]}));const tiles=legs.reduce((n,l)=>n+Math.max(1,l.path.length-1),0),per=Math.min(0.075,3.2/tiles);
+ legs.forEach(l=>l.dur=Math.max(0.25,(l.path.length-1)*per));
+ return {mon,who:st===2?1:2,starter:st,area:bArea,tx:tgt[0],ty:tgt[1],legs}}
+function startRush(r){['dialog','summon','codex','quests','forge'].forEach(hide);held=[];held2=[];mode='cut';CUT={type:'rush',t0:performance.now()/1000,r,step:-1,hidePlayer:false,cam:null}}
+function finishRush(){const r=CUT.r;CUT=null;cap('');mode='map';
+ if(r.who===2){const p=S.p2;p.area=r.area;p.x=p.dx=r.tx;p.y=p.dy=r.ty}else{if(r.area!==S.area)enterArea(r.area,r.tx,r.ty);else{S.x=S.dx=r.tx;S.y=S.dy=r.ty}}
+ if(r.after){r.after();return}LASTMOVER=r.starter;startBattle(r.mon)}
+function drawRush(t,ct){const R=CUT.r;ct=Math.max(0,ct);let el=ct,li=0;while(li<R.legs.length&&el>R.legs[li].dur){el-=R.legs[li].dur;li++}
+ if(li>=R.legs.length){if(CUT.step<0){CUT.step=1;finishRush()}return}
+ const L=R.legs[li],P=L.path,f=Math.min(P.length-1,el/L.dur*(P.length-1)),i=Math.floor(f),k=f-i,a=P[i],b=P[Math.min(P.length-1,i+1)],x=a[0]+(b[0]-a[0])*k,y=a[1]+(b[1]-a[1])*k,dir=b[0]>a[0]?'right':b[0]<a[0]?'left':b[1]<a[1]?'up':'down';
+ withArea(L.area,()=>{const ar=A;CUT.cam={x:ar.W*16<=LW?(ar.W*16-LW)/2:Math.max(0,Math.min(ar.W*16-LW,x*16+8-LW/2)),y:ar.H*16<=LH?(ar.H*16-LH)/2:Math.max(0,Math.min(ar.H*16-LH,y*16+8-LH/2))};
+  if(R.who===2){const p=S.p2,sv=[p.area,p.x,p.y,p.dx,p.dy,p.dir,p.walk];p.area=L.area;p.dx=x;p.dy=y;p.x=b[0];p.y=b[1];p.dir=dir;p.walk=ct*12;try{drawMap(t)}finally{[p.area,p.x,p.y,p.dx,p.dy,p.dir,p.walk]=sv}}
+  else{const sv=[S.x,S.y,S.dx,S.dy,S.dir,S.walk];S.dx=x;S.dy=y;S.x=b[0];S.y=b[1];S.dir=dir;S.walk=ct*12;try{drawMap(t)}finally{[S.x,S.y,S.dx,S.dy,S.dir,S.walk]=sv}}});
+ const px=Math.round(x*16-CUT.cam.x),py=Math.round(y*16-CUT.cam.y);ctx.fillStyle='rgba(255,255,255,.55)';for(let j=0;j<4;j++){const ox=dir==='right'?-6-j*4:dir==='left'?22+j*4:4+j*3,oy=dir==='down'?-4-j*3:dir==='up'?20+j*3:4+j*3;ctx.fillRect(px+ox,py+oy,dir==='left'||dir==='right'?3:1,dir==='left'||dir==='right'?1:3)}
+ cap(R.after?`Player ${R.who} runs to join Player ${R.starter}.<span class="small">You travel together</span>`:`Player ${R.who} rushes to help!<span class="small">Player ${R.starter} has started a fight</span>`)}
+{const _tc=travelCut;travelCut=function(legs,done){if(TWO()&&legs.length&&!CUT){const r=planRush(null,1);if(r){r.after=()=>_tc(legs,done);startRush(r);return}}return _tc(legs,done)}}
 function twoSetup(){B.hp*=4;B.max*=4;const s1=[],s2=[];B.swords.forEach((sw,i)=>(i%2?s2:s1).push(sw));B.swords=s1;
  B.two={cur:1,order:LASTMOVER===2?[2,1]:[1,2],seat:{1:null,2:{hp:S.p2.hp,swords:s2,guard:false,freeLeft:B_FREE()}}};swapTo(B.two.order[0]);
  log('Two Summoners stand together. The foe is four times as tough.','info');log(`Player ${B.two.order[0]} started this fight, so they go first.`,'good');renderBattle()}
