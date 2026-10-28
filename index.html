@@ -72,6 +72,7 @@ p{line-height:1.5;margin:0 0 10px;max-width:65ch}
 .you-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-variant-numeric:tabular-nums;font-weight:700}
 #yBar{background:var(--heal)}
 .swords{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:12px}
+.other-p{margin:8px 0;padding:8px;border:2px dashed var(--line);background:rgba(0,0,0,.18);opacity:.9}.other-p .ohead{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.other-p .ohead b{color:#7ab0ff;white-space:nowrap}.other-p .ohead b.p1{color:#ff8a7a}.other-p .bar{flex:1}.other-p .oswords{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}.other-p .osw{display:flex;gap:6px;align-items:center;background:var(--panel-2);border:2px solid var(--line);padding:4px 6px;font-size:13px;min-width:0}.other-p .osw img{width:28px;height:28px;flex:none}.other-p .osw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.other-p .oempty{font-size:12px;color:var(--dim);padding:6px;border:2px dashed var(--line);text-align:center}.other-p.down{opacity:.5}
 .sw{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;font:inherit;color:var(--parch);background:var(--panel-2);border:2px solid var(--line);padding:8px;cursor:pointer}
 .sw:hover:not(:disabled){border-color:var(--gold);background:#3e3124}
 .sw:disabled{opacity:.6;cursor:wait}
@@ -203,7 +204,8 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
         <div class="warn" id="fWarn" hidden></div>
         <ol class="log" id="bLog"></ol>
         <div>
-          <div class="you-head"><span class="lbl">You</span><span id="yRank"></span><div class="bar big"><i id="yBar"></i></div><span id="yHp"></span></div>
+          <div class="other-p" id="oTop" hidden></div>
+          <div class="you-head"><span class="lbl" id="yWho">You</span><span id="yRank"></span><div class="bar big"><i id="yBar"></i></div><span id="yHp"></span></div>
           <div class="swords" id="swords"></div>
           <div class="actions">
             <button class="btn primary" id="aSummon">Summon</button>
@@ -214,6 +216,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
             <button class="btn" id="aFlee" hidden>Flee</button>
           </div>
           <div class="hint" id="bHint"></div>
+          <div class="other-p" id="oBot" hidden></div>
         </div>
       </div>
     </div>
@@ -2033,7 +2036,7 @@ function marker(n){if(n.id==='elder')return !S.flags.metElder||mainStage()===6||
 function drawMarker(m,px,py,t){pen(ctx,px,py-9+(Math.floor(t*3)%2),1);const c=m==='…'?'#b3a081':'#f4d27a';if(m==='!'){R(7,0,2,4,c);R(7,5,2,1,c)}else if(m==='?'){R(6,0,4,1,c);R(9,1,1,2,c);R(7,3,2,1,c);R(7,5,1,1,c)}else{R(5,4,1,1,c);R(7,4,1,1,c);R(9,4,1,1,c)}}
 function drawMap(t){
  ctx.fillStyle='#0d0b09';ctx.fillRect(0,0,LW,LH);
- const mw=W*16,mh=H*16;const two=TWO()&&S.p2.area===S.area&&!CUT,fx=two?(S.dx+S.p2.dx)/2:S.dx,fy=two?(S.dy+S.p2.dy)/2:S.dy;let cx=Math.round(fx*16+8-LW/2),cy=Math.round(fy*16+8-LH/2);
+ const mw=W*16,mh=H*16;const two=TWO()&&S.p2.area===S.area&&!CUT,fx=VIEWF?VIEWF.x:two?(S.dx+S.p2.dx)/2:S.dx,fy=VIEWF?VIEWF.y:two?(S.dy+S.p2.dy)/2:S.dy;let cx=Math.round(fx*16+8-LW/2),cy=Math.round(fy*16+8-LH/2);
  cx=mw<=LW?Math.round((mw-LW)/2):Math.max(0,Math.min(mw-LW,cx));cy=mh<=LH?Math.round((mh-LH)/2):Math.max(0,Math.min(mh-LH,cy));if(CUT&&CUT.cam){cx=Math.round(CUT.cam.x);cy=Math.round(CUT.cam.y)}CAM={x:cx,y:cy};
  ctx.drawImage(A.ground,Math.max(0,cx),Math.max(0,cy),Math.min(mw,LW),Math.min(mh,LH),Math.max(0,-cx),Math.max(0,-cy),Math.min(mw,LW),Math.min(mh,LH));
  const x0=Math.max(0,Math.floor(cx/16)-6),x1=Math.min(W-1,Math.ceil((cx+LW)/16)+1),y0=Math.max(0,Math.floor(cy/16)-4),y1=Math.min(H-1,Math.ceil((cy+LH)/16)+1);
@@ -2056,7 +2059,7 @@ let LABELS=[];
 function buildLabels(){const box=$('labels');box.innerHTML='';LABELS=[];
  NPCS.forEach(n=>{const d=document.createElement('div');d.className='tag';d.hidden=true;box.appendChild(d);LABELS.push({el:d,get:()=>n,foe:false})});
  MONSTERS.concat(A.rares||[]).forEach(m=>{const d=document.createElement('div');d.className='tag foe';d.hidden=true;d.textContent=(MONS[m.key].rare?'★ ':'')+MONS[m.key].name;box.appendChild(d);LABELS.push({el:d,get:()=>m,foe:true})})}
-function updLabels(){for(const L of LABELS){const e=L.get();const near=(L.foe?e.alive:!e.gone)&&Math.max(Math.abs(e.x-S.x),Math.abs(e.y-S.y))<=3&&mode==='map';
+function updLabels(){const lb=$('labels');if(lb)lb.style.display=SPLIT?'none':'';if(SPLIT)return;for(const L of LABELS){const e=L.get();const near=(L.foe?e.alive:!e.gone)&&Math.max(Math.abs(e.x-S.x),Math.abs(e.y-S.y))<=3&&mode==='map';
  if(!near){L.el.hidden=true;continue}L.el.hidden=false;if(!L.foe)L.el.textContent=e.name;const lift=L.foe&&BIGMON.has(e.key)?12:(!L.foe&&marker(e)?11:2);
  L.el.style.left=((e.x*16+8-CAM.x)*P)+'px';L.el.style.top=((e.y*16-lift-CAM.y)*P)+'px'}}
 function drawFoe(t){fctx.clearRect(0,0,40,40);let ox=0;if(performance.now()-B.flash<260)ox=(Math.floor(performance.now()/40)%2)?1:-1;
@@ -2360,7 +2363,7 @@ const DIRS={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[
 let held=[];const arrived=()=>S.dx===S.x&&S.dy===S.y;
 function enterArea(id,x,y){S.area=id;useArea(id);S.x=S.dx=x;S.y=S.dy=y;held=[];banner(A.kind==='in'?A.name:zname(x));look()}
 function step(dx,dy){
- if(mode!=='map')return;S.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
+ if(mode!=='map')return;LASTMOVER=1;S.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
  const nx=S.x+dx,ny=S.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
  if(TWO()&&S.p2.area===S.area){if(tooFar(nx,ny,S.p2.x,S.p2.y)){p2nag();return}if(nx===S.p2.x&&ny===S.p2.y&&!solidAt(nx,ny)){S.p2.x=S.p2.dx=S.x;S.p2.y=S.p2.dy=S.y}}
  const mon=MONSTERS.find(m=>m.alive&&m.x===nx&&m.y===ny)||(A.rares||[]).find(m=>m.alive&&m.x===nx&&m.y===ny);if(mon){startBattle(mon);return}
@@ -2430,7 +2433,7 @@ function strike(i){if(busy||!B)return;const sw=B.swords[i];if(!sw||sw.grabbed)re
 function fists(){if(busy||!B)return;const dmg=S.corrupt>=8?20:S.corrupt>=4?8:3;if(!dodged(S.corrupt>=4?'claws':'fist'))dealFoe(dmg,S.corrupt>=4?`You rake it with your claws for ${dmg}.`:'You punch it for 3. It is not impressed.');afterYou(false)}
 function guard(){if(busy||!B)return;B.guard=true;log(S.shield?'You raise Aldric’s shield.':'You raise your guard.','info');if(S.flags.gearguard)heal(20,'Clockwork Bracer');afterYou(false)}
 function potion(){if(busy||!B||S.potions<=0||S.hp>=maxHp())return;S.potions--;B.potUsed++;heal(Math.round((hasHex('brittle')?15:25)*(S.chapter>=6?6:S.chapter===5?5:S.chapter===4?4:S.chapter===3?3:S.chapter===2?1.6:1))+(S.flags.blessedPot?30:0),'You drink a potion');afterYou(false)}
-function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;if(B.two&&B.two.cur===1&&seatHp(2)>0){swapTo(2);log('Player 2’s turn.','good');renderBattle();return}foeTurn()}
+function afterYou(free){renderBattle();updHud();if(B.hp<=0)return win();if(free)return;if(B.two&&B.two.cur===B.two.order[0]&&seatHp(B.two.order[1])>0){const n=B.two.order[1];swapTo(n);log(`Player ${n}’s turn.`,'good');renderBattle();return}foeTurn()}
 function hitYou(d,what){let dmg=d*((B&&B.mult)||1);const parts=[];if(B.guard){dmg*=(S.shield?.25:.4)+(hasHex('shaky')?.15:0);parts.push('guarded')}if(B.buff==='iron'){dmg*=.5;parts.push('Ironbark')}if(B.swords.some(s=>s.ab.id==='bulwark')){dmg*=.75;parts.push('Bulwark')}
  dmg=Math.max(1,Math.round(dmg));if(GODF.inv){dmg=0;parts.push('God mode')}S.hp-=dmg;log(`${what}: you take ${dmg}${parts.length?' ('+parts.join(', ')+')':''}.`,'foe-l');
  const f=$('bframe');f.classList.remove('hurt');void f.offsetWidth;f.classList.add('hurt');
@@ -2977,16 +2980,25 @@ function drawTrueEnd(t,ct){CUT.noFilter=true;CUT.cam=null;drawMap(t);const px=Ma
  if(ct>14&&CUT.step<0){CUT.step=1;dialog('The True Ending',trueSummary(),[{label:'Go home to Brightmeadow',primary:true,fn:()=>{CUT=null;cap('');endTrue()}},{label:'Start a new game',fn:()=>{CUT=null;cap('');newGame()}}]);mode='cut'}}
 function endTrue(){S.flags.trueEnd=true;S.flags.unravelerOut=false;hide('dialog');S.winsBy[S.chapter]=S.wins;S.uOpen=[];const st=AREAS.world.start||[4,AREAS.world.PATHC[4]];travelTo(1,st[0]);ensureWorldAuren();buildLabels();mode='map';banner(zname(S.x));toast('You are home. The real Auren is waiting by the village green.')}
 /* ================= TWO PLAYERS ================= */
-let P2DRAW=false,held2=[],P2NAG=0;
+let P2DRAW=false,held2=[],P2NAG=0,VIEWF=null,SPLIT=false,LASTMOVER=1;
+function drawWorld(t){if(!TWO()||S.p2.area!==S.area){SPLIT=false;return drawMap(t)}
+ const ddx=Math.abs(S.dx-S.p2.dx)*16,ddy=Math.abs(S.dy-S.p2.dy)*16,need=ddx>LW-72||ddy>LH-56,ok=ddx<LW-110&&ddy<LH-84;
+ if(!SPLIT&&need)SPLIT=true;else if(SPLIT&&ok)SPLIT=false;
+ if(!SPLIT)return drawMap(t);
+ const horiz=ddx/LW>=ddy/LH,a={x:S.dx,y:S.dy},b={x:S.p2.dx,y:S.p2.dy},p1First=horiz?S.dx<=S.p2.dx:S.dy<=S.p2.dy,views=p1First?[a,b]:[b,a],W0=LW,H0=LH;
+ views.forEach((v,i)=>{ctx.save();if(horiz){ctx.translate(Math.round(i*W0/2),0);ctx.beginPath();ctx.rect(0,0,Math.round(W0/2),H0);ctx.clip();LW=Math.round(W0/2)}else{ctx.translate(0,Math.round(i*H0/2));ctx.beginPath();ctx.rect(0,0,W0,Math.round(H0/2));ctx.clip();LH=Math.round(H0/2)}
+  VIEWF=v;try{drawMap(t)}finally{VIEWF=null;LW=W0;LH=H0;ctx.restore()}});
+ ctx.fillStyle='#16120e';if(horiz)ctx.fillRect(Math.round(W0/2)-1,0,2,H0);else ctx.fillRect(0,Math.round(H0/2)-1,W0,2);
+ ctx.fillStyle='#dcb75e';if(horiz)ctx.fillRect(Math.round(W0/2)-1,Math.round(H0/2)-6,2,12);else ctx.fillRect(Math.round(W0/2)-6,Math.round(H0/2)-1,12,2)}
 function TWO(){return !!(S&&S.two&&S.p2)}
 function p2Place(){const p=S.p2;for(const[dx,dy]of[[-1,0],[1,0],[0,1],[0,-1],[-1,1],[1,1],[-1,-1],[1,-1]]){const x=S.x+dx,y=S.y+dy;if(x<0||y<0||x>=W||y>=H)continue;if(!solidAt(x,y)&&!MONSTERS.some(m=>m.alive&&m.x===x&&m.y===y)&&!MAP[y][x].o){p.x=p.dx=x;p.y=p.dy=y;p.area=S.area;return}}p.x=p.dx=S.x;p.y=p.dy=S.y;p.area=S.area}
 function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
  if(S.two){S.p2=S.p2||{dir:'down',walk:0};S.p2.hp=maxHp();p2Place();updHud();
   dialog('Player 2 joins!','<ul class="rules"><li><b>Player 1</b> (red) moves with the <b>arrow keys</b>. <b>Player 2</b> (blue) moves with <b>W A S D</b>.</li><li>Stay close. Neither of you can leave the other behind.</li><li>Player 2 can talk to people, open chests, read signs and start fights. Doors take you both through.</li><li>In battle you take turns: <b>Player 1</b>, then <b>Player 2</b>, then the monster attacks one of you. Each of you has your own health and sword slots. The Codex is shared, so each thing can still be summoned only once.</li><li>Monsters have <b>4× health</b>.</li><li>If one of you falls, the other fights on. If both fall, you lose the battle.</li></ul>',[{label:'Let’s go',primary:true,fn:toMap}])}
  else{toast('Player 2 has left. Back to one player.');updHud()}}
-function tooFar(x1,y1,x2,y2){return Math.abs(x1-x2)>12||Math.abs(y1-y2)>8}
+function tooFar(x1,y1,x2,y2){return Math.abs(x1-x2)>60||Math.abs(y1-y2)>40}
 function p2nag(){const n=performance.now();if(n-P2NAG>2500){P2NAG=n;toast('Stay together! You can’t leave each other behind.')}}
-function p2step(dx,dy){if(mode!=='map'||!TWO())return;const p=S.p2;if(p.area!==S.area)return;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';const nx=p.x+dx,ny=p.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
+function p2step(dx,dy){if(mode!=='map'||!TWO())return;LASTMOVER=2;const p=S.p2;if(p.area!==S.area)return;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';const nx=p.x+dx,ny=p.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
  if(tooFar(nx,ny,S.x,S.y)){p2nag();return}
  const mon=MONSTERS.find(m=>m.alive&&m.x===nx&&m.y===ny)||(A.rares||[]).find(m=>m.alive&&m.x===nx&&m.y===ny);if(mon){startBattle(mon);return}
  if((A.shadows||[]).some(h=>h.x===nx&&h.y===ny)){shadowHurt();return}
@@ -3012,14 +3024,17 @@ addEventListener('blur',()=>{held2=[]});
 // battle seats: each player has their own health, swords, guard and free summon
 {const _sb=startBattle;startBattle=function(mon){_sb(mon);if(B&&TWO())twoSetup()}}
 function twoSetup(){B.hp*=4;B.max*=4;const s1=[],s2=[];B.swords.forEach((sw,i)=>(i%2?s2:s1).push(sw));B.swords=s1;
- B.two={cur:1,seat:{1:null,2:{hp:S.p2.hp,swords:s2,guard:false,freeLeft:B_FREE()}}};
- log('Two Summoners stand together. The foe is four times as tough.','info');log('Player 1’s turn.','good');renderBattle()}
+ B.two={cur:1,order:LASTMOVER===2?[2,1]:[1,2],seat:{1:null,2:{hp:S.p2.hp,swords:s2,guard:false,freeLeft:B_FREE()}}};swapTo(B.two.order[0]);
+ log('Two Summoners stand together. The foe is four times as tough.','info');log(`Player ${B.two.order[0]} started this fight, so they go first.`,'good');renderBattle()}
 function swapTo(n){const T=B&&B.two;if(!T||T.cur===n)return;T.seat[T.cur]={hp:S.hp,swords:B.swords,guard:B.guard,freeLeft:B.freeLeft};const o=T.seat[n];S.hp=o.hp;B.swords=o.swords;B.guard=o.guard;B.freeLeft=o.freeLeft;T.cur=n;S.p2.hp=T.cur===2?S.hp:T.seat[2].hp}
 function seatHp(n){const T=B.two;return T.cur===n?S.hp:T.seat[n].hp}
 function twoTarget(){const alive=[1,2].filter(n=>seatHp(n)>0);const t=alive.length>1?pick(alive):alive[0];swapTo(t);if(alive.length>1)log(`The foe turns on Player ${t}.`,'foe-l')}
 function twoDown(){const T=B.two,cur=T.cur,o=cur===1?2:1;if(seatHp(o)>0){S.hp=0;log(`Player ${cur} is down! Player ${o} fights on alone.`,'foe-l');return true}return false}
-function twoNextRound(){const T=B.two,first=seatHp(1)>0?1:2;swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
-{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yRank').textContent=`Player ${T.cur} · ${$('yRank').textContent} · Player ${o}: ${Math.max(0,seatHp(o))}/${maxHp()} HP`;updHud()}}}
+function twoNextRound(){const T=B.two,first=seatHp(T.order[0])>0?T.order[0]:T.order[1];swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
+{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
+  const os=T.seat[o]||{swords:[],hp:0},hp=Math.max(0,seatHp(o)),el=o===1?$('oTop'):$('oBot'),other=o===1?$('oBot'):$('oTop');other.hidden=true;other.innerHTML='';el.hidden=false;el.classList.toggle('down',hp<=0);
+  el.innerHTML=`<div class="ohead"><b class="${o===1?'p1':''}">Player ${o}${hp<=0?' · down':' · waiting'}</b><div class="bar"><i style="width:${hp/maxHp()*100}%"></i></div><span>${hp} / ${maxHp()}</span></div><div class="oswords">`+Array.from({length:S.slots},(_,i)=>{const sw=os.swords[i];return sw?`<div class="osw"><img class="pix" src="${swordImg(sw)}" alt=""><span><b>${sw.name}</b> · ${sw.dmg} dmg</span></div>`:'<div class="oempty">Empty slot</div>'}).join('')+'</div>';updHud()}
+ else{['oTop','oBot'].forEach(id=>{const e=$(id);if(e){e.hidden=true;e.innerHTML=''}});if($('yWho')){$('yWho').textContent='You';$('yWho').style.color=''}}}}
 /* ================= RARE MONSTERS ================= */
 function wanderRares(){for(const r of A.rares){if(!r.alive||MONS[r.key].stay||rnd()<.35)continue;const[dx,dy]=pick([[1,0],[-1,0],[0,1],[0,-1]]),nx=r.x+dx,ny=r.y+dy;
  if(solidAt(nx,ny)||(nx===S.x&&ny===S.y)||MONSTERS.some(m=>m.alive&&Math.abs(m.x-nx)<4&&Math.abs(m.y-ny)<4)||A.rares.some(o=>o!==r&&o.alive&&o.x===nx&&o.y===ny))continue;
@@ -3056,7 +3071,7 @@ function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=no
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
   if(mode==='map'&&A&&A.rares){(A.rares||[]).forEach(r=>{if(r.rx==null){r.rx=r.x;r.ry=r.y}r.rx=approach(r.rx,r.x,dt/0.3);r.ry=approach(r.ry,r.y,dt/0.3)});if(now-(A.rareT||0)>900){A.rareT=now;wanderRares()}}
   if(TWO())p2Frame(dt);
-  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else drawMap(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
+  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else drawWorld(t);updLabels();if(B&&!$('battle').hidden)drawFoe(t)}
  requestAnimationFrame(frame)}
 resize();
 setTimeout(()=>{S={flags:{}};newGame();$('loading').hidden=true;requestAnimationFrame(frame)},30);
