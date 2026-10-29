@@ -84,7 +84,24 @@ p{line-height:1.5;margin:0 0 10px;max-width:65ch}
 #battle.foe-turn .bpop{display:none}
 #battle .bwait{display:none;pointer-events:none;margin:auto auto 18px;text-align:center;font-family:var(--display);font-size:20px;color:#ffd9c2;text-shadow:0 2px 0 #000,0 0 8px #000}
 #battle.foe-turn .bwait{display:block}
-@media (min-width:900px){#battle .battle-frame{padding-right:410px}#battle .bpop{position:absolute;right:10px;top:10px;bottom:10px;width:390px;max-height:none;margin:0}#battle .bpop .swords{grid-template-columns:1fr}}
+#battle .bpop{margin:auto auto 6px;width:min(640px,100%);max-height:none;padding:10px 12px}
+#battle .bpop .swords,#battle .bpop .other-p{display:none!important}#battle .bpop .you-head{margin-bottom:8px}
+#battle.foe-turn .bwait{margin-bottom:6px}
+@media (min-width:900px){#battle .bpop{position:absolute;right:12px;bottom:calc(var(--sbh,120px) + 8px);width:330px;margin:0}}
+#battle .bwait{position:absolute;left:0;right:0;bottom:calc(var(--sbh,120px) + 10px);margin:0!important}
+#battle .slotbar{pointer-events:auto;margin:auto calc(-1*max(8px,env(safe-area-inset-left,0px))) -8px;background:#5e3a1e;border-top:3px solid #3e2410;box-shadow:inset 0 3px 0 #7a4a26;padding:6px 8px 10px;display:flex;align-items:stretch}
+#battle .sbhalf{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 8px;min-width:0}
+#battle .sbhalf+.sbhalf{border-left:4px solid #efdcc0}
+#battle .sbhead{grid-column:1/-1;font-family:var(--display);font-size:13px;color:#efdfb8;display:flex;justify-content:space-between;gap:8px}
+#battle .sbhead b.p1{color:#ff9a8a}#battle .sbhead b.p2{color:#9ac0ff}
+#battle .slab{background:#9a4f2a;border:2px solid #3e2410;box-shadow:inset 0 2px 0 #b8683a,inset 0 -3px 0 #7a3a1c;border-radius:3px;min-height:48px;display:flex;gap:6px;align-items:center;padding:4px 6px;color:#fff3dd;font:inherit;text-align:left;cursor:pointer;min-width:0}
+#battle .slab img{width:32px;height:32px;flex:none}
+#battle .slab .st{display:flex;flex-direction:column;min-width:0}#battle .slab .sn{font-weight:700;font-size:13px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#battle .slab .sd{font-size:11px;color:#ffe2b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#battle .slab kbd{margin-left:auto;font-size:10px;opacity:.75}
+#battle .slab.empty{justify-content:center;font-size:12px;color:#e8c8a0;cursor:default}
+#battle .sbhalf.idle .slab{filter:saturate(.55) brightness(.75)}#battle .sbhalf.down .slab{filter:grayscale(1) brightness(.6)}
+#battle .slab:disabled{cursor:default}#battle .slab:not(:disabled):hover{box-shadow:inset 0 2px 0 #d88a52,0 0 0 2px #f4d27a}
+@media (max-width:640px){#battle .bpop .hint{display:none}#battle .bpop .actions{gap:5px}#battle .bpop .actions .btn{padding:5px 8px;font-size:12px}#battle .bpop .you-head{margin-bottom:5px;font-size:13px}#battle .slab img{width:24px;height:24px}#battle .slab .sd{display:none}#battle .sbhalf{gap:5px;padding:0 4px}}
 .other-p{margin:8px 0;padding:8px;border:2px dashed var(--line);background:rgba(0,0,0,.18);opacity:.9}.other-p .ohead{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.other-p .ohead b{color:#7ab0ff;white-space:nowrap}.other-p .ohead b.p1{color:#ff8a7a}.other-p .bar{flex:1}.other-p .oswords{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}.other-p .osw{display:flex;gap:6px;align-items:center;background:var(--panel-2);border:2px solid var(--line);padding:4px 6px;font-size:13px;min-width:0}.other-p .osw img{width:28px;height:28px;flex:none}.other-p .osw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.other-p .oempty{font-size:12px;color:var(--dim);padding:6px;border:2px dashed var(--line);text-align:center}.other-p.down{opacity:.5}
 .sw{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;font:inherit;color:var(--parch);background:var(--panel-2);border:2px solid var(--line);padding:8px;cursor:pointer}
 .sw:hover:not(:disabled){border-color:var(--gold);background:#3e3124}
@@ -232,6 +249,7 @@ button.entry:hover:not(:disabled){border-color:var(--gold)}
           <div class="hint" id="bHint"></div>
           <div class="other-p" id="oBot" hidden></div>
         </div>
+        <div class="slotbar" id="slotBar"></div>
       </div>
     </div>
 
@@ -3117,13 +3135,43 @@ function drawFx(){if(!B||!B.fx)return;const now=NOW();B.fx=B.fx.filter(e=>now-e.
  else if(e.type==='heal'){const p=posOf(e.at);if(!p)continue;ctx.fillStyle=`rgba(125,220,110,${1-k})`;for(let i=0;i<9;i++){const x=p[0]+((i*37)%22-11)*p[2]/24,y=p[1]+p[2]*0.4-k*p[2]*(0.6+(i%3)*0.25);ctx.fillRect(Math.round(x)-1,Math.round(y),3,1);ctx.fillRect(Math.round(x),Math.round(y)-1,1,3)}}}}
 function arenaBox(){const vr=cv.getBoundingClientRect();if(!vr.width||!vr.height)return {l:0,r:LW,t:0,b:LH};const sx=LW/vr.width,sy=LH/vr.height;let l=0,r=LW,tp=0,bt=LH;
  const lg=$('bLog').getBoundingClientRect();if(lg.height)tp=Math.max(0,(lg.bottom-vr.top)*sy);
- if(window.matchMedia('(min-width:900px)').matches)r=LW-410*sx;
- const wt=$('bWait');if(wt&&wt.offsetParent){const wr=wt.getBoundingClientRect();if(wr.height)bt=Math.min(bt,(wr.top-vr.top)*sy)}
+ const wide=window.matchMedia('(min-width:900px)').matches;if(wide)r=LW-345*sx;
+ const sbr=$('slotBar').getBoundingClientRect();if(sbr.height){bt=Math.min(bt,(sbr.top-vr.top)*sy);document.documentElement.style.setProperty('--sbh',Math.round(vr.bottom-sbr.top)+'px')}
+ if(!wide)bt-=120*sy;
  if(bt-tp<60)tp=Math.max(0,bt-60);return {l,r,t:tp,b:bt}}
+const ACOL=c=>!c?'#888':typeof c==='string'?c:`rgb(${c[0]},${c[1]},${c[2]})`;
+function shade(c,f){const m=/^#?([0-9a-f]{6})$/i.exec(c);let r,g,b;if(m){const n=parseInt(m[1],16);r=n>>16;g=(n>>8)&255;b=n&255}else{const q=c.match(/\d+/g)||[128,128,128];[r,g,b]=q.map(Number)}return `rgb(${Math.max(0,Math.min(255,Math.round(r*f)))},${Math.max(0,Math.min(255,Math.round(g*f)))},${Math.max(0,Math.min(255,Math.round(b*f)))})`}
+function pxEllipse(cx,cy,rx,ry,fill,edge){ry=Math.max(1,Math.round(ry));for(let dy=-ry;dy<=ry;dy++){const w=Math.round(rx*Math.sqrt(Math.max(0,1-(dy/ry)**2)));ctx.fillStyle=fill;ctx.fillRect(Math.round(cx-w),Math.round(cy+dy),w*2,1);if(edge){ctx.fillStyle=edge;ctx.fillRect(Math.round(cx-w),Math.round(cy+dy),2,1);ctx.fillRect(Math.round(cx+w-2),Math.round(cy+dy),2,1);if(Math.abs(dy)===ry){ctx.fillRect(Math.round(cx-w),Math.round(cy+dy),w*2,1)}}}}
+function arenaKeys(fx,fy){const a=A,cnt={};for(let y=Math.max(0,fy-12);y<=Math.min(a.H-1,fy+12);y++)for(let x=Math.max(0,fx-18);x<=Math.min(a.W-1,fx+18);x++){const o=a.map[y][x].o;if(!o||o[0]==='_')continue;const th=THINGS[o];if(!th||th.big||th.npc||th.monster||th.item)continue;if(['chest','sign','door','qboard','uplot','exit','passage','secret'].includes(o))continue;cnt[o]=(cnt[o]||0)+1}
+ const ks=Object.keys(cnt).sort((p,q)=>cnt[q]-cnt[p]),TALL=/oak|pine|tree|palm|willow|birch|cypress|crystal|pillar|spire|dead|cloud|rock|boulder|grave|stone|reed|cactus|windmill|stack|clock|menhir|shard|banner|wall/;
+ let back=ks.filter(k=>TALL.test(UBASE[k]||k)).slice(0,2);if(!back.length)back=ks.slice(0,2);const small=ks.filter(k=>!back.includes(k)).slice(0,3);return {back,small}}
+const ASKY={world:'#b7e8f8',coast:'#b9c9d2',peaks:'#dcecf6',vale:'#8e8e94',sky:'#c4e6ff'};
+function drawArenaBG(t,fx,fy,AB,CX){const AH=AB.b-AB.t,AW=AB.r-AB.l,inside=A.kind==='in';if(!B.akeys)B.akeys=inside?{back:[],small:[]}:arenaKeys(fx,fy);
+ const realm=(realmOf(S.area)||'world').replace(/^u_/,''),cy=AB.t+AH*0.50,rx=Math.max(60,AW*0.47),ry=Math.max(30,AH*0.46);
+ if(inside){const wood=A.style==='wood';ctx.fillStyle=wood?'#4a3a2c':'#4d4a45';ctx.fillRect(0,0,LW,LH);ctx.fillStyle=wood?'#3a2c20':'#3d3a36';for(let y=0;y<cy-ry*0.6;y+=8)ctx.fillRect(0,y,LW,1);for(let x=(Math.floor(t)%2)*0;x<LW;x+=14)ctx.fillRect(x,0,1,cy-ry*0.6)}
+ else{ctx.fillStyle=ASKY[realm]||'#b7e8f8';ctx.fillRect(0,0,LW,LH);ctx.fillStyle='rgba(255,255,255,.5)';for(let i=0;i<4;i++){const x=((hh(i,5)%LW)+t*3*(i%2?1:-1)+LW*10)%(LW+60)-30,y=AB.t*0.4+(hh(i,9)%Math.max(8,Math.round(AH*0.18)));ctx.fillRect(Math.round(x),Math.round(y),26,4);ctx.fillRect(Math.round(x)+6,Math.round(y)-3,14,3)}}
+ const zone=inside?0:zoneIn(A,fx),pal=inside?null:(A.pal||ZP)[zone],grass=inside?(A.style==='wood'?'#5a3d26':'#46433f'):ACOL(pal[1]),grassD=shade(grass,0.75),path=inside?(A.style==='wood'?'#7a5636':'#5d5a55'):ACOL(pal[2]),pathD=shade(path,0.82),pathL=shade(path,1.1);
+ if(!inside){ctx.fillStyle=grass;ctx.fillRect(0,Math.round(cy-ry*0.25),LW,LH);ctx.fillStyle=grassD;for(let i=0;i<40;i++){const x=hh(i,11)%LW,y=Math.round(cy-ry*0.2)+hh(i,13)%Math.max(4,Math.round(LH-cy));ctx.fillRect(x,y,1,2)}pxEllipse(CX,cy+ry*0.15,rx*1.12,ry*1.12,grass)}
+ pxEllipse(CX,cy,rx,ry,path,pathD);
+ for(let i=0;i<60;i++){const a=(hh(i,3)%628)/100,r=Math.sqrt((hh(i,7)%100)/100)*0.92,x=CX+Math.cos(a)*rx*r,y=cy+Math.sin(a)*ry*r;ctx.fillStyle=i%3?pathD:pathL;ctx.fillRect(Math.round(x),Math.round(y),2,1)}
+ const tsc=Math.max(1.3,Math.min(2.6,AH/95)),K=B.akeys;
+ if(K.back.length){const N=Math.max(8,Math.round(rx*2.4/(13*tsc))),list=[];
+  for(const row of [0,1])for(let i=0;i<N;i++){const th=Math.PI*(0.95+1.10*(i+row*0.5)/(N-1));if(th>Math.PI*2.06)continue;const x=CX+rx*Math.cos(th),y=cy+ry*Math.sin(th)-(row?0:4*tsc);list.push({x,y,k:K.back[(i+row)%K.back.length],s:tsc*(row?1:0.85)})}
+  list.sort((p,q)=>p.y-q.y).forEach((e,i)=>{pen(ctx,Math.round(e.x-8*e.s),Math.round(e.y-15*e.s),e.s);drawThing(e.k,t,i,i*3)})}
+ if(K.small.length)for(let i=0;i<6;i++){const a=Math.PI*(0.1+0.8*(i/5)),x=CX+Math.cos(a)*rx*(i%2?0.82:-0.82),y=cy+Math.sin(a)*ry*0.55+(i%3)*4;pen(ctx,Math.round(x-8),Math.round(y-12),1);drawThing(K.small[i%K.small.length],t,i+7,i)}
+ if(!inside){const hy=AB.b-AH*0.06;pxEllipse(AB.l-AW*0.02,hy,AW*0.26,AH*0.30,ACOL(pal[0]),grassD);pxEllipse(AB.r+AW*0.02,hy,AW*0.26,AH*0.30,ACOL(pal[0]),grassD);
+  ctx.fillStyle=grassD;for(let i=0;i<10;i++){const x=i<5?AB.l+AW*0.02*i*2:AB.r-AW*0.02*(i-5)*2,y=hy-AH*0.2+(i%5)*AH*0.04;ctx.fillRect(Math.round(x),Math.round(y),1,3)}}
+ if(inU()){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.fillRect(0,0,LW,LH)}}
+function renderSlotBar(){const el=$('slotBar');if(!el||!B)return;const T=B.two,list=T?[1,2]:[1];
+ el.innerHTML=list.map(n=>{const cur=T?T.cur===n:true,sws=cur?B.swords:(T.seat[n]||{swords:[]}).swords,hp=T?seatHp(n):S.hp,active=cur&&!busy,down=hp<=0;
+  const head=`<div class="sbhead"><b class="p${n}">${T?`Player ${n}${cur&&!busy?' · your turn':''}`:'Your blades'}</b><span>HP ${Math.max(0,hp)} / ${maxHp()}</span></div>`;
+  const slots=Array.from({length:S.slots},(_,i)=>{const sw=sws[i];if(!sw)return '<div class="slab empty">Empty slot</div>';const extra=sw.grabbed?` · ${sw.grabWhy||'grabbed'}`:sw.curse?` · curse ×${sw.curse}`:'';
+   return `<button class="slab" data-i="${i}" ${active&&!sw.grabbed?'':'disabled'} title="${(sw.ab.name+': '+sw.ab.desc).replace(/"/g,'&quot;')}"><img class="pix" src="${swordImg(sw)}" alt=""><span class="st"><span class="sn">${sw.name}</span><span class="sd">${sw.dmg} dmg · ${sw.ab.name}${extra}</span></span>${active?`<kbd>${i+1}</kbd>`:''}</button>`}).join('');
+  return `<div class="sbhalf${active?'':' idle'}${down?' down':''}">${head}${slots}</div>`}).join('')}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#slotBar .slab[data-i]');if(b&&!b.disabled)strike(+b.dataset.i)});
 function drawArena(t){const mon=B.mon;let fx=S.x,fy=S.y;if(mon&&typeof mon.x==='number'&&(MONSTERS.includes(mon)||(A.rares||[]).includes(mon))){fx=mon.x;fy=mon.y}
  const AB=arenaBox(),CX=(AB.l+AB.r)/2,AH=AB.b-AB.t;
- ARENA=true;HIDEP1=true;VIEWF={x:fx+(LW/2-CX)/16,y:fy+0.5};try{drawMap(t)}finally{ARENA=false;HIDEP1=false;VIEWF=null}
- ctx.fillStyle='rgba(10,8,6,.28)';ctx.fillRect(0,0,LW,LH);const g=ctx.createRadialGradient(LW/2,LH*0.45,LH*0.2,LW/2,LH*0.45,LW*0.7);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=g;ctx.fillRect(0,0,LW,LH);
+ drawArenaBG(t,fx,fy,AB,CX);
  const now=performance.now()/1000,key=B.sub?B.sub.key:B.key,big=BIGMON.has(key),sc=Math.max(1,Math.min(big?Math.min(3,(AB.r-AB.l)/105):Math.min(4.2,(AB.r-AB.l)/72),AH*0.42/(big?24:16))),w=(big?32:16)*sc,h=(big?24:16)*sc;
  const lunge=B.lungeT&&now>=B.lungeT&&now-B.lungeT<0.35?Math.sin((now-B.lungeT)/0.35*Math.PI)*16:0,shake=B.hitT&&now>=B.hitT&&now-B.hitT<0.3?Math.round(Math.sin(now*80)*3):0,bob=Math.sin(t*2)*2,cyM=AB.t+AH*0.30;
  const mx=Math.round(CX-w/2+shake),my=Math.round(cyM-h/2+bob+lunge);
@@ -3149,7 +3197,7 @@ function seatHp(n){const T=B.two;return T.cur===n?S.hp:T.seat[n].hp}
 function twoTarget(){const alive=[1,2].filter(n=>seatHp(n)>0);const t=alive.length>1?pick(alive):alive[0];swapTo(t);if(alive.length>1)log(`The foe turns on Player ${t}.`,'foe-l')}
 function twoDown(){const T=B.two,cur=T.cur,o=cur===1?2:1;if(seatHp(o)>0){S.hp=0;log(`Player ${cur} is down! Player ${o} fights on alone.`,'foe-l');return true}return false}
 function twoNextRound(){const T=B.two,first=seatHp(T.order[0])>0?T.order[0]:T.order[1];swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
-{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B){const bn=$('banner');if(bn)bn.classList.remove('show');$('battle').classList.toggle('foe-turn',!!busy);$('bWait').textContent=`${B.sub?B.sub.name:MONS[B.key].name} is acting…`}if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
+{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B)renderSlotBar();if(B){const bn=$('banner');if(bn)bn.classList.remove('show');$('battle').classList.toggle('foe-turn',!!busy);$('bWait').textContent=`${B.sub?B.sub.name:MONS[B.key].name} is acting…`}if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
   const os=T.seat[o]||{swords:[],hp:0},hp=Math.max(0,seatHp(o)),el=o===1?$('oTop'):$('oBot'),other=o===1?$('oBot'):$('oTop');other.hidden=true;other.innerHTML='';el.hidden=false;el.classList.toggle('down',hp<=0);
   el.innerHTML=`<div class="ohead"><b class="${o===1?'p1':''}">Player ${o}${hp<=0?' · down':' · waiting'}</b><div class="bar"><i style="width:${hp/maxHp()*100}%"></i></div><span>${hp} / ${maxHp()}</span></div><div class="oswords">`+Array.from({length:S.slots},(_,i)=>{const sw=os.swords[i];return sw?`<div class="osw"><img class="pix" src="${swordImg(sw)}" alt=""><span><b>${sw.name}</b> · ${sw.dmg} dmg</span></div>`:'<div class="oempty">Empty slot</div>'}).join('')+'</div>';updHud()}
  else{['oTop','oBot'].forEach(id=>{const e=$(id);if(e){e.hidden=true;e.innerHTML=''}});if($('yWho')){$('yWho').textContent='You';$('yWho').style.color=''}}}}
