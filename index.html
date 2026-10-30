@@ -2112,7 +2112,7 @@ function show(id){$(id).hidden=false;held=[];const b=$(id).querySelector('.btn.p
 function hide(id){$(id).hidden=true}
 function toast(html){const d=document.createElement('div');d.className='toast';d.innerHTML=html;$('toasts').appendChild(d);setTimeout(()=>d.classList.add('out'),3200);setTimeout(()=>d.remove(),3800);while($('toasts').children.length>3)$('toasts').firstChild.remove()}
 function banner(text){const b=$('banner');b.textContent=text;b.classList.remove('show');void b.offsetWidth;b.classList.add('show')}
-function dialog(title,html,btns){$('dTitle').textContent=title;$('dBody').innerHTML=html;const box=$('dBtns');box.innerHTML='';btns.forEach(o=>{const b=document.createElement('button');b.className='btn'+(o.primary?' primary':'')+(o.danger?' danger':'')+(o.cls?' '+o.cls:'');if(o.html)b.innerHTML=o.html;else b.textContent=o.label;b.onclick=o.fn;box.appendChild(b)});show('dialog')}
+function dialog(title,html,btns){if(typeof TWO==='function'&&TWO()&&$('dialog').hidden)POPOWNER=LASTMOVER||1;$('dTitle').textContent=title;$('dBody').innerHTML=html;const box=$('dBtns');box.innerHTML='';btns.forEach(o=>{const b=document.createElement('button');b.className='btn'+(o.primary?' primary':'')+(o.danger?' danger':'')+(o.cls?' '+o.cls:'');if(o.html)b.innerHTML=o.html;else b.textContent=o.label;b.onclick=o.fn;box.appendChild(b)});show('dialog')}
 const toMap=()=>{hide('dialog');mode='map';updHud()};
 function say(who,pages,endBtns){mode='menu';let i=0;const k=Object.keys(THINGS).find(key=>THINGS[key].name===who);const face=k?`<img class="pix" src="${iconImg(k)}" alt="">`:'';
  const render=()=>{const last=i===pages.length-1;dialog(who,`<div class="speaker">${face}<div>${pages[i]}</div></div>`,last?(endBtns||[{label:'Goodbye',primary:true,fn:toMap}]):[{label:'Next',primary:true,fn:()=>{i++;render()}}])};render()}
@@ -2419,7 +2419,7 @@ function step(dx,dy){
  const near=MONSTERS.find(m=>m.alive&&Math.abs(m.x-S.x)<=1&&Math.abs(m.y-S.y)<=1);if(near){startBattle(near);return}
  if(A.kind==='out'){const z=zoneOf(S.x);if(z!==S.zone){S.zone=z;banner(zname(S.x))}if(!S.visited.has(S.chapter+':'+z)){S.visited.add(S.chapter+':'+z);updHud()}}
 }
-function press(k){const d=DIRS[k];if(!d)return;if(!held.includes(k)){held.push(k);if(mode==='map'&&arrived())step(d[0],d[1])}}
+function press(k){const d=DIRS[k];if(!d)return;if(!held.includes(k)){held.push(k);if((mode==='map'||freeFor(1))&&arrived())step(d[0],d[1])}}
 function release(k){held=held.filter(h=>h!==k)}
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
  if(k==='escape'){if(!$('summon').hidden)hide('summon');else if(!$('codex').hidden){hide('codex');mode='map'}else if(!$('quests').hidden){hide('quests');mode='map'}return}
@@ -3019,21 +3019,22 @@ function drawTrueEnd(t,ct){CUT.noFilter=true;CUT.cam=null;drawMap(t);const px=Ma
  if(ct>14&&CUT.step<0){CUT.step=1;dialog('The True Ending',trueSummary(),[{label:'Go home to Brightmeadow',primary:true,fn:()=>{CUT=null;cap('');endTrue()}},{label:'Start a new game',fn:()=>{CUT=null;cap('');newGame()}}]);mode='cut'}}
 function endTrue(){S.flags.trueEnd=true;S.flags.unravelerOut=false;hide('dialog');S.winsBy[S.chapter]=S.wins;S.uOpen=[];const st=AREAS.world.start||[4,AREAS.world.PATHC[4]];travelTo(1,st[0]);ensureWorldAuren();buildLabels();mode='map';banner(zname(S.x));toast('You are home. The real Auren is waiting by the village green.')}
 /* ================= TWO PLAYERS ================= */
-let ARENA=false,P2DRAW=false,held2=[],P2NAG=0,VIEWF=null,SPLIT=false,LASTMOVER=1,HIDEP1=false;
+let ARENA=false,POPOWNER=null,SPLITINFO=null,P2DRAW=false,held2=[],P2NAG=0,VIEWF=null,SPLIT=false,LASTMOVER=1,HIDEP1=false;
 function drawWorld(t){if(!TWO()||!AREAS[S.p2.area]){SPLIT=false;return drawMap(t)}
- if(S.p2.area!==S.area){SPLIT=true;const W0=LW,H0=LH,hw=Math.round(W0/2);
+ if(S.p2.area!==S.area){SPLIT=true;SPLITINFO={horiz:true,p1First:true};const W0=LW,H0=LH,hw=Math.round(W0/2);
   ctx.save();ctx.beginPath();ctx.rect(0,0,hw,H0);ctx.clip();LW=hw;VIEWF={x:S.dx,y:S.dy};try{drawMap(t)}finally{VIEWF=null;LW=W0;ctx.restore()}
   ctx.save();ctx.translate(hw,0);ctx.beginPath();ctx.rect(0,0,W0-hw,H0);ctx.clip();LW=W0-hw;VIEWF={x:S.p2.dx,y:S.p2.dy};HIDEP1=true;
   try{withArea(S.p2.area,()=>drawMap(t))}finally{HIDEP1=false;VIEWF=null;LW=W0;ctx.restore()}
   ctx.fillStyle='#16120e';ctx.fillRect(hw-1,0,2,H0);ctx.fillStyle='#dcb75e';ctx.fillRect(hw-1,Math.round(H0/2)-6,2,12);return}
- const ddx=Math.abs(S.dx-S.p2.dx)*16,ddy=Math.abs(S.dy-S.p2.dy)*16,need=ddx>LW-72||ddy>LH-56,ok=ddx<LW-110&&ddy<LH-84;
- if(!SPLIT&&need)SPLIT=true;else if(SPLIT&&ok)SPLIT=false;
- if(!SPLIT)return drawMap(t);
- const horiz=ddx/LW>=ddy/LH,a={x:S.dx,y:S.dy},b={x:S.p2.dx,y:S.p2.dy},p1First=horiz?S.dx<=S.p2.dx:S.dy<=S.p2.dy,views=p1First?[a,b]:[b,a],W0=LW,H0=LH;
- views.forEach((v,i)=>{ctx.save();if(horiz){ctx.translate(Math.round(i*W0/2),0);ctx.beginPath();ctx.rect(0,0,Math.round(W0/2),H0);ctx.clip();LW=Math.round(W0/2)}else{ctx.translate(0,Math.round(i*H0/2));ctx.beginPath();ctx.rect(0,0,W0,Math.round(H0/2));ctx.clip();LH=Math.round(H0/2)}
-  VIEWF=v;try{drawMap(t)}finally{VIEWF=null;LW=W0;LH=H0;ctx.restore()}});
- ctx.fillStyle='#16120e';if(horiz)ctx.fillRect(Math.round(W0/2)-1,0,2,H0);else ctx.fillRect(0,Math.round(H0/2)-1,W0,2);
- ctx.fillStyle='#dcb75e';if(horiz)ctx.fillRect(Math.round(W0/2)-1,Math.round(H0/2)-6,2,12);else ctx.fillRect(Math.round(W0/2)-6,Math.round(H0/2)-1,12,2)}
+ const vx=(S.p2.dx-S.dx)*16,vy=(S.p2.dy-S.dy)*16,dist=Math.hypot(vx,vy);if(dist<1){SPLIT=false;return drawMap(t)}
+ const nx=vx/dist,ny=vy/dist,R=0.23*(Math.abs(nx)*LW+Math.abs(ny)*LH);
+ if(dist/2<=R){SPLIT=false;return drawMap(t)}
+ SPLIT=true;const hz=Math.abs(nx)>=Math.abs(ny);SPLITINFO={horiz:hz,p1First:hz?nx>0:ny>0};
+ const cx=LW/2,cy=LH/2,rect=[[0,0],[LW,0],[LW,LH],[0,LH]];
+ const half=sg=>{const out=[],f=q=>((q[0]-cx)*nx+(q[1]-cy)*ny)*sg;for(let i=0;i<4;i++){const a=rect[i],b=rect[(i+1)%4],fa=f(a),fb=f(b);if(fa<=0)out.push(a);if((fa<0&&fb>0)||(fa>0&&fb<0)){const k=fa/(fa-fb);out.push([a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k])}}return out};
+ [[1,{x:S.dx+nx*R/16,y:S.dy+ny*R/16}],[-1,{x:S.p2.dx-nx*R/16,y:S.p2.dy-ny*R/16}]].forEach(([sg,v])=>{const poly=half(sg);if(poly.length<3)return;ctx.save();ctx.beginPath();poly.forEach((q,i)=>i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]));ctx.closePath();ctx.clip();VIEWF=v;try{drawMap(t)}finally{VIEWF=null;ctx.restore()}});
+ const L=Math.hypot(LW,LH);ctx.strokeStyle='#16120e';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(cx-ny*L,cy+nx*L);ctx.lineTo(cx+ny*L,cy-nx*L);ctx.stroke();
+ ctx.strokeStyle='#dcb75e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-ny*7,cy+nx*7);ctx.lineTo(cx+ny*7,cy-nx*7);ctx.stroke()}
 function TWO(){return !!(S&&S.two&&S.p2)}
 function p2Place(){const p=S.p2;for(const[dx,dy]of[[-1,0],[1,0],[0,1],[0,-1],[-1,1],[1,1],[-1,-1],[1,-1]]){const x=S.x+dx,y=S.y+dy;if(x<0||y<0||x>=W||y>=H)continue;if(!solidAt(x,y)&&!MONSTERS.some(m=>m.alive&&m.x===x&&m.y===y)&&!MAP[y][x].o){p.x=p.dx=x;p.y=p.dy=y;p.area=S.area;return}}p.x=p.dx=S.x;p.y=p.dy=S.y;p.area=S.area}
 function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
@@ -3042,12 +3043,24 @@ function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
  else{toast('Player 2 has left. Back to one player.');updHud()}}
 function tooFar(){return false}
 function p2nag(){const n=performance.now();if(n-P2NAG>2500){P2NAG=n;toast('Stay together! You can’t leave each other behind.')}}
+function freeFor(n){return !!(TWO()&&mode==='menu'&&SPLIT&&POPOWNER&&POPOWNER!==n&&!$('dialog').hidden&&!B&&!CUT)}
+function freeStep(n,dx,dy){const p=n===2?S.p2:null;const dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';if(p)p.dir=dir;else S.dir=dir;
+ const go=()=>{const cx=p?p.x:S.x,cy=p?p.y:S.y,nx=cx+dx,ny=cy+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
+  const o=MAP[ny][nx].o,busyTile=npcAt(nx,ny)||MONSTERS.some(m=>m.alive&&m.x===nx&&m.y===ny)||(A.rares||[]).some(m=>m.alive&&m.x===nx&&m.y===ny)||['door','secret','passage','exit','sign','chest','qboard'].includes(o);
+  if(busyTile){const t=performance.now();if(t-P2NAG>2000){P2NAG=t;toast(`Wait for Player ${POPOWNER} to finish first.`)}return}
+  if(solidAt(nx,ny))return;if(!p&&TWO()&&S.p2.area===S.area&&nx===S.p2.x&&ny===S.p2.y)return;if(p&&p.area===S.area&&nx===S.x&&ny===S.y)return;
+  if(p){p.x=nx;p.y=ny}else{S.x=nx;S.y=ny}
+  const ox=S.x,oy=S.y;S.x=nx;S.y=ny;try{pickup(nx,ny)}finally{if(p){S.x=ox;S.y=oy}}};
+ if(p)withArea(p.area,go);else go()}
+{const _step=step;step=function(dx,dy){if(mode!=='map'&&freeFor(1))return freeStep(1,dx,dy);return _step(dx,dy)}}
+function placePopup(){const d=$('dialog');if(!d)return;if(d.hidden){POPOWNER=null;if(d.style.inset)d.style.inset='';return}
+ if(TWO()&&SPLIT&&POPOWNER&&SPLITINFO){const first=(POPOWNER===1)===SPLITINFO.p1First;d.style.inset=SPLITINFO.horiz?(first?'0 50% 0 0':'0 0 0 50%'):(first?'0 0 50% 0':'50% 0 0 0')}else if(d.style.inset)d.style.inset=''}
 function realmOf(id){const a=AREAS[id];return a?(a.kind==='out'?id:(a.retArea||id)):id}
 let WAREAL=null;
 function withArea(id,fn){if(id===S.area)return fn();const sv=[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS,S.area,S.x,S.y,S.dx,S.dy,S.dir];const a=AREAS[id];if(!a)return;const pr=WAREAL;WAREAL=WAREAL||{area:sv[8],x:sv[9],y:sv[10]};
  A=a;MAP=a.map;W=a.W;H=a.H;NPCS=a.npcs;MONSTERS=a.monsters;SIGNS=a.signs;DOORS=a.doors;S.area=id;if(!a.ground)buildGround(a);
  try{return fn()}finally{WAREAL=pr;[A,MAP,W,H,NPCS,MONSTERS,SIGNS,DOORS]=sv;if(S.area===id){S.area=sv[8]}S.x=sv[9];S.y=sv[10];S.dx=sv[11];S.dy=sv[12];S.dir=sv[13]}}
-function p2step(dx,dy){if(mode!=='map'||!TWO())return;LASTMOVER=2;const p=S.p2;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
+function p2step(dx,dy){if(!TWO())return;if(mode!=='map'){if(freeFor(2))freeStep(2,dx,dy);return}LASTMOVER=2;const p=S.p2;p.dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';
  const same=p.area===S.area;
  return withArea(p.area,()=>{const nx=p.x+dx,ny=p.y+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
   if(same&&tooFar(nx,ny,S.x,S.y)){p2nag();return}
@@ -3069,11 +3082,11 @@ function p2step(dx,dy){if(mode!=='map'||!TWO())return;LASTMOVER=2;const p=S.p2;p
   const near=MONSTERS.find(m=>m.alive&&Math.abs(m.x-nx)<=1&&Math.abs(m.y-ny)<=1);if(near)startBattle(near)})}
 function p2Frame(dt){const p=S.p2;if(!AREAS[p.area]||(realmOf(p.area)!==realmOf(S.area)&&mode!=='cut'))p2Place();const sp=dt/0.15;p.dx=approach(p.dx,p.x,sp);p.dy=approach(p.dy,p.y,sp);
  if(p.dx!==p.x||p.dy!==p.y)p.walk=(p.walk||0)+dt*11;else p.walk=0;
- if(mode==='map'&&held2.length&&p.dx===p.x&&p.dy===p.y){const d=DIRS[held2[held2.length-1]];if(d)p2step(d[0],d[1])}
+ if((mode==='map'||freeFor(2))&&held2.length&&p.dx===p.x&&p.dy===p.y){const d=DIRS[held2[held2.length-1]];if(d)p2step(d[0],d[1])}
  if(!B&&mode!=='battle'&&p.hp!==maxHp()){p.hp=maxHp();updHud()}}
 function drawP2(px,py,t,p1x,p1y){const p=S.p2,m=p.dx!==p.x||p.dy!==p.y;PCTX=ctx;P2DRAW=true;try{drawPlayer(px,py,p.dir,m?[1,0,2,0][Math.floor(p.walk)%4]:0)}finally{P2DRAW=false}
  const b=Math.floor(t*3)%2;pen(ctx,px,py-6-b,1);R(6,0,4,1,'#7ab0ff');R(7,1,2,1,'#7ab0ff');if(p1x!=null){pen(ctx,p1x,p1y-6-b,1);R(6,0,4,1,'#ff7a6a');R(7,1,2,1,'#ff7a6a')}}
-addEventListener('keydown',e=>{if(!TWO()||mode!=='map')return;const k=e.key.toLowerCase();if(!['w','a','s','d'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
+addEventListener('keydown',e=>{if(!TWO()||!(mode==='map'||freeFor(2)))return;const k=e.key.toLowerCase();if(!['w','a','s','d'].includes(k))return;e.preventDefault();e.stopImmediatePropagation();
  if(!held2.includes(k)){held2.push(k);const p=S.p2;if(p.dx===p.x&&p.dy===p.y){const d=DIRS[k];p2step(d[0],d[1])}}},true);
 addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(['w','a','s','d'].includes(k)){held2=held2.filter(x=>x!==k);if(TWO())e.stopImmediatePropagation()}},true);
 addEventListener('blur',()=>{held2=[]});
@@ -3184,6 +3197,7 @@ function navButtons(ov,dx,dy){const bs=[...ov.querySelectorAll('button')].filter
  for(const b of bs){if(b===cur)continue;const q=b.getBoundingClientRect(),x=q.left+q.width/2-cx,y=q.top+q.height/2-cy,along=x*dx+y*dy;if(along<=4)continue;const d=along+(Math.abs(x*dy)+Math.abs(y*dx))*2.5;if(d<bd){bd=d;best=b}}
  if(best){best.focus();best.scrollIntoView({block:'nearest'})}}
 addEventListener('keydown',e=>{if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;const k=e.key.toLowerCase(),ov=openOverlay();
+ if(ov&&ov.id==='dialog'&&POPOWNER&&TWO()&&NAVK[k]){const p1k=k.startsWith('arrow');if((POPOWNER===1)!==p1k){if(p1k&&freeFor(1)){e.preventDefault();e.stopImmediatePropagation();press(k)}return}}
  if(ov&&mode!=='map'&&mode!=='cut'&&NAVK[k]){e.preventDefault();e.stopImmediatePropagation();navButtons(ov,...NAVK[k]);return}
  if(ov&&mode!=='map'&&mode!=='cut'&&(k==='enter'||k===' ')&&!(ov.contains(document.activeElement)&&document.activeElement.tagName==='BUTTON')){const pb=ov.querySelector('button.primary:not(:disabled)')||ov.querySelector('button:not(:disabled)');if(pb){e.preventDefault();e.stopImmediatePropagation();pb.click()}return}
  if(mode==='battle'&&B&&!ov&&!busy){const T=B.two;if(T){const mine=T.cur===1?BK1:BK2,other=T.cur===1?BK2:BK1;
@@ -3265,7 +3279,7 @@ function frame(now){if(ctx.imageSmoothingEnabled)ctx.imageSmoothingEnabled=false
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
   if(mode==='map'&&A&&A.rares){(A.rares||[]).forEach(r=>{if(r.rx==null){r.rx=r.x;r.ry=r.y}r.rx=approach(r.rx,r.x,dt/0.3);r.ry=approach(r.ry,r.y,dt/0.3)});if(now-(A.rareT||0)>900){A.rareT=now;wanderRares()}}
   if(TWO())p2Frame(dt);
-  if(mode==='map'&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}if(CUT)drawCut(t);else if(B&&!$('battle').hidden)drawArena(t);else drawWorld(t);updLabels()}
+  if((mode==='map'||freeFor(1))&&held.length&&arrived()){const d=DIRS[held[held.length-1]];if(d)step(d[0],d[1])}placePopup();if(CUT)drawCut(t);else if(B&&!$('battle').hidden)drawArena(t);else drawWorld(t);updLabels()}
  requestAnimationFrame(frame)}
 resize();
 setTimeout(()=>{S={flags:{}};newGame();$('loading').hidden=true;requestAnimationFrame(frame)},30);
