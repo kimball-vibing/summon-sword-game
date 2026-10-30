@@ -104,7 +104,9 @@ p{line-height:1.5;margin:0 0 10px;max-width:65ch}
 #battle .slab kbd{margin-left:auto;font-size:10px;opacity:.75}
 #battle .slab.empty{justify-content:center;font-size:12px;color:#e8c8a0;cursor:default}
 #battle .sbhalf.idle .slab{filter:saturate(.55) brightness(.75)}#battle .sbhalf.down .slab{filter:grayscale(1) brightness(.6)}
-#battle .slab:disabled{cursor:default}#battle .slab:not(:disabled):hover{box-shadow:inset 0 2px 0 #d88a52,0 0 0 2px #f4d27a}
+#battle .slab:disabled{cursor:default}
+.overlay button:focus-visible,#battle .bpop .btn:focus-visible{outline:3px solid #f4d27a;outline-offset:2px}
+#battle .bpop .btn kbd.k2{margin-left:6px;font-size:10px;opacity:.7;font-family:var(--body)}#battle .slab:not(:disabled):hover{box-shadow:inset 0 2px 0 #d88a52,0 0 0 2px #f4d27a}
 @media (max-width:640px){#battle .bpop .hint{display:none}#battle .bpop .actions{gap:5px}#battle .bpop .actions .btn{padding:5px 8px;font-size:12px}#battle .bpop .you-head{margin-bottom:5px;font-size:13px}#battle .slab img{width:24px;height:24px}#battle .slab .sd{display:none}#battle .sbhalf{gap:5px;padding:0 4px}}
 .other-p{margin:8px 0;padding:8px;border:2px dashed var(--line);background:rgba(0,0,0,.18);opacity:.9}.other-p .ohead{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.other-p .ohead b{color:#7ab0ff;white-space:nowrap}.other-p .ohead b.p1{color:#ff8a7a}.other-p .bar{flex:1}.other-p .oswords{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}.other-p .osw{display:flex;gap:6px;align-items:center;background:var(--panel-2);border:2px solid var(--line);padding:4px 6px;font-size:13px;min-width:0}.other-p .osw img{width:28px;height:28px;flex:none}.other-p .osw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.other-p .oempty{font-size:12px;color:var(--dim);padding:6px;border:2px dashed var(--line);text-align:center}.other-p.down{opacity:.5}
 .sw{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;font:inherit;color:var(--parch);background:var(--panel-2);border:2px solid var(--line);padding:8px;cursor:pointer}
@@ -2990,7 +2992,7 @@ function drawUnravel(t,ct){const a=AREAS.sky;if(!CUT.g){const n=a.npcs.find(x=>x
  if(ct>3&&CUT.gn)CUT.gn.gone=true;
  drawMap(t);const ux=gx*16-CAM.x+8,uy=gy*16-CAM.y+16,px=S.x*16-CAM.x,py=S.y*16-CAM.y;
  if(ct<3){if(Math.floor(ct*8)%3===0){ctx.fillStyle='rgba(138,74,192,.25)';ctx.fillRect(0,0,LW,LH)}cap('The ghost’s face cracks like old paint. Purple light leaks out of the cracks.');return}
- const sc=Math.min(2,1+(ct-3)/2),drawU=()=>{pen(ctx,Math.round(ux-16*sc),Math.round(uy-24*sc),sc);drawMonsterRaw('unraveler',t,ct>10&&ct<12)};
+ const sc=Math.max(1,Math.min(2,Math.round(1+(ct-3)/2))),drawU=()=>{pen(ctx,Math.round(ux-16*sc),Math.round(uy-24*sc),sc);drawMonsterRaw('unraveler',t,ct>10&&ct<12)};
  if(ct<6.5){drawU();cap('“Clever little Summoner. You set him free.” It grows, and grows. “Then I will UNRAVEL EVERYTHING.”');return}
  invertOverlay(Math.min(1,(ct-6.5)/2.5));
  for(let i=0;i<26;i++){const ang=i*0.24+ct*0.8,r=Math.max(8,(LW/1.3)*(1-((ct*0.4+i*0.137)%1)));ctx.fillStyle=i%2?'#c99ae0':'#6a2a9a';ctx.fillRect(Math.round(ux+Math.cos(ang)*r),Math.round(uy-20+Math.sin(ang)*r*0.6),2,1)}
@@ -3038,7 +3040,7 @@ function toggleTwo(){if(mode!=='map')return;S.two=!S.two;held2=[];
  if(S.two){S.p2=S.p2||{dir:'down',walk:0};S.p2.hp=maxHp();p2Place();updHud();
   dialog('Player 2 joins!','<ul class="rules"><li><b>Player 1</b> (red) moves with the <b>arrow keys</b>. <b>Player 2</b> (blue) moves with <b>W A S D</b>.</li><li>Stay close. Neither of you can leave the other behind.</li><li>Player 2 can talk to people, open chests, read signs and start fights. Doors take you both through.</li><li>In battle you take turns: <b>Player 1</b>, then <b>Player 2</b>, then the monster attacks one of you. Each of you has your own health and sword slots. The Codex is shared, so each thing can still be summoned only once.</li><li>Monsters have <b>4× health</b>.</li><li>If one of you falls, the other fights on. If both fall, you lose the battle.</li></ul>',[{label:'Let’s go',primary:true,fn:toMap}])}
  else{toast('Player 2 has left. Back to one player.');updHud()}}
-function tooFar(x1,y1,x2,y2){return Math.abs(x1-x2)>60||Math.abs(y1-y2)>40}
+function tooFar(){return false}
 function p2nag(){const n=performance.now();if(n-P2NAG>2500){P2NAG=n;toast('Stay together! You can’t leave each other behind.')}}
 function realmOf(id){const a=AREAS[id];return a?(a.kind==='out'?id:(a.retArea||id)):id}
 let WAREAL=null;
@@ -3159,32 +3161,53 @@ function drawArenaBG(t,fx,fy,AB,CX){const AH=AB.b-AB.t,AW=AB.r-AB.l,inside=A.kin
  if(!inside){ctx.fillStyle=grass;ctx.fillRect(0,Math.round(cy-ry*0.25),LW,LH);ctx.fillStyle=grassD;for(let i=0;i<40;i++){const x=hh(i,11)%LW,y=Math.round(cy-ry*0.2)+hh(i,13)%Math.max(4,Math.round(LH-cy));ctx.fillRect(x,y,1,2)}pxEllipse(CX,cy+ry*0.15,rx*1.12,ry*1.12,grass)}
  pxEllipse(CX,cy,rx,ry,path,pathD);
  for(let i=0;i<60;i++){const a=(hh(i,3)%628)/100,r=Math.sqrt((hh(i,7)%100)/100)*0.92,x=CX+Math.cos(a)*rx*r,y=cy+Math.sin(a)*ry*r;ctx.fillStyle=i%3?pathD:pathL;ctx.fillRect(Math.round(x),Math.round(y),2,1)}
- const tsc=Math.max(1.3,Math.min(2.6,AH/95)),K=B.akeys;
+ const tsc=Math.max(1,Math.round(Math.min(2.6,AH/95))),K=B.akeys;
  if(K.back.length){const N=Math.max(8,Math.round(rx*2.4/(13*tsc))),list=[];
-  for(const row of [0,1])for(let i=0;i<N;i++){const th=Math.PI*(0.95+1.10*(i+row*0.5)/(N-1));if(th>Math.PI*2.06)continue;const x=CX+rx*Math.cos(th),y=cy+ry*Math.sin(th)-(row?0:4*tsc);list.push({x,y,k:K.back[(i+row)%K.back.length],s:tsc*(row?1:0.85)})}
+  for(const row of [0,1])for(let i=0;i<N;i++){const th=Math.PI*(0.95+1.10*(i+row*0.5)/(N-1));if(th>Math.PI*2.06)continue;const x=CX+rx*Math.cos(th),y=cy+ry*Math.sin(th)-(row?0:4*tsc);list.push({x,y,k:K.back[(i+row)%K.back.length],s:tsc})}
   list.sort((p,q)=>p.y-q.y).forEach((e,i)=>{pen(ctx,Math.round(e.x-8*e.s),Math.round(e.y-15*e.s),e.s);drawThing(e.k,t,i,i*3)})}
  if(K.small.length)for(let i=0;i<6;i++){const a=Math.PI*(0.1+0.8*(i/5)),x=CX+Math.cos(a)*rx*(i%2?0.82:-0.82),y=cy+Math.sin(a)*ry*0.55+(i%3)*4;pen(ctx,Math.round(x-8),Math.round(y-12),1);drawThing(K.small[i%K.small.length],t,i+7,i)}
  if(!inside){const hy=AB.b-AH*0.06;pxEllipse(AB.l-AW*0.02,hy,AW*0.26,AH*0.30,ACOL(pal[0]),grassD);pxEllipse(AB.r+AW*0.02,hy,AW*0.26,AH*0.30,ACOL(pal[0]),grassD);
   ctx.fillStyle=grassD;for(let i=0;i<10;i++){const x=i<5?AB.l+AW*0.02*i*2:AB.r-AW*0.02*(i-5)*2,y=hy-AH*0.2+(i%5)*AH*0.04;ctx.fillRect(Math.round(x),Math.round(y),1,3)}}
  if(inU()){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.fillRect(0,0,LW,LH)}}
+const BK1={j:['strike',0],k:['strike',1],l:['strike',2],';':['strike',3],"'":['strike',4],u:['summon'],i:['guard'],o:['potion'],h:['fists'],y:['break']};
+const BK2={'1':['strike',0],'2':['strike',1],'3':['strike',2],'4':['strike',3],'5':['strike',4],q:['summon'],e:['guard'],r:['potion'],f:['fists'],t:['break']};
+const BK0={'1':['strike',0],'2':['strike',1],'3':['strike',2],'4':['strike',3],'5':['strike',4],s:['summon'],g:['guard'],p:['potion'],f:['fists'],b:['break']};
+function battleAct(a){if(a[0]==='strike')strike(a[1]);else if(a[0]==='summon')openSummon();else if(a[0]==='guard')guard();else if(a[0]==='potion')potion();else if(a[0]==='fists')fists();else if(a[0]==='break')battleBreak()}
+function battleKeyLabels(){const T=B&&B.two,cur=T?T.cur:0,lab=cur===1?{aSummon:'U',aGuard:'I',aPotion:'O',aFists:'H',aBreak:'Y'}:cur===2?{aSummon:'Q',aGuard:'E',aPotion:'R',aFists:'F',aBreak:'T'}:{aSummon:'S',aGuard:'G',aPotion:'P',aFists:'F',aBreak:'B'};
+ for(const id in lab){const b=$(id);if(!b)continue;const o=b.querySelector('kbd.k2');if(o)o.remove();const k=document.createElement('kbd');k.className='k2';k.textContent=lab[id];b.appendChild(k)}
+ const h=$('bHint');if(h)h.textContent=cur===1?'Player 1 keys: J K L strike · U summon · I guard · O potion · H fists · Y break. In lists: arrow keys + Enter.':cur===2?'Player 2 keys: 1 2 3 strike · Q summon · E guard · R potion · F fists · T break. In lists: W A S D + Space.':'Keys: 1–3 strike · S summon · G guard · P potion · F fists · B break. In lists: arrow keys or W A S D + Enter.'}
+const OVL=['summon','forge','dialog'],NAVK={arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
+function openOverlay(){for(const id of OVL){const e=$(id);if(e&&!e.hidden)return e}return null}
+function navButtons(ov,dx,dy){const bs=[...ov.querySelectorAll('button')].filter(b=>!b.disabled&&b.offsetParent);if(!bs.length)return;const cur=document.activeElement;const ents=bs.filter(b=>b.classList.contains('entry'));if(ents.length&&!ents.includes(cur)){ents[0].focus();ents[0].scrollIntoView({block:'nearest'});return}
+ if(!bs.includes(cur)){const f=ov.querySelector('button.entry:not(:disabled)')||ov.querySelector('button.primary:not(:disabled)')||bs[0];f.focus();f.scrollIntoView({block:'nearest'});return}
+ const r=cur.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let best=null,bd=1e9;
+ for(const b of bs){if(b===cur)continue;const q=b.getBoundingClientRect(),x=q.left+q.width/2-cx,y=q.top+q.height/2-cy,along=x*dx+y*dy;if(along<=4)continue;const d=along+(Math.abs(x*dy)+Math.abs(y*dx))*2.5;if(d<bd){bd=d;best=b}}
+ if(best){best.focus();best.scrollIntoView({block:'nearest'})}}
+addEventListener('keydown',e=>{if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;const k=e.key.toLowerCase(),ov=openOverlay();
+ if(ov&&mode!=='map'&&mode!=='cut'&&NAVK[k]){e.preventDefault();e.stopImmediatePropagation();navButtons(ov,...NAVK[k]);return}
+ if(ov&&mode!=='map'&&mode!=='cut'&&(k==='enter'||k===' ')&&!(ov.contains(document.activeElement)&&document.activeElement.tagName==='BUTTON')){const pb=ov.querySelector('button.primary:not(:disabled)')||ov.querySelector('button:not(:disabled)');if(pb){e.preventDefault();e.stopImmediatePropagation();pb.click()}return}
+ if(mode==='battle'&&B&&!ov&&!busy){const T=B.two;if(T){const mine=T.cur===1?BK1:BK2,other=T.cur===1?BK2:BK1;
+   if(mine[k]){e.preventDefault();e.stopImmediatePropagation();battleAct(mine[k]);return}
+   if(other[k]){e.preventDefault();e.stopImmediatePropagation();toast(`It is Player ${T.cur}’s turn.`);return}}
+  else if(BK0[k]){e.preventDefault();e.stopImmediatePropagation();battleAct(BK0[k]);return}}},true);
 function renderSlotBar(){const el=$('slotBar');if(!el||!B)return;const T=B.two,list=T?[1,2]:[1];
  el.innerHTML=list.map(n=>{const cur=T?T.cur===n:true,sws=cur?B.swords:(T.seat[n]||{swords:[]}).swords,hp=T?seatHp(n):S.hp,active=cur&&!busy,down=hp<=0;
   const head=`<div class="sbhead"><b class="p${n}">${T?`Player ${n}${cur&&!busy?' · your turn':''}`:'Your blades'}</b><span>HP ${Math.max(0,hp)} / ${maxHp()}</span></div>`;
   const slots=Array.from({length:S.slots},(_,i)=>{const sw=sws[i];if(!sw)return '<div class="slab empty">Empty slot</div>';const extra=sw.grabbed?` · ${sw.grabWhy||'grabbed'}`:sw.curse?` · curse ×${sw.curse}`:'';
-   return `<button class="slab" data-i="${i}" ${active&&!sw.grabbed?'':'disabled'} title="${(sw.ab.name+': '+sw.ab.desc).replace(/"/g,'&quot;')}"><img class="pix" src="${swordImg(sw)}" alt=""><span class="st"><span class="sn">${sw.name}</span><span class="sd">${sw.dmg} dmg · ${sw.ab.name}${extra}</span></span>${active?`<kbd>${i+1}</kbd>`:''}</button>`}).join('');
+   return `<button class="slab" data-i="${i}" ${active&&!sw.grabbed?'':'disabled'} title="${(sw.ab.name+': '+sw.ab.desc).replace(/"/g,'&quot;')}"><img class="pix" src="${swordImg(sw)}" alt=""><span class="st"><span class="sn">${sw.name}</span><span class="sd">${sw.dmg} dmg · ${sw.ab.name}${extra}</span></span>${active?`<kbd>${T?(n===1?['J','K','L',';',"'"][i]:i+1):i+1}</kbd>`:''}</button>`}).join('');
   return `<div class="sbhalf${active?'':' idle'}${down?' down':''}">${head}${slots}</div>`}).join('')}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#slotBar .slab[data-i]');if(b&&!b.disabled)strike(+b.dataset.i)});
-function drawArena(t){const mon=B.mon;let fx=S.x,fy=S.y;if(mon&&typeof mon.x==='number'&&(MONSTERS.includes(mon)||(A.rares||[]).includes(mon))){fx=mon.x;fy=mon.y}
+function drawArena(t){ctx.imageSmoothingEnabled=false;const mon=B.mon;let fx=S.x,fy=S.y;if(mon&&typeof mon.x==='number'&&(MONSTERS.includes(mon)||(A.rares||[]).includes(mon))){fx=mon.x;fy=mon.y}
  const AB=arenaBox(),CX=(AB.l+AB.r)/2,AH=AB.b-AB.t;
  drawArenaBG(t,fx,fy,AB,CX);
- const now=performance.now()/1000,key=B.sub?B.sub.key:B.key,big=BIGMON.has(key),sc=Math.max(1,Math.min(big?Math.min(3,(AB.r-AB.l)/105):Math.min(4.2,(AB.r-AB.l)/72),AH*0.42/(big?24:16))),w=(big?32:16)*sc,h=(big?24:16)*sc;
+ const now=performance.now()/1000,key=B.sub?B.sub.key:B.key,big=BIGMON.has(key),sc=Math.max(1,Math.floor(Math.min(big?Math.min(3,(AB.r-AB.l)/105):Math.min(4.2,(AB.r-AB.l)/72),AH*0.42/(big?24:16)))),w=(big?32:16)*sc,h=(big?24:16)*sc;
  const lunge=B.lungeT&&now>=B.lungeT&&now-B.lungeT<0.35?Math.sin((now-B.lungeT)/0.35*Math.PI)*16:0,shake=B.hitT&&now>=B.hitT&&now-B.hitT<0.3?Math.round(Math.sin(now*80)*3):0,bob=Math.sin(t*2)*2,cyM=AB.t+AH*0.30;
  const mx=Math.round(CX-w/2+shake),my=Math.round(cyM-h/2+bob+lunge);
- if(B.sub){const bk=BIGMON.has(B.key),ksc=sc*0.55,kw=(bk?32:16)*ksc;ctx.globalAlpha=.5;pen(ctx,Math.round(CX+(AB.r-AB.l)*0.30-kw/2),Math.round(cyM-kw*0.9),ksc);drawMonster(B.key,t,false);ctx.globalAlpha=1}
+ if(B.sub){const bk=BIGMON.has(B.key),ksc=Math.max(1,Math.round(sc*0.55)),kw=(bk?32:16)*ksc;ctx.globalAlpha=.5;pen(ctx,Math.round(CX+(AB.r-AB.l)*0.30-kw/2),Math.round(cyM-kw*0.9),ksc);drawMonster(B.key,t,false);ctx.globalAlpha=1}
  ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(CX,Math.round(cyM-h/2+bob)+h-1,w*0.42,Math.max(3,h*0.08),0,0,Math.PI*2);ctx.fill();
  pen(ctx,mx,my,sc);drawMonster(key,t,!!B.tele);ARPOS={foe:[CX,my+h/2,w,h]};
  if(B.hitT&&now>=B.hitT&&now-B.hitT<0.3){ctx.fillStyle='#fff6c0';for(let i=0;i<7;i++){const a=i*0.9+now*18;ctx.fillRect(Math.round(CX+Math.cos(a)*w*0.35),Math.round(my+h/2+Math.sin(a)*h*0.32),2,2)}}
- const two=B.two,list=two?[1,2]:[1],ks=Math.max(1,Math.min(3,(AB.r-AB.l)/95,AH*0.26/16)),kw=16*ks,AW=AB.r-AB.l;
+ const two=B.two,list=two?[1,2]:[1],ks=Math.max(1,Math.floor(Math.min(3,(AB.r-AB.l)/95,AH*0.26/16))),kw=16*ks,AW=AB.r-AB.l;
  list.forEach((n,i)=>{const cxk=two?(i===0?CX-AW*0.14:CX+AW*0.14):CX,hp=two?seatHp(n):S.hp,down=hp<=0,active=!busy&&(two?two.cur===n:true);
   const pl=B.pAtkT&&now-B.pAtkT<0.35&&(B.pWho||1)===n?Math.sin((now-B.pAtkT)/0.35*Math.PI)*14:0,hurt=B.atkT&&now>=B.atkT&&now-B.atkT<0.3&&(B.atkWho||1)===n?Math.round(Math.sin(now*80)*2):0;
   const kx=Math.round(cxk-kw/2+hurt),ky=Math.round(AB.t+AH*0.66-kw/2-pl);ARPOS['k'+n]=[cxk,ky+kw/2,kw];
@@ -3202,7 +3225,7 @@ function seatHp(n){const T=B.two;return T.cur===n?S.hp:T.seat[n].hp}
 function twoTarget(){const alive=[1,2].filter(n=>seatHp(n)>0);const t=alive.length>1?pick(alive):alive[0];swapTo(t);if(alive.length>1)log(`The foe turns on Player ${t}.`,'foe-l')}
 function twoDown(){const T=B.two,cur=T.cur,o=cur===1?2:1;if(seatHp(o)>0){S.hp=0;log(`Player ${cur} is down! Player ${o} fights on alone.`,'foe-l');return true}return false}
 function twoNextRound(){const T=B.two,first=seatHp(T.order[0])>0?T.order[0]:T.order[1];swapTo(first);B.guard=false;const o=T.seat[first===1?2:1];if(o)o.guard=false;log(`Player ${first}’s turn.`,'good')}
-{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B)renderSlotBar();if(B){const bn=$('banner');if(bn)bn.classList.remove('show');$('battle').classList.toggle('foe-turn',!!busy);$('bWait').textContent=`${B.sub?B.sub.name:MONS[B.key].name} is acting…`}if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
+{const _rb=renderBattle;renderBattle=function(){_rb.apply(this,arguments);if(B){renderSlotBar();battleKeyLabels()}if(B){const bn=$('banner');if(bn)bn.classList.remove('show');$('battle').classList.toggle('foe-turn',!!busy);$('bWait').textContent=`${B.sub?B.sub.name:MONS[B.key].name} is acting…`}if(B&&B.two){const T=B.two,o=T.cur===1?2:1;S.p2.hp=seatHp(2);$('bNum').textContent+=` · Player ${T.cur}’s turn`;$('yWho').textContent=`Player ${T.cur} · your turn`;$('yWho').style.color=T.cur===1?'#ff8a7a':'#7ab0ff';
   const os=T.seat[o]||{swords:[],hp:0},hp=Math.max(0,seatHp(o)),el=o===1?$('oTop'):$('oBot'),other=o===1?$('oBot'):$('oTop');other.hidden=true;other.innerHTML='';el.hidden=false;el.classList.toggle('down',hp<=0);
   el.innerHTML=`<div class="ohead"><b class="${o===1?'p1':''}">Player ${o}${hp<=0?' · down':' · waiting'}</b><div class="bar"><i style="width:${hp/maxHp()*100}%"></i></div><span>${hp} / ${maxHp()}</span></div><div class="oswords">`+Array.from({length:S.slots},(_,i)=>{const sw=os.swords[i];return sw?`<div class="osw"><img class="pix" src="${swordImg(sw)}" alt=""><span><b>${sw.name}</b> · ${sw.dmg} dmg</span></div>`:'<div class="oempty">Empty slot</div>'}).join('')+'</div>';updHud()}
  else{['oTop','oBot'].forEach(id=>{const e=$(id);if(e){e.hidden=true;e.innerHTML=''}});if($('yWho')){$('yWho').textContent='You';$('yWho').style.color=''}}}}
@@ -3238,7 +3261,7 @@ $('bTravel').onclick=()=>openTravel();$('bTwo').onclick=()=>toggleTwo();$('bAure
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
-function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
+function frame(now){if(ctx.imageSmoothingEnabled)ctx.imageSmoothingEnabled=false;const dt=Math.min(.05,(now-lastT)/1000);lastT=now;const t=now/1000;
  if(S){const sp=dt/0.15;S.dx=approach(S.dx,S.x,sp);S.dy=approach(S.dy,S.y,sp);if(!arrived())S.walk+=dt*11;else S.walk=0;
   if(mode==='map'&&A&&A.rares){(A.rares||[]).forEach(r=>{if(r.rx==null){r.rx=r.x;r.ry=r.y}r.rx=approach(r.rx,r.x,dt/0.3);r.ry=approach(r.ry,r.y,dt/0.3)});if(now-(A.rareT||0)>900){A.rareT=now;wanderRares()}}
   if(TWO())p2Frame(dt);
