@@ -3002,7 +3002,7 @@ function uPost(t,cx,cy){invertOverlay(1);ctx.fillStyle='rgba(18,8,32,.42)';ctx.f
   const moving=S.dx!==S.x||S.dy!==S.y;drawPlayerFx(Math.round(S.dx*16-cx),Math.round(S.dy*16-cy),S.dir,moving?[1,0,2,0][Math.floor(S.walk)%4]:0,S.glass||0,S.pacts||0,S.wishes||0)}if(TWO()&&!ARENA&&S.p2.area===S.area)drawP2(Math.round(S.p2.dx*16-cx),Math.round(S.p2.dy*16-cy),t,HIDEP1?null:Math.round(S.dx*16-cx),HIDEP1?null:Math.round(S.dy*16-cy))}
 function D2(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 function unravCheck(){const th=[.75,.5,.25];if(B.kingNext<3&&!B.sub&&B.hp<=B.max*th[B.kingNext]){B.hp=Math.max(B.hp,Math.round(B.max*th[B.kingNext]));B.kingNext++;
- const e=[['u_dragon','Twisted Dragon'],['u_hollowking','Twisted Hollow King'],['shadowself','Your Own Shadow']][B.kingNext-1];B.sub={key:MONS[e[0]]?e[0]:'shadowself',name:e[1],hp:7000,max:7000,atk:68,kind:'echo'};
+ const e=[['u_dragon','The Water Knight'],['u_hollowking','The Bright Queen'],['shadowself','Your Own Shadow']][B.kingNext-1];B.sub={key:MONS[e[0]]?e[0]:'shadowself',name:e[1],hp:7000,max:7000,atk:68,kind:'echo'};
  log(`The Unraveler reaches into your past and pulls out ${e[1]}!`,'foe-l')}}
 function trueWin(){busy=true;log('The Unraveler screams. Threads fly everywhere.','good');renderBattle();
  setTimeout(()=>{const mon=B.mon;endSpecialBattle();mon.alive=false;addCodex('unraveler');S.flags.unravelerOut=false;hide('dialog');startCut('trueend');CUT.ux=mon.x;CUT.uy=mon.y;CUT.noFilter=true},1100)}
@@ -3343,7 +3343,7 @@ function hpOf(n){return B&&B.two?seatHp(n):S.hp}
 function rtSwords(n){if(!B)return [];if(!B.two||B.two.cur===n)return B.swords;return (B.two.seat[n]||{swords:[]}).swords}
 function rtMonKey(){return B.sub?B.sub.key:B.key}
 function rtBase(){const M=MONS[B.key]||{};return M.base||B.key}
-function rtMR(){const k=rtMonKey();return BIGMON.has(k)||BIGMON.has(rtBase())&&!B.sub?0.32:0.18}
+function rtMR(){const k=rtMonKey();if(MONS[k]&&MONS[k].look&&MONS[k].look.person)return 0.18;return BIGMON.has(k)||BIGMON.has(rtBase())&&!B.sub?0.32:0.18}
 function rtSpd(){const M=MONS[B.key]||{},bk=rtBase();if(RTSTILL.has(bk)&&!B.sub)return 0;let s=0.40+0.025*(Math.min(6,S.chapter||1)-1);if(BIGMON.has(bk))s-=0.06;if(M.rare)s+=0.15;if(bk==='goblin'||bk==='wolf')s+=0.1;return s}
 function rtClamp(x,y){const q=Math.hypot(x/RTX,y/RTY),lim=0.93;if(q>lim){x*=lim/q;y*=lim/q}return [x,y]}
 function rtOverlay(){return openOverlay()}
@@ -3388,7 +3388,7 @@ function rtKey(e){if(!RT()||mode!=='battle')return false;const k=e.key.toLowerCa
  if(r.t==='sw')rtStrike(n,r.v);else if(r.t==='sum')rtSummon(n);else if(r.t==='opt')rtOpt(n);else if(r.t==='ok')rtOpt(n);return true}
 addEventListener('keyup',e=>{RTK.delete(e.key.toLowerCase())},true);addEventListener('blur',()=>RTK.clear());
 function rtUpdate(){const R=B.rt,now=NOW();let dt=Math.min(0.05,Math.max(0,now-R.last));R.last=now;
- if(SUMOWN&&!rtOverlay())SUMOWN=null;if(busy||mode!=='battle'||(B.hp<=0&&!B.sub))return;
+ if(SUMOWN&&!rtOverlay())SUMOWN=null;if(B.hp<=0&&!B.sub&&!busy&&mode==='battle'&&now-(R.winT||0)>2){R.winT=now;renderBattle();win();return}if(busy||mode!=='battle'||(B.hp<=0&&!B.sub))return;
  const slow=rtSlowed();R.slow=slow;if(slow)dt*=0.22;R.t+=dt;const m=R.m,mr=rtMR();
  for(const n in R.k){const k=R.k[n];for(let i=0;i<k.cd.length;i++)k.cd[i]=Math.max(0,k.cd[i]-dt);k.gcd=Math.max(0,k.gcd-dt);k.fcd=Math.max(0,k.fcd-dt);
   if(k.guard>0){k.guard-=dt;if(k.guard<=0){k.guard=0;rtSetGuard(+n,false)}}if(k.sleep>0)k.sleep-=dt;k.mv=0;
@@ -3529,6 +3529,108 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function styleLabel(){const b=$('bStyle');if(b)b.textContent=RTMODE?'Fights: Real-time':'Fights: Classic'}
 $('bStyle').onclick=()=>{if(B||mode==='battle'){toast('You can switch fight style between battles.');return}RTMODE=!RTMODE;try{localStorage.setItem('sb_rt',RTMODE?'1':'0')}catch(e){}styleLabel();
  toast(RTMODE?'<b>Real-time fights.</b> Move around the arena, strike when close, dodge the red zones.':'<b>Classic fights.</b> Take turns with the monster, like before.')};styleLabel();
+
+/* ================= CHAPTER VI OPPOSITES ================= */
+Object.assign(LOOKS,{
+ o_fairy:{small:1,wings:'rgba(225,240,255,.7)',hair:'#f4a8d0',skin:'#f6dccb',shirt:'#9ad8a0',pants:'#6ab07a',long:1},
+ o_gnome:{small:1,hair:'#e8e4dc',beard:'#e8e4dc',longBeard:1,skin:'#f0c8a0',shirt:'#4a7ac0',pants:'#5a4a3a',hat:'#c2412f',acc:'stick'},
+ o_waterknight:{helmet:'#6aa0c8',skin:'#d8e8f0',shirt:'#2a5a8a',pants:'#1e3e5e',tabard:'#7fd0d8',belt:'#c4c9cd',trident:1},
+ o_maiden:{robe:1,shirt:'#f4eef6',shirt2:'#d8c8e0',hair:'#f2d64b',long:1,skin:'#f6dccb',belt:'#9ad8a0',flowers:1},
+ o_burnknight:{helmet:'#3a3230',skin:'#e0b48a',shirt:'#c2412f',pants:'#3a2a24',tabard:'#f4b84a',belt:'#2a2220',acc:'sword',flame:1},
+ o_fairyqueen:{robe:1,wings:'rgba(240,215,255,.7)',crown:1,shirt:'#c070c0',shirt2:'#904a90',hair:'#f4a8d0',long:1,skin:'#f6dccb',acc:'staff'},
+ o_sunsaint:{robe:1,crown:0,halo:1,shirt:'#f4d27a',shirt2:'#d8a83a',hair:'#fff6dc',beard:'#fff6dc',longBeard:1,skin:'#f0c8a0',acc:'staff'},
+ o_gleamknight:{helmet:'#e8eef4',skin:'#f0d8c0',shirt:'#f4f4f0',pants:'#c4c9cd',tabard:'#e6bf4a',belt:'#e6bf4a',acc:'sword',shine:1},
+ o_lightsum:{robe:1,halo:1,shirt:'#fff6dc',shirt2:'#e6d6a8',hair:'#f2d64b',long:1,skin:'#f6dccb',acc:'staff'},
+ o_brightqueen:{robe:1,crown:1,halo:1,shirt:'#fff3c0',shirt2:'#e6bf4a',hair:'#f2d64b',long:1,skin:'#f6dccb',acc:'sword'},
+ o_pebbledwarf:{small:1,hair:'#8a6a4a',beard:'#a8885a',longBeard:1,skin:'#e0b48a',shirt:'#7a7468',pants:'#4a3e2e',hat:'#6b5a44',hammer:1}
+});
+{const _dp=drawPerson;drawPerson=function(L,t,wx){if(!L)return _dp.apply(this,arguments);const s=L.small?2:0;
+ if(L.halo){const g=Math.floor(t*3+(wx||0))%2;D(8,6+s,7,`rgba(255,240,170,${g?.22:.14})`)}
+ if(L.wings){const f=Math.floor(t*8+(wx||0))%2,c=L.wings;R(0,5+s-f,4,4,c);R(1,4+s-f,2,1,c);R(12,5+s-f,4,4,c);R(13,4+s-f,2,1,c);R(1,9+s-f,2,1,c);R(13,9+s-f,2,1,c)}
+ _dp.apply(this,arguments);
+ if(L.crown){R(5,s-1,6,1,'#e6bf4a');R(5,s-2,1,1,'#e6bf4a');R(7,s-2,2,1,'#f4e27a');R(10,s-2,1,1,'#e6bf4a');R(7,s-1,2,1,'#c2412f')}
+ if(L.trident){R(13,1,1,14,'#9ac0d8');R(12,1,3,1,'#9ac0d8');R(12,0,1,1,'#bfe8fa');R(14,0,1,1,'#bfe8fa');R(13,-1,1,1,'#bfe8fa')}
+ if(L.hammer){R(13,6,1,8,'#6b4a2e');R(11,4,5,3,'#9aa0a5');R(11,4,5,1,'#c4c9cd')}
+ if(L.flowers){R(4,0+s,1,1,'#e78fb3');R(7,0+s,1,1,'#fff6c0');R(10,0+s,1,1,'#e78fb3')}
+ if(L.flame){const f=Math.floor(t*6+(wx||0))%2;R(6,-1+f,1,2,'#f4b84a');R(8,-2+f,1,3,'#e8823a');R(10,-1+f,1,2,'#f4b84a')}
+ if(L.shine){const f=Math.floor(t*3+(wx||0))%3;if(f===0){R(4,1,1,1,'#fff');R(3,2,3,1,'rgba(255,255,255,.7)')}}}}
+{const _dmr=drawMonsterRaw;drawMonsterRaw=function(k,t,tele){
+ if(k==='x_orb'){const g=Math.floor(t*3)%2,ey=tele?'#e0402a':DK;R(3,15,10,1,'rgba(0,0,0,.3)');D(8,8,7,'#7fbcd0');D(8,8,6,'rgba(214,240,250,.92)');D(8,9,4,'rgba(150,205,228,.7)');R(4,3,3,2,'#fff');R(4,5,1,1,'#fff');R(6,8,1,2,ey);R(10,8,1,2,ey);R(7,11,3,1,'#5a8aa0');if(g)R(11,12,2,1,'rgba(255,255,255,.8)');return}
+ if(k==='x_larklamb'){const f=Math.floor(t*6)%2,ey=tele?'#e0402a':'#fff';R(3,15,10,1,'rgba(0,0,0,.3)');R(3,7,9,6,'#f4f1e8');R(2,8,11,4,'#f4f1e8');R(4,6,2,1,'#fff');R(7,6,2,1,'#fff');R(3,12,9,1,'#d8d2c4');
+  R(4,13,1,2,'#3a3028');R(6,13,1,2,'#3a3028');R(9,13,1,2,'#3a3028');R(11,13,1,2,'#3a3028');R(11,4,4,4,'#3a3028');R(10,4,1,2,'#f4f1e8');R(13,5,1,1,ey);R(15,6,1,1,'#e6bf4a');R(1,8,1,2,'#f4f1e8');
+  R(5,3+f,4,3,'#b08a5a');R(4,4+f,1,2,'#8a6a40');R(6,3+f,2,1,'#d0aa78');return}
+ if(k==='x_tortoise'){const f=Math.floor(t*2)%2,ey=tele?'#e0402a':DK;R(4,23,24,1,'rgba(0,0,0,.3)');
+  R(6,9,20,9,'#6b8a3a');R(8,7,16,2,'#6b8a3a');R(10,5,12,2,'#6b8a3a');R(5,17,22,2,'#4f6a2a');
+  R(10,8,4,4,'#8aa84a');R(16,8,4,4,'#8aa84a');R(13,12,4,4,'#8aa84a');R(20,12,3,3,'#8aa84a');R(8,12,3,3,'#8aa84a');R(14,5,4,2,'#8aa84a');R(12,5,2,1,'#5f9a45');R(19,6,2,1,'#5f9a45');
+  R(7,19,4,4,'#9a8a5a');R(21,19,4,4,'#9a8a5a');R(12,19,3,3,'#9a8a5a');R(18,19,3,3,'#9a8a5a');R(7,22,4,1,'#7a6a40');R(21,22,4,1,'#7a6a40');
+  R(25,11+f,6,5,'#9a8a5a');R(24,13+f,2,2,'#9a8a5a');R(29,12+f,1,1,ey);R(30,14+f,2,1,'#5a4a2a');R(3,15,3,2,'#9a8a5a');return}
+ return _dmr.apply(this,arguments)}}
+const ROC=document.createElement('canvas'),ROC2=document.createElement('canvas');ROC.width=ROC.height=ROC2.width=ROC2.height=200;const ROCX=ROC.getContext('2d'),ROCX2=ROC2.getContext('2d');ROCX.imageSmoothingEnabled=ROCX2.imageSmoothingEnabled=false;
+{const _dm=drawMonster;drawMonster=function(k,t,tele){const M=MONS[k];if(!M||!M.look)return _dm.apply(this,arguments);
+ const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,as=Math.abs(sx),L=M.look;ROCX.clearRect(0,0,200,200);pen(ROCX,50,50,as,Math.abs(sy));
+ if(L.person)drawPerson(LOOKS[L.person],t,0);else if(L.raw)drawMonsterRaw(L.raw,t,tele);else _dm(L.from,t,tele);
+ const tn=tele&&L.person?'rgba(220,40,30,.32)':L.tint;
+ if(tn&&L.mode){ROCX2.clearRect(0,0,200,200);ROCX2.drawImage(ROC,0,0);ROCX.globalCompositeOperation=L.mode;ROCX.fillStyle=tn;ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='destination-in';ROCX.drawImage(ROC2,0,0);ROCX.globalCompositeOperation='source-over'}
+ else if(tn){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle=tn;ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='source-over'}
+ if(L.scribble){const c='#d8d0ec';R(5,3,5,1,c);R(4,5,7,1,c);R(6,7,4,1,c);R(4,9,6,1,c);R(5,11,5,1,c);R(9,4,1,1,c);R(7,10,3,1,'#a89cc8')}
+ if(tele&&L.mode){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle='rgba(220,40,30,.28)';ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='source-over'}
+ if(sx<0){pc.save();pc.translate(ox,oy);pc.scale(-1,1);pc.drawImage(ROC,-50,-50);pc.restore()}else pc.drawImage(ROC,ox-50,oy-50);pen(pc,ox,oy,sx,sy)}}
+// name, short, element, look, verb, trait, intro, story, text swaps
+const OPP={
+ goblin:['Fairy Lookout','Fairy','holy',{person:'o_fairy'},'The fairy lookout zips in and jabs you with a thorn','Flutters: dodges 25% of your attacks.','A fairy lookout hovers over the path, glowing far too brightly. She has been watching for heroes to trip up.','She pops like a soap bubble into purple glitter.',[]],
+ kobold:['Gnome Gardener','Gnome','nature',{person:'o_gnome'},'The gnome whacks you with a rake','Plants thornvines. When you see them sprouting, Guard.','A gnome gardener blocks the bridge, humming over a basket of very thorny seeds.','The gnome tips his hat, backwards, and unravels into purple thread.',
+  [[/The kobold scatters snares across the ground…/,'The gnome pokes thorny seeds into the ground…'],[/SNAP! The trap springs shut/,'SNAP! Thornvines burst up around you'],[/The kobold has set a trap\. It springs/,'Thorny seeds are planted. They sprout']]],
+ owlbear:['Larklamb','Larklamb','holy',{raw:'x_larklamb'},'The Larklamb headbutts you','Bouncy: often headbutts twice.','BAA-TWEET. A Larklamb, fluffy as a cloud, flutters across the pass and lowers its head.','The Larklamb bounces away into purple fluff.',
+  [[/Bear hug!/,'Double headbutt!'],[/The first squeeze/,'The first headbutt'],[/The second squeeze/,'The second headbutt']]],
+ cube:['Glass Sphere','Glass','frost',{raw:'x_orb'},'The glass sphere rolls over you','Swallow: can trap one of your swords inside its glass.','The iron gate rings like a bell. A great glass sphere rolls out, hard and perfectly round.','The sphere cracks and shatters into purple sand.',
+  [[/The cube engulfs your (.+?)! It dissolves inside\./,'The sphere swallows your $1! It shatters inside the glass.']]],
+ dragon:['The Water Knight','Tide','water',{person:'o_waterknight'},'The Water Knight thrusts his trident','Tidal wave every few turns. Guard when he raises his trident.','Water pours down the hoard instead of gold. An old knight in blue armor rises from it, trident in hand.','The Water Knight sinks into his own puddle, and the puddle dries into purple thread.',
+  [[/The dragon rears back and inhales\. Smoke curls from its jaws\./,'The Water Knight raises his trident. Water swirls around his boots.'],[/FIRE BREATH washes over you/,'A TIDAL WAVE crashes over you'],[/The dragon is inhaling\. Fire breath/,'The Water Knight raises his trident. Tidal wave']]],
+ boghag:['The Meadow Maiden','Maiden','holy',{person:'o_maiden'},'The Meadow Maiden slaps you with a bouquet','Blesses your strongest sword (somehow that makes it 30% weaker) and sips healing nectar.','A lovely maiden steps out of a field of flowers that was a bog a moment ago. Her smile does not move.','She falls into petals, and the petals turn purple.',
+  [[/The hag spits a hex onto your (.+?)\. It feels weaker\./,'The Meadow Maiden kisses your $1. Its blessing makes it weaker.'],[/The hag gulps a bubbling brew and heals 30\./,'The Meadow Maiden sips sweet nectar and heals 30.']]],
+ drowned:['The Burning Knight','Ember','fire',{person:'o_burnknight'},'The Burning Knight swings its flaming sword','Shield wall: every other turn its blazing shield is up and your hits do half damage.','The surf boils. A knight in burning armor walks up out of the steam.','The flames go out. Only a purple wisp of smoke is left.',
+  [[/The Drowned Knight raises its barnacled shield\./,'The Burning Knight raises its blazing shield.'],[/lowers its shield/,'lowers its blazing shield']]],
+ warchief:['The Fairy Queen','Queen','holy',{person:'o_fairyqueen'},'The Fairy Queen zaps you with her wand','Calls fairy guards. Each one adds 3 to her attack.','Tiny bells ring. The Fairy Queen glides out of the fort on shimmering wings.','The Fairy Queen bursts into purple glitter. Her guards flutter away.',
+  [[/The War-Chief blows his horn\. A goblin warrior joins him/,'The Fairy Queen rings a tiny bell. A fairy guard joins her'],[/The War-Chief and (\d+) goblins? attack/,'The Fairy Queen and $1 fairy guards attack'],[/scatters a goblin warrior/,'scatters a fairy guard']]],
+ kraken:['The Great Sandworm','Sandworm','earth',{tint:'#d8b070',mode:'color'},'The sandworm slams down on you','Coils around one of your swords for 2 turns. Sprays sand that can make your next strike miss.','The sea drains away into dry sand. Something huge burrows up through it.','The sandworm crumbles into a dune of purple sand.',
+  [[/A tentacle wraps around your (.+?)!/,'The sandworm coils around your $1!'],[/The Kraken sprays a cloud of ink in your face\./,'The sandworm sprays sand in your face.'],[/The tentacle lets go of your/,'The sandworm uncoils from your'],[/Ink blinds you/,'Sand in your eyes'],[/A tentacle slams down on you/,'The sandworm slams down on you']]],
+ wyvern:['The Ancient Tortoise','Tortoise','earth',{raw:'x_tortoise'},'The tortoise snaps its beak','Shell: dodges 20% by hiding. Every few turns it shakes the ground. Guard!','The Keep is silent. No storm, no wind. Just a tortoise the size of a house, very slowly turning to look at you.','The tortoise pulls into its shell, and the shell unravels into purple thread.',
+  [[/The wyvern screams\. Black clouds gather over the Keep\./,'The tortoise lifts one huge foot. The ground begins to rumble.'],[/LIGHTNING strikes you/,'An EARTHQUAKE knocks you flat'],[/The storm is gathering\. Lightning strikes/,'The tortoise lifts its foot. Earthquake']]],
+ wolf:['Summer Fox','Fox','fire',{tint:'#f08a3a',mode:'multiply'},'The Summer Fox nips you','Quick: dodges 15%. Its hot breath can make one of your swords too hot to hold for a turn.','The snow melts in a ring. A Summer Fox trots out, panting heat.','The fox curls up and fades like a heat haze.',
+  [[/The wolf breathes frost\. Your (.+?) freezes solid for a turn\./,'The fox breathes a heat haze. Your $1 is too hot to hold for a turn.'],[/The ice on your (.+?) cracks away\./,'Your $1 cools down.']]],
+ yeti:['Sunburnt Bigfoot','Bigfoot','fire',{tint:'#c86a3a',mode:'multiply'},'Bigfoot stomps you','Grumpy: the more you hurt it, the harder it stomps (up to double).','Something big and red and very grumpy is sitting on the bridge, fanning itself.','Bigfoot lies down for a nap and unravels.',
+  [[/The furious Yeti pounds you/,'The furious Bigfoot stomps you'],[/The Yeti pounds you/,'Bigfoot stomps you']]],
+ golem:['The Feather Golem','Feather','holy',{tint:'#9a9284',mode:'screen'},'The Feather Golem smothers you in feathers','Soft but heavy: it smothers you in feathers.','Feathers swirl together into a giant. It is soft. It is also very heavy.','The golem bursts into a pillow-fight of purple feathers.',[]],
+ beholder:['The Blindholder','Blindholder','shadow',{tint:'#5a4a78',mode:'multiply'},'The Blindholder bites blindly','Backwards rays: frost, wake-up, reintegration, or an anti-magic squint that switches off your sword abilities.','A floating eye-beast drifts out of the dark. Every one of its eyes is squeezed shut. It sees you anyway.','All its eyes open at once, and it unravels.',
+  [[/A FIRE RAY scorches you/,'A FROST RAY freezes you'],[/A DISINTEGRATION RAY turns your (.+?) to dust!/,'A REINTEGRATION RAY turns your $1 back into what it was made of!'],[/A SLEEP RAY hits you\. Your eyes grow heavy…/,'A WAKE-UP RAY hits you. You are so awake you forget how to move…'],[/The great central eye opens\./,'The great central eye squeezes shut.']]],
+ lich:['The Sun Saint','Sun','holy',{person:'o_sunsaint'},'The Sun Saint scorches you with warm light','Finger of Sunlight every few turns: Guard!','Warm light fills the cavern. An old saint glows at the center of it, smiling far too kindly.','The light goes out. The saint was only a purple shadow.',
+  [[/The Lich slowly raises one bony finger toward you\./,'The Sun Saint slowly raises one glowing finger toward you.'],[/FINGER OF DEATH/,'FINGER OF SUNLIGHT'],[/The Lich points at you\. Finger of Death/,'The Sun Saint points at you. Finger of Sunlight']]],
+ rustknight:['The Gleaming Knight','Gleam','holy',{person:'o_gleamknight'},'The Gleaming Knight strikes with a shining blade','Its glare dulls one of your swords every hit (−15% damage each, stacks).','A knight in spotless, blinding armor stands in the ash. Not a speck on it.','The armor goes dull and falls apart into purple thread.',
+  [[/Rust spreads over your (.+?) \(/,'The Gleaming Knight’s glare dulls your $1 ('],[/rust −/,'dulled −']]],
+ bladeswarm:['The Petal Swarm','Petal','nature',{tint:'#f08cc4',mode:'color'},'The petals slice past you','A storm of razor-sharp flower petals. It cuts you 2 to 4 times every turn.','The ash blows away and a whirlwind of pink petals comes spinning toward you.','The petals wilt and blow away.',
+  [[/The swarm cuts you (\d+) times\./,'The petals cut you $1 times.'],[/A spinning blade/,'A razor petal']]],
+ shadowsum:['The Light Summoner','Light','holy',{person:'o_lightsum'},'The Light Summoner strikes','Copies the strongest sword you are holding in pure light and swings it back at you.','A Summoner made of light raises a glowing hand. It knows your face.','The light flickers out.',
+  [[/The Shadow Summoner swings a shadow copy of your/,'The Light Summoner swings a glowing copy of your']]],
+ hydra:['The Vine Hydra','Vine','nature',{tint:'#5aa83c',mode:'color'},'The vines lash','Three vines lash at you every turn.','A tangle of thick green vines rises out of the furnace, every one of them with a mouth.','The vines wither into purple thread.',
+  [[/(\d+) heads lunge at you\./,'$1 vines lash at you.'],[/A head bites/,'A vine lashes'],[/You cut off a head! \((\d+) left\)/,'You chop off a vine! ($1 left)'],[/A new head grows from the wound! \((\d+) heads\)/,'A new vine sprouts from the stump! ($1 vines)']]],
+ hollowking:['The Bright Queen','Bright','holy',{person:'o_brightqueen'},'The Bright Queen strikes with a blade of light','She calls up shining copies of anything you have summoned. Defeat them to reach her.','The throne is not empty. The Bright Queen sits on it, so full of light it hurts to look.','The Bright Queen dims, and dims, and is gone.',[[/Hollow King/g,'Bright Queen']]],
+ stormgiant:['The Pebble Dwarf','Pebble','earth',{person:'o_pebbledwarf'},'The Pebble Dwarf bonks you with a tiny hammer','Hammerquake every 3 turns. Guard when he raises his hammer!','No giant. No storm. Just a very small, very calm dwarf with a very small hammer.','The dwarf sighs and crumbles into purple pebbles.',
+  [[/The Storm Giant raises both hands\. The air crackles\./,'The Pebble Dwarf raises his tiny hammer. The ground hums.'],[/THUNDERCLAP/,'HAMMERQUAKE'],[/The Storm Giant raises its hands\. Thunderclap/,'The Pebble Dwarf raises his hammer. Hammerquake']]],
+ couatl:['The Shade Serpent','Shade','shadow',{tint:'#4a2a6a',mode:'multiply'},'The Shade Serpent bites like a whip','A scaly serpent of darkness. Dodges 20% and heals itself by shedding its skin.','The sunlight goes out over the cloud. A serpent of darkness coils through the gloom.','The serpent sheds one last skin, and there is nothing inside.',
+  [[/The Couatl’s feathers flash\. It heals/,'The Shade Serpent sheds its skin. It heals']]],
+ djinni:['The Wish-Eater','Wisheater','shadow',{tint:'#3a8a4a',mode:'color'},'The Wish-Eater chomps at you','Eats a wish every turn: heals itself, shields itself, or attacks twice.','Smoke pours into a fallen star instead of out of it. Something hungry lives inside.','The Wish-Eater burps up a purple wish and vanishes.',
+  [[/“I wish to be well!” The Djinni heals/,'“I eat your wish to be well!” The Wish-Eater heals'],[/“I wish for a shield!”/,'“I eat your wish for a shield!”'],[/“I wish to hit twice!”/,'“I eat your wish to strike first!”']]],
+ clockdragon:['The Moss Dragon','Moss','nature',{tint:'#4f9a3a',mode:'color'},'The Moss Dragon snaps its mossy jaws','Not a machine at all: a living dragon grown over with moss and ferns.','Leaves rustle. A dragon made of moss and roots uncurls from the Archive doors.','The Moss Dragon lies down and becomes a hill of purple moss.',[[/brass/g,'moss'],[/gears/g,'leaves']]],
+ unwritten:['The Overwritten','Overwrite','shadow',{tint:'#3a3448',mode:'multiply',scribble:1},'The Overwritten scribbles at you with an inky hand','Scribbles out one of your swords every 3 turns.','It is not blank. It is covered in writing, every word on top of another word, until it is black with ink.','The ink runs, and the words wash away.',
+  [[/The Unwritten touches your (.+?)\. It goes blank, then it is gone\. \(Erased for this battle\.\)/,'The Overwritten scribbles all over your $1 until it is gone. (Scribbled out for this battle.)']]]
+};
+function applyOpp(){for(const k in OPP){const uk='u_'+k,M=MONS[uk];if(!M||M.oppDone)continue;const[n,sh,el,look,verb,trait,intro,story,rx]=OPP[k];
+ Object.assign(M,{name:n,verb,trait:trait+' Unraveled: the opposite of what you fought before.',intro,story,oppDone:1,orx:rx});if(look.tint){M.look=Object.assign({from:M.base||k},look)}else{M.look=look;BIGMON.delete(uk)}
+ if(look.raw==='x_tortoise')BIGMON.add(uk);
+ if(THINGS[uk])Object.assign(THINGS[uk],{name:n,short:sh,el})}}
+{const _mub=makeUBosses;makeUBosses=function(){const r=_mub.apply(this,arguments);applyOpp();return r}}
+{const _lgO=log;log=function(text,cls){if(B&&typeof text==='string'){const M=MONS[B.key];if(M&&M.orx)for(const[a,b]of M.orx)text=text.replace(a,b)}return _lgO.call(this,text,cls)}}
+{const _rbO=renderBattle;renderBattle=function(){const r=_rbO.apply(this,arguments);if(B){const M=MONS[B.key],w=$('fWarn');if(M&&M.orx&&w&&!w.hidden){let t=w.textContent;for(const[a,b]of M.orx)t=t.replace(a,b);w.textContent=t}}return r}}
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
