@@ -3530,6 +3530,116 @@ function styleLabel(){const b=$('bStyle');if(b)b.textContent=RTMODE?'Fights: Rea
 $('bStyle').onclick=()=>{if(B||mode==='battle'){toast('You can switch fight style between battles.');return}RTMODE=!RTMODE;try{localStorage.setItem('sb_rt',RTMODE?'1':'0')}catch(e){}styleLabel();
  toast(RTMODE?'<b>Real-time fights.</b> Move around the arena, strike when close, dodge the red zones.':'<b>Classic fights.</b> Take turns with the monster, like before.')};styleLabel();
 
+/* ================= NEW SPRITES (Chapter VI opposites + Iron Hydra) ================= */
+BIGMON.add('hydra');
+function hydraHeads(){return Math.max(1,Math.min(7,(B&&(B.key==='hydra'||B.key==='u_hydra')&&B.heads)||3))}
+function sprIronHydra(t,tele){const w=Math.floor(t*3)%2,n=hydraHeads(),b='#6d7378',l='#9aa0a5',d='#4a5055',bl='#8d9398',cl='#e8e4dc';
+ R(3,23,26,1,'rgba(0,0,0,.3)');
+ R(24,18,4,2,b);R(27,17,2,2,b);R(28,16,2,1,b);R(29,15,1,1,d);
+ R(8,14,16,7,b);R(6,16,20,4,b);R(9,13,14,1,l);R(7,16,1,3,l);R(10,18,12,2,bl);R(11,20,10,1,d);
+ for(let i=0;i<5;i++){R(10+i*3,15,2,1,d);R(11+i*3,16,1,1,l)}
+ R(8,20,4,3,d);R(20,20,4,3,d);R(9,20,2,1,b);R(21,20,2,1,b);[7,9,11,19,21,23].forEach(x=>R(x,22,1,1,cl));
+ for(let i=0;i<n;i++){const x=n===1?15:Math.round(4+i*(22/(n-1))),hy=1+((i*2)%3)+((i+w)%2),left=x<15||(x===15&&i%2===1);
+  for(let yy=hy+3;yy<=14;yy++){const nx=x+Math.round(Math.sin(yy*0.7+i*1.3));R(nx,yy,2,1,b);if(yy%2)R(nx,yy,1,1,l)}
+  R(x-1,hy,4,3,b);R(x-1,hy,4,1,l);const sx=left?x-3:x+3;R(sx,hy+1,2,2,b);R(sx,hy+2,2,1,d);R(left?x-3:x+4,hy+2,1,1,cl);
+  R(left?x:x+1,hy,1,1,tele?'#ffd060':'#e8423a');R(left?x+2:x-1,hy-1,1,1,d);if(tele)R(left?sx-1:sx+2,hy+1,1,2,'#f4b84a')}}
+function sprVineHydra(t,tele){const w=Math.floor(t*3)%2,n=hydraHeads(),g='#4f8a39',gl='#7ac74f',gd='#2f5129';
+ R(3,23,26,1,'rgba(0,0,0,.3)');
+ R(5,19,22,4,'#6b4a2e');R(7,18,18,1,'#6b4a2e');R(6,20,2,1,'#8a6a40');R(15,19,3,1,'#8a6a40');R(22,21,2,1,'#8a6a40');R(3,22,3,1,'#5a3a20');R(26,22,3,1,'#5a3a20');R(2,21,1,1,'#5a3a20');R(29,21,1,1,'#5a3a20');
+ R(9,13,14,6,'#3f6e2e');R(8,15,16,4,'#3f6e2e');R(10,13,12,1,'#5f9a45');R(12,15,1,3,gd);R(19,15,1,3,gd);R(15,14,2,1,'#5f9a45');
+ R(5,16,4,2,gl);R(4,17,2,1,gl);R(23,16,4,2,gl);R(26,17,2,1,gl);R(14,17,1,1,'#f4a8d0');R(17,16,1,1,'#fff6c0');
+ for(let i=0;i<n;i++){const x=n===1?15:Math.round(5+i*(20/(n-1))),hy=1+((i*2)%3)+((i+w)%2),open=(i+Math.floor(t*2))%3===0||tele;
+  for(let yy=hy+3;yy<=14;yy++){const nx=x+Math.round(Math.sin(yy*0.6+i*1.7)*1.4);R(nx,yy,2,1,g);if(yy%2)R(nx+1,yy,1,1,gl);if(yy%5===i%5)R(nx+(i%2?2:-1),yy,1,1,gl)}
+  const top=open?hy-1:hy;R(x-2,top,5,1,'#5f9a45');R(x-1,top-1,3,1,'#5f9a45');R(x-1,top,1,1,'#c2412f');R(x+1,top,1,1,'#c2412f');
+  R(x-2,hy+1,5,open?2:1,'#9a2a2a');R(x-2,hy+(open?3:2),5,1,'#5f9a45');R(x-1,hy+(open?4:3),3,1,'#5f9a45');
+  R(x-2,hy+1,1,1,'#efe3c8');R(x,hy+1,1,1,'#efe3c8');R(x+2,hy+1,1,1,'#efe3c8');if(open){R(x-1,hy+2,1,1,'#efe3c8');R(x+1,hy+2,1,1,'#efe3c8')}}}
+function sprSandworm(t,tele){const bb=Math.round(Math.sin(t*2)),cxAt=y=>15+Math.round(Math.sin(y*0.35+t*1.5)*2);
+ R(2,23,28,1,'rgba(0,0,0,.25)');
+ R(23,16,5,3,'#c8945a');R(27,15,2,2,'#c8945a');R(28,14,1,1,'#a87a48');R(24,16,1,3,'#a87a48');
+ for(let y=17;y>=5;y--){const cx=cxAt(y);R(cx-4,y+bb,8,1,y%3===0?'#a87a48':'#c8945a');R(cx-3,y+bb,1,1,'#e0b07a');R(cx+3,y+bb,1,1,'#9a6a3a')}
+ const cx=cxAt(4);R(cx-5,1+bb,10,4,'#c8945a');R(cx-5,1+bb,10,1,'#e0b07a');R(cx-3,2+bb,6,3,'#3a2418');R(cx-1,3+bb,2,2,'#6a2a1a');
+ R(cx-3,2+bb,1,1,'#efe3c8');R(cx-1,2+bb,1,1,'#efe3c8');R(cx+1,2+bb,1,1,'#efe3c8');R(cx+2,3+bb,1,1,'#efe3c8');R(cx-3,4+bb,1,1,'#efe3c8');R(cx+2,4+bb,1,1,'#efe3c8');
+ R(2,19,28,4,'#e0c080');R(5,18,22,1,'#e0c080');R(8,17,16,1,'#e8cc90');R(4,21,3,1,'#c8a868');R(20,20,4,1,'#c8a868');R(13,22,2,1,'#c8a868');R(10,18,2,1,'#f0dca8');
+ const s=(t*2)%1;if(tele||s<.5){R(cx-7,1+Math.round(s*4),1,1,'#e8cc90');R(cx+6,2+Math.round(s*3),1,1,'#e8cc90');R(cx-6,4,1,1,'#d8b878')}}
+function sprMossDragon(t,tele){const f=Math.floor(t*4)%2,g='#5f9a45',gd='#3f6e2e',gl='#7ac74f',bk='#6b4a2e';
+ R(6,23,20,1,'rgba(0,0,0,.3)');
+ for(let y=1;y<11;y++)R(3+Math.floor(y*0.8),y,12-Math.floor(y*0.8),1,y%3?'#4f8a39':gd);R(7,2,1,7,gl);R(10,4,1,5,gl);R(4,1,2,1,gl);
+ R(0,14,3,2,g);R(2,16,9,2,g);R(0,13,1,1,gl);R(1,12,1,1,gl);R(4,16,1,1,gl);R(7,17,1,1,gd);
+ R(10,10,12,9,g);R(13,12,6,6,'#8a6a40');R(14,13,4,1,bk);R(14,15,4,1,bk);R(11,10,3,1,gl);R(18,11,2,1,gl);R(12,11,1,1,'#f4a8d0');R(20,13,1,1,'#fff6c0');R(11,16,1,1,'#f4a8d0');
+ R(14,9,1,1,gl);R(16,8,1,2,gl);R(19,4,1,1,gl);
+ R(18,5,4,6,g);R(20,2,8,5,g);R(27,4,4,3,g);R(21,3,3,1,gl);R(24,3,1,1,'#f4d27a');R(29,4,1,1,DK);R(28,7,1,1,'#fff');R(30,7,1,1,'#fff');
+ R(21,0,1,2,bk);R(20,0,1,1,bk);R(24,0,1,2,bk);R(25,-1,1,1,bk);R(25,0,1,1,gl);R(19,-1,1,1,gl);
+ R(11,19,3,4,bk);R(18,19,3,4,bk);R(10,22,1,1,'#5a3a20');R(14,22,1,1,'#5a3a20');R(17,22,1,1,'#5a3a20');R(21,22,1,1,'#5a3a20');
+ const sp=(t*0.8)%1;R(Math.round(4+sp*3),Math.round(12-sp*10),1,1,'rgba(200,224,154,.8)');R(Math.round(16+sp*2),Math.round(9-sp*8),1,1,'rgba(200,224,154,.7)');
+ if(tele){R(31,3,1,1,'#c8e09a');R(32,2-f,2,2,'rgba(200,224,154,.75)');R(31,6,1,1,'#c8e09a')}}
+function sprShadeSerpent(t,tele){const w=Math.floor(t*4)%2,s1='#2a1a3a',s2='#3a2450',bel='#6a4a8a',ey=tele?'#ff6a4a':'#f4e27a';
+ R(4,23,24,1,'rgba(0,0,0,.3)');
+ R(6,17,20,5,s1);R(8,16,16,1,s1);R(8,22,16,1,s1);R(7,19,18,1,bel);for(let i=0;i<5;i++)R(8+i*4,18,1,1,'#4a3060');
+ R(9,13,14,4,s2);R(11,12,10,1,s2);R(10,15,12,1,bel);for(let i=0;i<3;i++)R(11+i*4,14,1,1,'#5a3a78');
+ R(25,16,3,1,s1);R(27,15,2,1,s1);R(28,14,1,1,s1);
+ R(15,8,4,5,s2);R(16,6,4,3,s2);R(17,4,4,2,s2);R(18,7,1,5,bel);
+ R(17,1,7,4,s1);R(15,2,2,3,s1);R(24,2,2,3,s1);R(16,1,1,1,'#4a3060');R(24,1,1,1,'#4a3060');R(18,2,1,1,ey);R(22,2,1,1,ey);R(19,4,3,1,'#1a1026');
+ if(w){R(20,5,1,2,'#c2412f');R(19,7,1,1,'#c2412f');R(21,7,1,1,'#c2412f')}
+ R(26,20,3,1,'rgba(200,190,220,.5)');R(28,19,1,1,'rgba(200,190,220,.5)');
+ for(let i=0;i<3;i++){const k=(t*0.7+i/3)%1;R(5+i*10,Math.round(15-k*14),1,1,`rgba(138,106,168,${(1-k)*.8})`)}}
+function sprSummerFox(t,tele){const b=Math.floor(t*3)%2,o='#e8823a',ol='#f4a050',wh='#fff6e8';
+ R(2,15,12,1,'rgba(0,0,0,.3)');
+ R(0,7+b,3,3,o);R(1,6+b,2,1,o);R(0,10,2,2,wh);
+ R(3,8,8,4,o);R(4,8,6,1,ol);R(9,9,2,3,wh);
+ R(10,5,5,4,o);R(14,7,2,1,o);R(15,7,1,1,DK);R(10,3,2,2,o);R(13,3,2,2,o);R(11,4,1,1,'#8a3a1a');R(13,4,1,1,'#8a3a1a');R(12,6,1,1,tele?'#e0402a':DK);R(12,8,3,1,wh);
+ R(4,12,1,3,o);R(6,12,1,3,o);R(8,12,1,3,o);R(10,12,1,3,o);R(4,14,1,1,'#3a2418');R(6,14,1,1,'#3a2418');R(8,14,1,1,'#3a2418');R(10,14,1,1,'#3a2418');
+ R(5,1+b,1,2,'rgba(255,200,120,.55)');R(8,b,1,2,'rgba(255,200,120,.55)');R(11,1-b,1,1,'rgba(255,200,120,.5)')}
+function sprBigfoot(t,tele){const b=Math.floor(t*2)%2,fu='#8a4a2a',fd='#6a3a20',sk='#f08a7a';
+ R(2,15,12,1,'rgba(0,0,0,.3)');
+ R(1,6,2,7,fu);R(13,6,2,7,fu);R(1,12,2,2,sk);R(13,12,2,2,sk);
+ R(3,5,10,8,fu);R(6,8,4,4,'#a85a3a');R(5,8,1,2,fd);R(10,9,1,2,fd);R(7,11,1,1,fd);
+ R(4,1,8,6,fu);R(5,0,6,1,fu);R(5,3,6,4,sk);R(5,3,2,1,fd);R(9,3,2,1,fd);R(6,4,1,1,tele?'#e0402a':DK);R(9,4,1,1,tele?'#e0402a':DK);R(7,5,2,1,'#e06a5a');R(7,6,2,1,fd);R(5,2,1,1,'#ffb0a0');R(10,2,1,1,'#ffb0a0');
+ R(4,12,3,2,fd);R(9,12,3,2,fd);R(2,14,5,1,sk);R(9,14,5,1,sk);
+ R(12,1+b,1,2,'#9ad0f0');R(12,3+b,1,1,'rgba(154,208,240,.5)')}
+function sprFeatherGolem(t,tele){const w='#f4f1e8',s='#d8d2c4',k=(t*0.6)%1,ey=tele?'#ff6a4a':'#7ab0ff';
+ R(3,15,10,1,'rgba(0,0,0,.3)');
+ R(4,12,3,3,s);R(9,12,3,3,s);R(4,14,3,1,'#b0a898');R(9,14,3,1,'#b0a898');
+ R(3,5,10,8,w);for(const[y,o]of[[6,0],[8,1],[10,0]])for(let x=3+o;x<13;x+=2)R(x,y,1,1,s);R(3,12,10,1,s);
+ R(0,6,3,6,w);R(13,6,3,6,w);R(0,9,3,1,s);R(13,9,3,1,s);R(0,12,1,1,w);R(2,12,1,1,w);R(13,12,1,1,w);R(15,12,1,1,w);
+ R(5,1,6,4,w);R(5,4,6,1,s);R(6,2,1,1,ey);R(9,2,1,1,ey);R(7,-1,2,2,w);R(8,-2,1,1,'#e6bf4a');R(6,0,1,1,w);R(9,0,1,1,w);
+ R(14,Math.round(1+k*10),1,2,'rgba(255,255,255,.85)');R(1,Math.round(3+((k+.5)%1)*9),1,2,'rgba(255,255,255,.7)')}
+function sprBlindholder(t,tele){const o=Math.round(Math.sin(t*2)),bd='#4a2a5a',lid='#c8b8d8',ln='#2a1a30';
+ R(3,15,10,1,'rgba(0,0,0,.3)');
+ for(const[x,h]of[[3,3],[6,4],[10,4],[13,3]]){R(x,4-h+o+1,1,h,bd);R(x-1,1-h+o+3,3,2,lid);R(x-1,2-h+o+3,3,1,tele?'#e0402a':ln)}
+ D(8,8+o,6,bd);D(8,8+o,5,'#5a3a6e');R(5,3+o,2,1,'#7a5a90');
+ R(5,6+o,6,3,lid);R(5,6+o,6,1,'#e0d4ec');R(5,8+o,1,1,ln);R(6,9+o,4,1,tele?'#e0402a':ln);R(10,8+o,1,1,ln);R(6,10+o,1,1,ln);R(8,10+o,1,1,ln);R(10,10+o,1,1,ln);
+ R(6,12+o,4,1,'#1a0e20');R(6,12+o,1,1,'#efe3c8');R(9,12+o,1,1,'#efe3c8')}
+function sprPetalSwarm(t,tele){const cs=tele?['#ff5a6a','#f08cc4','#e05a9a']:['#f08cc4','#f4b8d8','#e05a9a'];
+ R(3,15,10,1,'rgba(0,0,0,.2)');D(8,8,2,'rgba(255,170,215,.55)');
+ for(let i=0;i<16;i++){const a=t*2.2+i*0.42,r=1.5+(i%5)*1.3,x=8+Math.cos(a)*r*1.25,y=8+Math.sin(a)*r;R(Math.round(x),Math.round(y),i%3===0?1:2,1,cs[i%3])}
+ for(let i=0;i<3;i++){const a=-t*1.6+i*2.1;R(Math.round(8+Math.cos(a)*7),Math.round(8+Math.sin(a)*6),1,1,'#7ac74f')}}
+function sprWishEater(t,tele){const o=Math.round(Math.sin(t*3)),g='#3a8a4a',gl='#5aaa5a';
+ R(4,15,8,1,'rgba(0,0,0,.25)');
+ R(6,12+o,4,1,g);R(7,13+o,2,1,g);R(8,14,1,1,'rgba(58,138,74,.6)');
+ D(8,7+o,5,g);D(8,8+o,3,gl);R(4,2+o,1,2,'#2a5a30');R(11,2+o,1,2,'#2a5a30');R(4,1+o,1,1,'#1a3a20');R(11,1+o,1,1,'#1a3a20');
+ R(5,5+o,2,1,tele?'#ff6a4a':'#f4e27a');R(9,5+o,2,1,tele?'#ff6a4a':'#f4e27a');R(6,5+o,1,1,DK);R(9,5+o,1,1,DK);
+ R(4,8+o,8,2,'#1a2a1a');R(4,8+o,1,1,'#efe3c8');R(6,8+o,1,1,'#efe3c8');R(8,8+o,1,1,'#efe3c8');R(10,8+o,1,1,'#efe3c8');R(6,9+o,3,1,'#c2412f');
+ R(2,7+o,2,1,g);R(12,7+o,2,1,g);
+ const k=(t*1.2)%1;if(k<.85){R(Math.round(15-k*8),Math.round(1+k*7),2,2,'#f4e27a');R(Math.round(16-k*8),Math.round(1+k*7),1,1,'#fff6c0')}}
+function sprOverwritten(t,tele){const ink='#22202c',pa='#d8d0ec',d=Math.floor(t*3)%4;
+ R(3,15,10,1,'rgba(0,0,0,.3)');
+ R(4,2,8,12,ink);R(5,1,6,1,ink);R(3,5,1,8,ink);R(12,5,1,8,ink);[4,6,9,11].forEach(x=>R(x,14,1,1,ink));
+ R(5,7,5,1,pa);R(4,9,7,1,pa);R(6,11,4,1,pa);R(5,13,3,1,pa);R(9,8,2,1,'#a89cc8');R(4,11,1,1,'#a89cc8');R(6,7,1,1,ink);R(8,9,1,1,ink);
+ R(5,3,6,3,'#efe8d8');R(5,3,6,1,pa);R(6,4,1,1,tele?'#e0402a':ink);R(9,4,1,1,tele?'#e0402a':ink);R(7,5,2,1,ink);
+ R(13,3,1,7,'#efe3c8');R(14,2,1,3,'#efe3c8');R(15,1,1,2,'#efe3c8');R(13,10,1,1,ink);R(13,11+d,1,1,ink);
+ const k=(t*0.9)%1;R(1,Math.round(12-k*10),1,2,ink);R(2,Math.round(12-k*10),1,1,ink);R(0,Math.round(6-k*5)+4,1,1,'#3a3448')}
+function sprRockyBeast(t,tele){const w=Math.floor(t*4)%2,r='#8a8478',rl='#aaa498',rd='#5e5850',ey=tele?'#ff6a4a':'#f4b84a',mo='#5f9a45';
+ R(4,23,24,1,'rgba(0,0,0,.3)');
+ R(3,10,3,2,r);R(1,8+w,3,2,r);R(0,7+w,2,1,rl);
+ R(5,10,16,8,r);R(6,9,13,1,r);R(5,10,16,1,rl);R(7,9,5,1,rl);R(10,12,1,3,rd);R(15,11,1,2,rd);R(13,15,3,1,rd);R(7,14,2,1,rd);R(18,14,1,2,rd);R(12,9,3,1,mo);R(18,10,2,1,mo);R(6,17,14,1,rd);
+ R(6,18,3,5,r);R(10,18,3,5,rd);R(16,18,3,5,r);R(19,18,3,5,rd);R(6,18,1,4,rl);R(16,18,1,4,rl);R(5,22,4,1,rd);R(15,22,4,1,rd);
+ R(19,7,5,6,r);R(21,4,8,7,r);R(21,4,8,1,rl);R(28,7,3,3,r);R(30,7,1,1,DK);R(23,8,2,1,rd);R(22,6,1,2,rd);
+ R(21,1,2,3,r);R(25,1,2,3,r);R(21,1,2,1,rl);R(25,1,2,1,rl);R(26,2,1,1,rd);
+ R(25,6,1,1,ey);R(24,6,1,1,'rgba(244,184,74,.35)');
+ R(26,10,5,1,rd);R(27,10,1,1,'#efe3c8');R(29,10,1,1,'#efe3c8');if(tele){R(26,11,5,1,'#3a2418');R(27,11,1,1,'#efe3c8')}
+ const k=(t*1.3)%1;R(8,Math.round(18+k*4),1,1,rl);R(20,Math.round(17+((k+.5)%1)*5),1,1,rl)}
+{const _dmr2=drawMonsterRaw;drawMonsterRaw=function(k,t,tele){const f={hydra:sprIronHydra,x_rockybeast:sprRockyBeast,x_sandworm:sprSandworm,x_mossdragon:sprMossDragon,x_shadeserpent:sprShadeSerpent,x_summerfox:sprSummerFox,x_bigfoot:sprBigfoot,x_feathergolem:sprFeatherGolem,x_blindholder:sprBlindholder,x_petalswarm:sprPetalSwarm,x_wisheater:sprWishEater,x_overwritten:sprOverwritten}[k];if(f)return f(t,tele);return _dmr2.apply(this,arguments)}}
+
 /* ================= CHAPTER VI OPPOSITES ================= */
 Object.assign(LOOKS,{
  o_fairy:{small:1,wings:'rgba(225,240,255,.7)',hair:'#f4a8d0',skin:'#f6dccb',shirt:'#9ad8a0',pants:'#6ab07a',long:1},
@@ -3565,15 +3675,15 @@ Object.assign(LOOKS,{
   R(7,19,4,4,'#9a8a5a');R(21,19,4,4,'#9a8a5a');R(12,19,3,3,'#9a8a5a');R(18,19,3,3,'#9a8a5a');R(7,22,4,1,'#7a6a40');R(21,22,4,1,'#7a6a40');
   R(25,11+f,6,5,'#9a8a5a');R(24,13+f,2,2,'#9a8a5a');R(29,12+f,1,1,ey);R(30,14+f,2,1,'#5a4a2a');R(3,15,3,2,'#9a8a5a');return}
  return _dmr.apply(this,arguments)}}
-const ROC=document.createElement('canvas'),ROC2=document.createElement('canvas');ROC.width=ROC.height=ROC2.width=ROC2.height=200;const ROCX=ROC.getContext('2d'),ROCX2=ROC2.getContext('2d');ROCX.imageSmoothingEnabled=ROCX2.imageSmoothingEnabled=false;
+const ROC=document.createElement('canvas'),ROC2=document.createElement('canvas');ROC.width=ROC.height=ROC2.width=ROC2.height=420;const ROCX=ROC.getContext('2d'),ROCX2=ROC2.getContext('2d');ROCX.imageSmoothingEnabled=ROCX2.imageSmoothingEnabled=false;
 {const _dm=drawMonster;drawMonster=function(k,t,tele){const M=MONS[k];if(!M||!M.look)return _dm.apply(this,arguments);
- const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,as=Math.abs(sx),L=M.look;ROCX.clearRect(0,0,200,200);pen(ROCX,50,50,as,Math.abs(sy));
+ const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,as=Math.abs(sx),L=M.look;ROCX.clearRect(0,0,420,420);pen(ROCX,50,50,as,Math.abs(sy));
  if(L.person)drawPerson(LOOKS[L.person],t,0);else if(L.raw)drawMonsterRaw(L.raw,t,tele);else _dm(L.from,t,tele);
  const tn=tele&&L.person?'rgba(220,40,30,.32)':L.tint;
- if(tn&&L.mode){ROCX2.clearRect(0,0,200,200);ROCX2.drawImage(ROC,0,0);ROCX.globalCompositeOperation=L.mode;ROCX.fillStyle=tn;ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='destination-in';ROCX.drawImage(ROC2,0,0);ROCX.globalCompositeOperation='source-over'}
- else if(tn){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle=tn;ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='source-over'}
+ if(tn&&L.mode){ROCX2.clearRect(0,0,420,420);ROCX2.drawImage(ROC,0,0);ROCX.globalCompositeOperation=L.mode;ROCX.fillStyle=tn;ROCX.fillRect(0,0,420,420);ROCX.globalCompositeOperation='destination-in';ROCX.drawImage(ROC2,0,0);ROCX.globalCompositeOperation='source-over'}
+ else if(tn){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle=tn;ROCX.fillRect(0,0,420,420);ROCX.globalCompositeOperation='source-over'}
  if(L.scribble){const c='#d8d0ec';R(5,3,5,1,c);R(4,5,7,1,c);R(6,7,4,1,c);R(4,9,6,1,c);R(5,11,5,1,c);R(9,4,1,1,c);R(7,10,3,1,'#a89cc8')}
- if(tele&&L.mode){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle='rgba(220,40,30,.28)';ROCX.fillRect(0,0,200,200);ROCX.globalCompositeOperation='source-over'}
+ if(tele&&L.mode){ROCX.globalCompositeOperation='source-atop';ROCX.fillStyle='rgba(220,40,30,.28)';ROCX.fillRect(0,0,420,420);ROCX.globalCompositeOperation='source-over'}
  if(sx<0){pc.save();pc.translate(ox,oy);pc.scale(-1,1);pc.drawImage(ROC,-50,-50);pc.restore()}else pc.drawImage(ROC,ox-50,oy-50);pen(pc,ox,oy,sx,sy)}}
 // name, short, element, look, verb, trait, intro, story, text swaps
 const OPP={
@@ -3592,41 +3702,41 @@ const OPP={
   [[/The Drowned Knight raises its barnacled shield\./,'The Burning Knight raises its blazing shield.'],[/lowers its shield/,'lowers its blazing shield']]],
  warchief:['The Fairy Queen','Queen','holy',{person:'o_fairyqueen'},'The Fairy Queen zaps you with her wand','Calls fairy guards. Each one adds 3 to her attack.','Tiny bells ring. The Fairy Queen glides out of the fort on shimmering wings.','The Fairy Queen bursts into purple glitter. Her guards flutter away.',
   [[/The War-Chief blows his horn\. A goblin warrior joins him/,'The Fairy Queen rings a tiny bell. A fairy guard joins her'],[/The War-Chief and (\d+) goblins? attack/,'The Fairy Queen and $1 fairy guards attack'],[/scatters a goblin warrior/,'scatters a fairy guard']]],
- kraken:['The Great Sandworm','Sandworm','earth',{tint:'#d8b070',mode:'color'},'The sandworm slams down on you','Coils around one of your swords for 2 turns. Sprays sand that can make your next strike miss.','The sea drains away into dry sand. Something huge burrows up through it.','The sandworm crumbles into a dune of purple sand.',
+ kraken:['The Great Sandworm','Sandworm','earth',{raw:'x_sandworm',big:1},'The sandworm slams down on you','Coils around one of your swords for 2 turns. Sprays sand that can make your next strike miss.','The sea drains away into dry sand. Something huge burrows up through it.','The sandworm crumbles into a dune of purple sand.',
   [[/A tentacle wraps around your (.+?)!/,'The sandworm coils around your $1!'],[/The Kraken sprays a cloud of ink in your face\./,'The sandworm sprays sand in your face.'],[/The tentacle lets go of your/,'The sandworm uncoils from your'],[/Ink blinds you/,'Sand in your eyes'],[/A tentacle slams down on you/,'The sandworm slams down on you']]],
- wyvern:['The Ancient Tortoise','Tortoise','earth',{raw:'x_tortoise'},'The tortoise snaps its beak','Shell: dodges 20% by hiding. Every few turns it shakes the ground. Guard!','The Keep is silent. No storm, no wind. Just a tortoise the size of a house, very slowly turning to look at you.','The tortoise pulls into its shell, and the shell unravels into purple thread.',
+ wyvern:['The Ancient Tortoise','Tortoise','earth',{raw:'x_tortoise',big:1},'The tortoise snaps its beak','Shell: dodges 20% by hiding. Every few turns it shakes the ground. Guard!','The Keep is silent. No storm, no wind. Just a tortoise the size of a house, very slowly turning to look at you.','The tortoise pulls into its shell, and the shell unravels into purple thread.',
   [[/The wyvern screams\. Black clouds gather over the Keep\./,'The tortoise lifts one huge foot. The ground begins to rumble.'],[/LIGHTNING strikes you/,'An EARTHQUAKE knocks you flat'],[/The storm is gathering\. Lightning strikes/,'The tortoise lifts its foot. Earthquake']]],
- wolf:['Summer Fox','Fox','fire',{tint:'#f08a3a',mode:'multiply'},'The Summer Fox nips you','Quick: dodges 15%. Its hot breath can make one of your swords too hot to hold for a turn.','The snow melts in a ring. A Summer Fox trots out, panting heat.','The fox curls up and fades like a heat haze.',
+ wolf:['Summer Fox','Fox','fire',{raw:'x_summerfox'},'The Summer Fox nips you','Quick: dodges 15%. Its hot breath can make one of your swords too hot to hold for a turn.','The snow melts in a ring. A Summer Fox trots out, panting heat.','The fox curls up and fades like a heat haze.',
   [[/The wolf breathes frost\. Your (.+?) freezes solid for a turn\./,'The fox breathes a heat haze. Your $1 is too hot to hold for a turn.'],[/The ice on your (.+?) cracks away\./,'Your $1 cools down.']]],
- yeti:['Sunburnt Bigfoot','Bigfoot','fire',{tint:'#c86a3a',mode:'multiply'},'Bigfoot stomps you','Grumpy: the more you hurt it, the harder it stomps (up to double).','Something big and red and very grumpy is sitting on the bridge, fanning itself.','Bigfoot lies down for a nap and unravels.',
+ yeti:['Sunburnt Bigfoot','Bigfoot','fire',{raw:'x_bigfoot'},'Bigfoot stomps you','Grumpy: the more you hurt it, the harder it stomps (up to double).','Something big and red and very grumpy is sitting on the bridge, fanning itself.','Bigfoot lies down for a nap and unravels.',
   [[/The furious Yeti pounds you/,'The furious Bigfoot stomps you'],[/The Yeti pounds you/,'Bigfoot stomps you']]],
- golem:['The Feather Golem','Feather','holy',{tint:'#9a9284',mode:'screen'},'The Feather Golem smothers you in feathers','Soft but heavy: it smothers you in feathers.','Feathers swirl together into a giant. It is soft. It is also very heavy.','The golem bursts into a pillow-fight of purple feathers.',[]],
- beholder:['The Blindholder','Blindholder','shadow',{tint:'#5a4a78',mode:'multiply'},'The Blindholder bites blindly','Backwards rays: frost, wake-up, reintegration, or an anti-magic squint that switches off your sword abilities.','A floating eye-beast drifts out of the dark. Every one of its eyes is squeezed shut. It sees you anyway.','All its eyes open at once, and it unravels.',
+ golem:['The Feather Golem','Feather','holy',{raw:'x_feathergolem'},'The Feather Golem smothers you in feathers','Soft but heavy: it smothers you in feathers.','Feathers swirl together into a giant. It is soft. It is also very heavy.','The golem bursts into a pillow-fight of purple feathers.',[]],
+ beholder:['The Blindholder','Blindholder','shadow',{raw:'x_blindholder'},'The Blindholder bites blindly','Backwards rays: frost, wake-up, reintegration, or an anti-magic squint that switches off your sword abilities.','A floating eye-beast drifts out of the dark. Every one of its eyes is squeezed shut. It sees you anyway.','All its eyes open at once, and it unravels.',
   [[/A FIRE RAY scorches you/,'A FROST RAY freezes you'],[/A DISINTEGRATION RAY turns your (.+?) to dust!/,'A REINTEGRATION RAY turns your $1 back into what it was made of!'],[/A SLEEP RAY hits you\. Your eyes grow heavy…/,'A WAKE-UP RAY hits you. You are so awake you forget how to move…'],[/The great central eye opens\./,'The great central eye squeezes shut.']]],
  lich:['The Sun Saint','Sun','holy',{person:'o_sunsaint'},'The Sun Saint scorches you with warm light','Finger of Sunlight every few turns: Guard!','Warm light fills the cavern. An old saint glows at the center of it, smiling far too kindly.','The light goes out. The saint was only a purple shadow.',
   [[/The Lich slowly raises one bony finger toward you\./,'The Sun Saint slowly raises one glowing finger toward you.'],[/FINGER OF DEATH/,'FINGER OF SUNLIGHT'],[/The Lich points at you\. Finger of Death/,'The Sun Saint points at you. Finger of Sunlight']]],
  rustknight:['The Gleaming Knight','Gleam','holy',{person:'o_gleamknight'},'The Gleaming Knight strikes with a shining blade','Its glare dulls one of your swords every hit (−15% damage each, stacks).','A knight in spotless, blinding armor stands in the ash. Not a speck on it.','The armor goes dull and falls apart into purple thread.',
   [[/Rust spreads over your (.+?) \(/,'The Gleaming Knight’s glare dulls your $1 ('],[/rust −/,'dulled −']]],
- bladeswarm:['The Petal Swarm','Petal','nature',{tint:'#f08cc4',mode:'color'},'The petals slice past you','A storm of razor-sharp flower petals. It cuts you 2 to 4 times every turn.','The ash blows away and a whirlwind of pink petals comes spinning toward you.','The petals wilt and blow away.',
+ bladeswarm:['The Petal Swarm','Petal','nature',{raw:'x_petalswarm'},'The petals slice past you','A storm of razor-sharp flower petals. It cuts you 2 to 4 times every turn.','The ash blows away and a whirlwind of pink petals comes spinning toward you.','The petals wilt and blow away.',
   [[/The swarm cuts you (\d+) times\./,'The petals cut you $1 times.'],[/A spinning blade/,'A razor petal']]],
  shadowsum:['The Light Summoner','Light','holy',{person:'o_lightsum'},'The Light Summoner strikes','Copies the strongest sword you are holding in pure light and swings it back at you.','A Summoner made of light raises a glowing hand. It knows your face.','The light flickers out.',
   [[/The Shadow Summoner swings a shadow copy of your/,'The Light Summoner swings a glowing copy of your']]],
- hydra:['The Vine Hydra','Vine','nature',{tint:'#5aa83c',mode:'color'},'The vines lash','Three vines lash at you every turn.','A tangle of thick green vines rises out of the furnace, every one of them with a mouth.','The vines wither into purple thread.',
-  [[/(\d+) heads lunge at you\./,'$1 vines lash at you.'],[/A head bites/,'A vine lashes'],[/You cut off a head! \((\d+) left\)/,'You chop off a vine! ($1 left)'],[/A new head grows from the wound! \((\d+) heads\)/,'A new vine sprouts from the stump! ($1 vines)']]],
+ hydra:['The Rocky Beast','Rocky','earth',{raw:'x_rockybeast',big:1},'The Rocky Beast bites','A huge dog made of boulders. It snaps at you three times every turn.','The furnace door bursts open. A dog the size of a cottage, made of cracked boulders, bounds out and growls like a rockslide.','The Rocky Beast lies down, rolls over one last time, and crumbles into purple gravel.',
+  [[/(\d+) heads lunge at you\./,'The Rocky Beast pounces and snaps $1 times!'],[/A head bites/,'A stone jaw snaps']]],
  hollowking:['The Bright Queen','Bright','holy',{person:'o_brightqueen'},'The Bright Queen strikes with a blade of light','She calls up shining copies of anything you have summoned. Defeat them to reach her.','The throne is not empty. The Bright Queen sits on it, so full of light it hurts to look.','The Bright Queen dims, and dims, and is gone.',[[/Hollow King/g,'Bright Queen']]],
  stormgiant:['The Pebble Dwarf','Pebble','earth',{person:'o_pebbledwarf'},'The Pebble Dwarf bonks you with a tiny hammer','Hammerquake every 3 turns. Guard when he raises his hammer!','No giant. No storm. Just a very small, very calm dwarf with a very small hammer.','The dwarf sighs and crumbles into purple pebbles.',
   [[/The Storm Giant raises both hands\. The air crackles\./,'The Pebble Dwarf raises his tiny hammer. The ground hums.'],[/THUNDERCLAP/,'HAMMERQUAKE'],[/The Storm Giant raises its hands\. Thunderclap/,'The Pebble Dwarf raises his hammer. Hammerquake']]],
- couatl:['The Shade Serpent','Shade','shadow',{tint:'#4a2a6a',mode:'multiply'},'The Shade Serpent bites like a whip','A scaly serpent of darkness. Dodges 20% and heals itself by shedding its skin.','The sunlight goes out over the cloud. A serpent of darkness coils through the gloom.','The serpent sheds one last skin, and there is nothing inside.',
+ couatl:['The Shade Serpent','Shade','shadow',{raw:'x_shadeserpent',big:1},'The Shade Serpent bites like a whip','A scaly serpent of darkness. Dodges 20% and heals itself by shedding its skin.','The sunlight goes out over the cloud. A serpent of darkness coils through the gloom.','The serpent sheds one last skin, and there is nothing inside.',
   [[/The Couatl’s feathers flash\. It heals/,'The Shade Serpent sheds its skin. It heals']]],
- djinni:['The Wish-Eater','Wisheater','shadow',{tint:'#3a8a4a',mode:'color'},'The Wish-Eater chomps at you','Eats a wish every turn: heals itself, shields itself, or attacks twice.','Smoke pours into a fallen star instead of out of it. Something hungry lives inside.','The Wish-Eater burps up a purple wish and vanishes.',
+ djinni:['The Wish-Eater','Wisheater','shadow',{raw:'x_wisheater'},'The Wish-Eater chomps at you','Eats a wish every turn: heals itself, shields itself, or attacks twice.','Smoke pours into a fallen star instead of out of it. Something hungry lives inside.','The Wish-Eater burps up a purple wish and vanishes.',
   [[/“I wish to be well!” The Djinni heals/,'“I eat your wish to be well!” The Wish-Eater heals'],[/“I wish for a shield!”/,'“I eat your wish for a shield!”'],[/“I wish to hit twice!”/,'“I eat your wish to strike first!”']]],
- clockdragon:['The Moss Dragon','Moss','nature',{tint:'#4f9a3a',mode:'color'},'The Moss Dragon snaps its mossy jaws','Not a machine at all: a living dragon grown over with moss and ferns.','Leaves rustle. A dragon made of moss and roots uncurls from the Archive doors.','The Moss Dragon lies down and becomes a hill of purple moss.',[[/brass/g,'moss'],[/gears/g,'leaves']]],
- unwritten:['The Overwritten','Overwrite','shadow',{tint:'#3a3448',mode:'multiply',scribble:1},'The Overwritten scribbles at you with an inky hand','Scribbles out one of your swords every 3 turns.','It is not blank. It is covered in writing, every word on top of another word, until it is black with ink.','The ink runs, and the words wash away.',
+ clockdragon:['The Moss Dragon','Moss','nature',{raw:'x_mossdragon',big:1},'The Moss Dragon snaps its mossy jaws','Not a machine at all: a living dragon grown over with moss and ferns.','Leaves rustle. A dragon made of moss and roots uncurls from the Archive doors.','The Moss Dragon lies down and becomes a hill of purple moss.',[[/brass/g,'moss'],[/gears/g,'leaves']]],
+ unwritten:['The Overwritten','Overwrite','shadow',{raw:'x_overwritten'},'The Overwritten scribbles at you with an inky hand','Scribbles out one of your swords every 3 turns.','It is not blank. It is covered in writing, every word on top of another word, until it is black with ink.','The ink runs, and the words wash away.',
   [[/The Unwritten touches your (.+?)\. It goes blank, then it is gone\. \(Erased for this battle\.\)/,'The Overwritten scribbles all over your $1 until it is gone. (Scribbled out for this battle.)']]]
 };
 function applyOpp(){for(const k in OPP){const uk='u_'+k,M=MONS[uk];if(!M||M.oppDone)continue;const[n,sh,el,look,verb,trait,intro,story,rx]=OPP[k];
  Object.assign(M,{name:n,verb,trait:trait+' Unraveled: the opposite of what you fought before.',intro,story,oppDone:1,orx:rx});if(look.tint){M.look=Object.assign({from:M.base||k},look)}else{M.look=look;BIGMON.delete(uk)}
- if(look.raw==='x_tortoise')BIGMON.add(uk);
+ if(look.big)BIGMON.add(uk);
  if(THINGS[uk])Object.assign(THINGS[uk],{name:n,short:sh,el})}}
 {const _mub=makeUBosses;makeUBosses=function(){const r=_mub.apply(this,arguments);applyOpp();return r}}
 {const _lgO=log;log=function(text,cls){if(B&&typeof text==='string'){const M=MONS[B.key];if(M&&M.orx)for(const[a,b]of M.orx)text=text.replace(a,b)}return _lgO.call(this,text,cls)}}
