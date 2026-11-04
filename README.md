@@ -98,7 +98,18 @@ Each realm has a 3-part chain where one reward unlocks the next part:
 
 Fights are **real-time** by default (on touch screens they start in Classic). Press **Fights** in the top bar to switch between Real-time and Classic (turn-based) between battles.
 
-- **Move** around the arena with the arrow keys (Player 2: W A S D). The monster chases the nearest knight.
+- **Big arenas.** Each arena is about four times bigger than the screen, and the view scrolls to follow you. When the monster is off-screen, an arrow at the edge points to it (it flashes red when the monster is about to attack).
+- **Move** with the arrow keys (Player 2: W A S D). **Sprint** with Shift (Player 1 in two-player: / or Right Shift; Player 2: Left Shift). Sprinting uses stamina, shown as a yellow bar under your health; let it refill before sprinting again.
+- **Every fight is a boss fight.** Each monster has its own moveset of 3 or more special attacks, picked to fit what it is, mixed with its normal attacks. Its moves are listed in the log when the fight starts, and the attack's name appears over its head as it winds up:
+  - **Charge**: rushes across the arena along a red lane, then is dizzy for a moment.
+  - **Frenzy**: several quick bites in a row.
+  - **Pounce / Body Slam**: leaps into the air and lands on a red circle.
+  - **Shockwave**: everything outside the green ring is hit. Get close to dodge it.
+  - **Projectiles** (fireballs, ice shards, magic bolts, rock toss, poison spit…): fly across the arena. Step out of their path.
+  - **Rain** (meteors, icicles, lightning, geysers, falling rocks…): red circles appear under you and around you, then strike.
+  - **Beams and ground slams** for the biggest bosses.
+- Monsters circle you and keep their distance instead of only walking at you. At half health a monster becomes **ENRAGED**: it glows red, moves faster and attacks more often. Monster health is the same as before; later chapters and bosses use their specials more often and wind up faster.
+- **Animation.** Every monster has a 10-frame animation for idling, moving, winding up, attacking and getting hit, and always turns to face the knight it is after (on the map too). Knights and villagers have 6-frame idle, walk, attack and hit animations.
 - **Strike** when you are close: each sword slot has its own key and its own cooldown, shown as a dark fill on its slab. Solo: J K L ; ' or 1–5. Player 1: J K L ; '. Player 2: 1–5. A yellow ring under your knight means you are in reach. You can also click a slab.
 - **Summon** with U (Player 2: Q) and **Options** with I (Player 2: E): Guard, Potion, Fists, Break a blade and, when allowed, Flee. While a list or menu is open the whole fight **slows to a crawl**, but it never stops.
 - **Dodge.** Before every attack the monster glows red with a **!** and a red zone shows where it will land. Step out of the zone, or Guard (Guard lasts about 1.5 seconds and slows you down).
