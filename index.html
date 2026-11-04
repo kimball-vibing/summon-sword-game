@@ -3638,7 +3638,15 @@ function sprRockyBeast(t,tele){const w=Math.floor(t*4)%2,r='#8a8478',rl='#aaa498
  R(25,6,1,1,ey);R(24,6,1,1,'rgba(244,184,74,.35)');
  R(26,10,5,1,rd);R(27,10,1,1,'#efe3c8');R(29,10,1,1,'#efe3c8');if(tele){R(26,11,5,1,'#3a2418');R(27,11,1,1,'#efe3c8')}
  const k=(t*1.3)%1;R(8,Math.round(18+k*4),1,1,rl);R(20,Math.round(17+((k+.5)%1)*5),1,1,rl)}
-{const _dmr2=drawMonsterRaw;drawMonsterRaw=function(k,t,tele){const f={hydra:sprIronHydra,x_rockybeast:sprRockyBeast,x_sandworm:sprSandworm,x_mossdragon:sprMossDragon,x_shadeserpent:sprShadeSerpent,x_summerfox:sprSummerFox,x_bigfoot:sprBigfoot,x_feathergolem:sprFeatherGolem,x_blindholder:sprBlindholder,x_petalswarm:sprPetalSwarm,x_wisheater:sprWishEater,x_overwritten:sprOverwritten}[k];if(f)return f(t,tele);return _dmr2.apply(this,arguments)}}
+function sprVampBat(t,tele){const f=Math.floor(t*6)%2,o=f?0:1,b='#2a1a2e',w='#3e2442',wl='#6a4a70',pk='#e78fb3',ey=tele?'#ff3a2a':'#e0402a';
+ R(4,15,8,1,'rgba(0,0,0,.25)');
+ if(f){R(0,3,5,5,w);R(11,3,5,5,w);R(0,2,2,1,w);R(14,2,2,1,w);R(1,3,1,4,wl);R(3,4,1,3,wl);R(14,3,1,4,wl);R(12,4,1,3,wl);R(0,8,1,1,w);R(2,8,1,1,w);R(13,8,1,1,w);R(15,8,1,1,w)}
+ else{R(0,7,5,4,w);R(11,7,5,4,w);R(1,7,1,3,wl);R(3,7,1,3,wl);R(14,7,1,3,wl);R(12,7,1,3,wl);R(0,11,1,1,w);R(2,11,1,1,w);R(13,11,1,1,w);R(15,11,1,1,w)}
+ R(5,6+o,6,6,b);R(6,12+o,4,1,b);R(6,8+o,4,3,'#4a3050');R(5,4+o,6,3,b);
+ R(4,o,2,5,b);R(10,o,2,5,b);R(3,o,1,2,b);R(12,o,1,2,b);R(5,1+o,1,3,pk);R(10,1+o,1,3,pk);
+ R(6,5+o,1,1,ey);R(9,5+o,1,1,ey);R(7,6+o,2,1,pk);R(6,7+o,1,1,'#fff');R(9,7+o,1,1,'#fff');R(6,13+o,1,1,'#7a5a7a');R(9,13+o,1,1,'#7a5a7a');
+ if(tele||(B&&B.key==='u_beholder'&&B.tele==='echo')){const k=(t*1.6)%1,c=`rgba(230,210,255,${(1-k)*.9})`,rr=6+k*5;for(let i=-2;i<=2;i++){const a=i*0.32;R(Math.round(8+Math.cos(a)*rr),Math.round(5+o+Math.sin(a)*rr),1,1,c);R(Math.round(7-Math.cos(a)*rr),Math.round(5+o+Math.sin(a)*rr),1,1,c)}}}
+{const _dmr2=drawMonsterRaw;drawMonsterRaw=function(k,t,tele){const f={hydra:sprIronHydra,x_rockybeast:sprRockyBeast,x_sandworm:sprSandworm,x_mossdragon:sprMossDragon,x_shadeserpent:sprShadeSerpent,x_summerfox:sprSummerFox,x_bigfoot:sprBigfoot,x_feathergolem:sprFeatherGolem,x_blindholder:sprBlindholder,x_vampbat:sprVampBat,x_petalswarm:sprPetalSwarm,x_wisheater:sprWishEater,x_overwritten:sprOverwritten}[k];if(f)return f(t,tele);return _dmr2.apply(this,arguments)}}
 
 /* ================= CHAPTER VI OPPOSITES ================= */
 Object.assign(LOOKS,{
@@ -3711,8 +3719,8 @@ const OPP={
  yeti:['Sunburnt Bigfoot','Bigfoot','fire',{raw:'x_bigfoot'},'Bigfoot stomps you','Grumpy: the more you hurt it, the harder it stomps (up to double).','Something big and red and very grumpy is sitting on the bridge, fanning itself.','Bigfoot lies down for a nap and unravels.',
   [[/The furious Yeti pounds you/,'The furious Bigfoot stomps you'],[/The Yeti pounds you/,'Bigfoot stomps you']]],
  golem:['The Feather Golem','Feather','holy',{raw:'x_feathergolem'},'The Feather Golem smothers you in feathers','Soft but heavy: it smothers you in feathers.','Feathers swirl together into a giant. It is soft. It is also very heavy.','The golem bursts into a pillow-fight of purple feathers.',[]],
- beholder:['The Blindholder','Blindholder','shadow',{raw:'x_blindholder'},'The Blindholder bites blindly','Backwards rays: frost, wake-up, reintegration, or an anti-magic squint that switches off your sword abilities.','A floating eye-beast drifts out of the dark. Every one of its eyes is squeezed shut. It sees you anyway.','All its eyes open at once, and it unravels.',
-  [[/A FIRE RAY scorches you/,'A FROST RAY freezes you'],[/A DISINTEGRATION RAY turns your (.+?) to dust!/,'A REINTEGRATION RAY turns your $1 back into what it was made of!'],[/A SLEEP RAY hits you\. Your eyes grow heavy…/,'A WAKE-UP RAY hits you. You are so awake you forget how to move…'],[/The great central eye opens\./,'The great central eye squeezes shut.']]],
+ beholder:['The Vampire Bat','Bat','shadow',{raw:'x_vampbat'},'The Vampire Bat bites','Drinks your blood to heal itself. Every few turns it screeches, then hits with ECHOLOCATION. Guard, or get out of the ring!','The cave goes dark. Something with enormous ears hangs upside down from the ceiling, then drops, wings snapping open.','The bat flutters off into the purple dark and does not come back.',
+  []],
  lich:['The Sun Saint','Sun','holy',{person:'o_sunsaint'},'The Sun Saint scorches you with warm light','Finger of Sunlight every few turns: Guard!','Warm light fills the cavern. An old saint glows at the center of it, smiling far too kindly.','The light goes out. The saint was only a purple shadow.',
   [[/The Lich slowly raises one bony finger toward you\./,'The Sun Saint slowly raises one glowing finger toward you.'],[/FINGER OF DEATH/,'FINGER OF SUNLIGHT'],[/The Lich points at you\. Finger of Death/,'The Sun Saint points at you. Finger of Sunlight']]],
  rustknight:['The Gleaming Knight','Gleam','holy',{person:'o_gleamknight'},'The Gleaming Knight strikes with a shining blade','Its glare dulls one of your swords every hit (−15% damage each, stacks).','A knight in spotless, blinding armor stands in the ash. Not a speck on it.','The armor goes dull and falls apart into purple thread.',
@@ -3741,6 +3749,13 @@ function applyOpp(){for(const k in OPP){const uk='u_'+k,M=MONS[uk];if(!M||M.oppD
 {const _mub=makeUBosses;makeUBosses=function(){const r=_mub.apply(this,arguments);applyOpp();return r}}
 {const _lgO=log;log=function(text,cls){if(B&&typeof text==='string'){const M=MONS[B.key];if(M&&M.orx)for(const[a,b]of M.orx)text=text.replace(a,b)}return _lgO.call(this,text,cls)}}
 {const _rbO=renderBattle;renderBattle=function(){const r=_rbO.apply(this,arguments);if(B){const M=MONS[B.key],w=$('fWarn');if(M&&M.orx&&w&&!w.hidden){let t=w.textContent;for(const[a,b]of M.orx)t=t.replace(a,b);w.textContent=t}}return r}}
+
+TELESHAPE.echo='slam';
+AI.u_beholder=function(){const M=MONS[B.key],avg=(M.atk[0]+M.atk[1])/2;
+ if(B.tele==='echo'){B.tele=null;hitYou(Math.max(1,Math.round(avg*2.2)-(B.weak||0)),'ECHOLOCATION! A wall of sound slams into you');return}
+ if(B.turn%3===2){B.tele='echo';log('The Vampire Bat screeches. The sound bounces off you, and it turns its huge ears your way. It knows exactly where you are…','foe-l');return}
+ const h0=S.hp;foeAtk('The Vampire Bat bites and drinks');const got=Math.max(0,h0-S.hp);if(got>0&&B&&B.hp>0){const hl=got*2;B.hp=Math.min(B.max,B.hp+hl);log(`It drinks your blood and heals ${hl}.`,'foe-l')}};
+{const _rbE=renderBattle;renderBattle=function(){const r=_rbE.apply(this,arguments);if(B&&B.key==='u_beholder'){const w=$('fWarn');if(w){if(B.tele==='echo'){w.hidden=false;w.textContent=RT()?'The Vampire Bat is screeching. Echolocation incoming: get out of the ring or Guard!':'The Vampire Bat is screeching. Echolocation next turn: Guard!'}}}return r}}
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
