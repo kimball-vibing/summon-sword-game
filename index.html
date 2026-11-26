@@ -3853,46 +3853,57 @@ AI.u_beholder=function(){const M=MONS[B.key],avg=(M.atk[0]+M.atk[1])/2;
  const h0=S.hp;foeAtk('The Vampire Bat bites and drinks');const got=Math.max(0,h0-S.hp);if(got>0&&B&&B.hp>0){const hl=got*2;B.hp=Math.min(B.max,B.hp+hl);log(`It drinks your blood and heals ${hl}.`,'foe-l')}};
 {const _rbE=renderBattle;renderBattle=function(){const r=_rbE.apply(this,arguments);if(B&&B.key==='u_beholder'){const w=$('fWarn');if(w){if(B.tele==='echo'){w.hidden=false;w.textContent=RT()?'The Vampire Bat is screeching. Echolocation incoming: get out of the ring or Guard!':'The Vampire Bat is screeching. Echolocation next turn: Guard!'}}}return r}}
 
-/* ================= FRAME ANIMATION (10-frame monsters, 6-frame people) + FACING ================= */
+/* ================= FRAME ANIMATION (10-frame monsters, by kind of creature) + FACING ================= */
 const ANC=document.createElement('canvas');ANC.width=112;ANC.height=88;const ANX=ANC.getContext('2d');ANX.imageSmoothingEnabled=false;
 let ANIM_BUSY=0,MHINT=null,KHINT=null;
-function animPrm(kind,st,q,big){const N=kind==='m'?10:6,f=Math.floor(((q%1)+1)%1*N)%N,p=f/N,s=big?1.5:1,TAU=Math.PI*2;
- switch(st){
-  case 'move':return {bob:-Math.round(Math.abs(Math.sin(TAU*p))*2*s),lean:Math.round(s),legs:Math.round(Math.sin(TAU*p)*1.4),wave:0.5,wph:TAU*p,squash:0};
-  case 'wind':return {squash:Math.round(p*3*s),lean:-Math.round(p*2.5*s),dx:(f%2&&p>0.45)?1:0,wave:0.7,wph:TAU*p*1.3};
-  case 'attack':{if(p<0.3){const a=(p+0.1)/0.3;return {lean:-Math.round(a*2*s),squash:Math.round(a*1.5*s),wave:0.7,wph:TAU*p,dx:0}}const b2=(p-0.3)/0.7;return {lean:Math.round(4*s*Math.sin(Math.PI*b2)*(1-b2*0.3))+1,squash:-Math.round(2*s*Math.sin(Math.PI*b2)),dx:f%2,wave:0.7,wph:TAU*p*1.7}}
-  case 'hurt':{const a=p<0.2?(p+0.1)/0.2:1-(p-0.2)/0.8;return {lean:-Math.round(3*s*a),squash:Math.round(1.5*a),dx:-(f%2),wave:0.8,wph:TAU*p*1.5}}
-  default:return {squash:Math.round((1-Math.cos(TAU*p))*0.5*s),lean:Math.round(Math.sin(TAU*p)*1.2*s),wave:0.55,wph:TAU*p,bob:0}}}
+const ANIMCAT={fly:'beholder wyvern djinni u_beholder u_goblin u_warchief u_owlbear',ghost:'lich soulgem shadowsum unwritten u_unwritten u_djinni corruptblade',swarm:'bladeswarm u_bladeswarm',
+ slime:'cube',roll:'u_cube',serpent:'kraken hydra couatl u_kraken u_couatl',heavy:'golem u_golem yeti u_yeti owlbear stormgiant dragon clockdragon u_clockdragon u_wyvern u_hydra hollowking rustknight unraveler tinkerer'};
+const ANIMOF={};for(const c in ANIMCAT)ANIMCAT[c].split(' ').forEach(k=>ANIMOF[k]=c);
+function animCat(k){if(ANIMOF[k])return ANIMOF[k];const M=MONS[k];if(M&&M.base&&ANIMOF[M.base]&&!String(k).startsWith('u_'))return ANIMOF[M.base];return 'walk'}
+/* p = frame/10. Whole-body moves only (no leaning); legs lift in turn; serpents ripple; ghosts flicker. */
+function animPrm(cat,st,q,big){const N=10,f=Math.floor(((q%1)+1)%1*N)%N,p=f/N,s=big?1.5:1,T=Math.PI*2,S=Math.sin,C=Math.cos,R0=Math.round;
+ if(st==='wind'){const lift=cat==='fly'||cat==='ghost'||cat==='swarm';return {squash:lift?-R0(p*2):R0(p*2.5*s),bob:lift?-R0(p*3*s):0,dx:-R0(p*2.5*s)+(p>0.55?(f%2?1:-1):0),flash:0,fl:p>0.7?0.25*(f%2):0}}
+ if(st==='attack'){const a=S(Math.PI*Math.min(1,(p+0.05)/0.7)),back=p>0.7?(p-0.7)/0.3:0;return {dx:R0((p<0.7?a*5:5*(1-back))*s),bob:cat==='fly'?R0(a*3):0,squash:cat==='slime'?R0(-a*2):-R0(a*1.5),flash:0}}
+ if(st==='hurt'){const a=p<0.2?(p+0.1)/0.2:1-(p-0.2)/0.8;return {dx:-R0(a*3*s),bob:cat==='fly'||cat==='ghost'?R0(a*2):0,squash:cat==='slime'?R0(a*2):0,flash:p<0.3?0.7-p*1.5:0}}
+ const mv=st==='move';
+ switch(cat){
+  case 'fly':return {bob:R0(S(T*p)*(mv?2:2.5)*s)-(mv?1:0),dx:mv?R0(S(T*p*2)):0,squash:f%5===2?1:0};
+  case 'ghost':return {bob:R0(S(T*p)*2*s),alpha:0.82+0.18*C(T*p*2),squash:0};
+  case 'swarm':return {bob:R0(S(T*p)*1.5),dx:R0(C(T*p)*1.5)};
+  case 'slime':return mv?{squash:R0(C(T*p)*2.5),bob:-R0(Math.max(0,S(T*p))*4)}:{squash:R0(S(T*p)*1.6),dx:f%5===0?(f?1:0):0};
+  case 'roll':return {bob:mv?-R0(Math.abs(S(T*p))*3):R0(Math.max(0,S(T*p))*1),dx:mv?0:R0(S(T*p)*1)};
+  case 'serpent':return {wave:mv?1.4:1,wph:T*p,bob:R0(S(T*p)*1),squash:0};
+  case 'heavy':return mv?{legs:f<5?1:-1,bob:(f%5===0?1:0)*R0(s),squash:f%5===1?1:0}:{squash:0,bob:0,breath:R0((1-C(T*p))*0.5*s),head:(f===4||f===5||f===6)?1:0};
+  default:return mv?{legs:f<5?1:-1,bob:-((f%5===1||f%5===2)?1:0),squash:f%5===0?1:0}:{breath:R0((1-C(T*p))*0.6),head:(f===3||f===4||f===5||f===6)?1:0,squash:0}}}
 function animDraw(drawFn,pc,ox,oy,sx,sy,W,H,prm,flip){const pad=24,as=Math.abs(sx),ys=Math.abs(sy),neg=sx<0;
  ANX.clearRect(0,0,112,88);ANIM_BUSY++;try{pen(ANX,pad,pad,1,1);drawFn()}finally{ANIM_BUSY--}
+ if(prm.flash){ANX.globalCompositeOperation='source-atop';ANX.fillStyle=`rgba(255,255,255,${prm.flash})`;ANX.fillRect(0,0,112,88);ANX.globalCompositeOperation='source-over'}
+ if(prm.fl){ANX.globalCompositeOperation='source-atop';ANX.fillStyle=`rgba(255,60,40,${prm.fl})`;ANX.fillRect(0,0,112,88);ANX.globalCompositeOperation='source-over'}
  pen(pc,ox,oy,sx,sy);if(!as||!ys)return;
- const top=pad-8,bottom=pad+H+2,rows=bottom-top,sq=Math.max(-4,Math.min(5,prm.squash||0)),outRows=rows-sq,x0=neg?ox-W*as:ox,fl=!!flip;
- pc.save();if(fl!==neg){pc.translate(x0+W*as,0);pc.scale(-1,1)}else pc.translate(x0,0);const sm=pc.imageSmoothingEnabled;pc.imageSmoothingEnabled=false;
- for(let r=0;r<outRows;r++){const srcY=bottom-1-Math.floor((outRows-1-r)*rows/outRows),yRel=(srcY-pad)/H,yc=Math.max(0,Math.min(1,yRel));
-  let sh=Math.round((prm.lean||0)*(1-yc))+(yRel<0.65?Math.round((prm.wave||0)*Math.sin((prm.wph||0)+srcY*0.45)):0)+(prm.dx||0);
-  if(yRel>0.72&&prm.legs)sh+=(srcY%2?prm.legs:-prm.legs);
-  const dy=oy+((top-pad)+r+sq+(prm.bob||0))*ys;pc.drawImage(ANC,pad-20,srcY,W+40,1,(-20+sh)*as,dy,(W+40)*as,ys)}
- pc.imageSmoothingEnabled=sm;pc.restore()}
+ const top=pad-8,bottom=pad+H+2,rows=bottom-top,sq=Math.max(-4,Math.min(5,prm.squash||0)),outRows=rows-sq,x0=neg?ox-W*as:ox,fl=!!flip,legTop=pad+H*0.72,midX=pad+W/2;
+ pc.save();if(fl!==neg){pc.translate(x0+W*as,0);pc.scale(-1,1)}else pc.translate(x0,0);const sm=pc.imageSmoothingEnabled,ga=pc.globalAlpha;pc.imageSmoothingEnabled=false;if(prm.alpha)pc.globalAlpha=ga*prm.alpha;
+ for(let r=0;r<outRows;r++){const srcY=bottom-1-Math.floor((outRows-1-r)*rows/outRows),yRel=(srcY-pad)/H;
+  let sh=(prm.dx||0)+(prm.wave&&yRel<0.8?Math.round(prm.wave*Math.sin(prm.wph+srcY*0.5)*(1-Math.max(0,yRel))):0);
+  let dy=oy+((top-pad)+r+sq+(prm.bob||0))*ys;if(prm.breath&&yRel<0.6){const nY=(srcY+1-pad)/H;if(nY>=0.6)pc.drawImage(ANC,pad-20,srcY,W+40,1,(-20+sh)*as,dy,(W+40)*as,ys);dy-=prm.breath*ys;if(prm.head&&yRel<0.3){const nY2=(srcY+1-pad)/H;if(nY2>=0.3)pc.drawImage(ANC,pad-20,srcY,W+40,1,(-20+sh)*as,dy,(W+40)*as,ys);dy-=prm.head*ys}}
+  if(prm.legs&&srcY>=legTop){const lL=prm.legs>0?1:0,lR=prm.legs<0?1:0,wl=midX-(pad-20);
+   pc.drawImage(ANC,pad-20,srcY,wl,1,(-20+sh)*as,dy-lL*ys,wl*as,ys);pc.drawImage(ANC,midX,srcY,W+40-wl,1,(-20+sh+wl)*as,dy-lR*ys,(W+40-wl)*as,ys)}
+  else pc.drawImage(ANC,pad-20,srcY,W+40,1,(-20+sh)*as,dy,(W+40)*as,ys)}
+ pc.imageSmoothingEnabled=sm;pc.globalAlpha=ga;pc.restore()}
 {const _dmA=drawMonster;drawMonster=function(k,t,tele){if(ANIM_BUSY)return _dmA.apply(this,arguments);const h=MHINT;MHINT=null;const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,big=BIGMON.has(k);let seed=0;for(const c of String(k))seed+=c.charCodeAt(0);
- const st=(h&&h.st)||'idle',q=h&&h.q!=null?h.q:((t||0)/1.4+seed*0.07)%1;
- animDraw(()=>_dmA(k,t,tele),pc,ox,oy,sx,sy,big?32:16,big?24:16,animPrm('m',st,q,big),!!(h&&h.flip))}}
-{const _dpl=drawPlayer;drawPlayer=function(px,py,dir,fr){if(ANIM_BUSY)return _dpl.apply(this,arguments);const h=KHINT;KHINT=null;const pc=PCTX,now=performance.now()/1000,st=(h&&h.st)||(fr?'move':'idle'),q=h&&h.q!=null?h.q:(st==='move'?now/0.55:now/1.3)+(P2DRAW?0.37:0);
- animDraw(()=>{const sv=PCTX;PCTX=ANX;try{_dpl(24,24,dir,fr)}finally{PCTX=sv}},pc,px,py,1,1,16,16,animPrm('k',st,q,false),false)}}
-{const _dpe=drawPerson;drawPerson=function(L,t,wx){if(ANIM_BUSY||!L)return _dpe.apply(this,arguments);const pc=PC,ox=POX,oy=POY,sx=PSX,sy=PSY,q=((t||0)/1.5+((wx||0)*0.137))%1;
- animDraw(()=>_dpe(L,t,wx),pc,ox,oy,sx,sy,16,16,animPrm('k','idle',q,false),false)}}
-function rtMonHint(t){const R=B.rt,m=R.m,now=NOW();let st='idle',q=null;
- if(B.lungeT&&now-B.lungeT>=0&&now-B.lungeT<0.35){st='attack';q=(now-B.lungeT)/0.35}
- else if(B.hitT&&now>=B.hitT&&now-B.hitT<0.3){st='hurt';q=(now-B.hitT)/0.3}
+ const cat=animCat(k),st=(h&&h.st)||'idle',slow=cat==='heavy'?2.2:cat==='ghost'?2:1.6,q=h&&h.q!=null?h.q:((t||0)/slow+seed*0.07)%1;
+ animDraw(()=>_dmA(k,t,tele),pc,ox,oy,sx,sy,big?32:16,big?24:16,animPrm(cat,st,q,big),!!(h&&h.flip))}}
+function rtMonHint(t){const R=B.rt,m=R.m,now=NOW(),cat=animCat(B.sub?B.sub.key:B.key);let st='idle',q=null;
+ if(B.lungeT&&now-B.lungeT>=0&&now-B.lungeT<0.4){st='attack';q=(now-B.lungeT)/0.4}
+ else if(B.hitT&&now>=B.hitT&&now-B.hitT<0.35){st='hurt';q=(now-B.hitT)/0.35}
  else if(m.st==='wind'&&m.wmax){st='wind';q=Math.min(0.999,Math.max(0,1-m.tm/m.wmax))}
  else if(m.st==='leap'&&m.leap){st='attack';q=Math.min(0.999,m.leap.t/m.leap.dur)}
- else if(m.st==='dash'||m.mv){st='move';q=(t*(m.st==='dash'?3:1.6))%1}
+ else if(m.st==='dash'||m.mv){st='move';q=(t*(m.st==='dash'?2.6:(cat==='heavy'?0.9:1.4)))%1}
  const k=R.k[m.tgt];let flip=k?k.x<m.x-0.04:false;if(m.st==='dash'&&m.dash)flip=m.dash.ux<0;if(m.st==='wind'&&m.plan&&m.plan.ang!=null)flip=Math.cos(m.plan.ang)<0;
  return {st,q,flip}}
 function classicMonHint(t){const now=NOW();let st='idle',q=null;
- if(B.lungeT&&now-B.lungeT>=0&&now-B.lungeT<0.35){st='attack';q=(now-B.lungeT)/0.35}else if(B.hitT&&now>=B.hitT&&now-B.hitT<0.3){st='hurt';q=(now-B.hitT)/0.3}else if(B.tele){st='wind';q=(t*0.8)%1}
+ if(B.lungeT&&now-B.lungeT>=0&&now-B.lungeT<0.4){st='attack';q=(now-B.lungeT)/0.4}else if(B.hitT&&now>=B.hitT&&now-B.hitT<0.35){st='hurt';q=(now-B.hitT)/0.35}else if(B.tele){st='wind';q=0.5+0.45*((t*1.2)%1)}
  return {st,q,flip:!!(B.two&&B.two.cur===1)}}
-function rtKnightHint(n,k){const now=NOW();if(B.pAtkT&&now-B.pAtkT<0.3&&(B.pWho||1)===n)return {st:'attack',q:(now-B.pAtkT)/0.3};if(B.atkT&&now>=B.atkT&&now-B.atkT<0.3&&(B.atkWho||1)===n)return {st:'hurt',q:(now-B.atkT)/0.3};
- return k.mv?{st:'move',q:(now/(k.spr?0.32:0.5))%1}:{st:'idle',q:(now/1.3+n*0.37)%1}}
+function rtKnightHint(n,k){return null}
 
 /* ================= LOOP ================= */
 const approach=(a,b,s)=>a<b?Math.min(b,a+s):Math.max(b,a-s);let lastT=performance.now();
