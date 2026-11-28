@@ -148,3 +148,7 @@ Battles take place in an arena painted from the land you are in: sky at the back
 
 - Some side quests are given in one realm and finished in another (earlier or later chapters)
 - Travel only links the towns: Brightmeadow Village, Saltmarsh Harbor, Hearthhold and Ashfall Camp
+
+### Fix: summoning with God mode + two players
+- God mode's *Unlock whole Codex* adds things like banners and pennants. Drawing their waving-flag icons in the summon list crashed, so the list never opened. The flag-frame index now always wraps into range.
+- The summon list now opens with the first ready thing highlighted, so Enter (Player 1) or Space (Player 2) picks it instead of pressing Close.
